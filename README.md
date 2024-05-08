@@ -1,2 +1,2 @@
-# sddp-minilab
-Minilab do SDDP e DDP para testes simples de metodologias
+# 3dp-minilab
+Minilab do DDDP para testes simples de metodologias
