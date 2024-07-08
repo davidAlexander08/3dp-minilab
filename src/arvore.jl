@@ -48,9 +48,9 @@ end
 
 function printa_nos(no)
     for elemento in no.filhos
-        println("codigo: ", elemento.codigo, " codigo_intero: ", elemento.index, " nivel: ", elemento.periodo, " pai: ", elemento.pai.codigo)
+        println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
         printa_nos(elemento)
     end
 end
-println("codigo: ", no1.codigo, " codigo_intero: ", no1.index, " nivel: ", no1.periodo , " pai: ", no1.pai)
-printa_nos(no1)
+println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
+#printa_nos(no1)

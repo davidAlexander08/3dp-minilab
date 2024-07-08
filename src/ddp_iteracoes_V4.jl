@@ -5,6 +5,8 @@ module Main
     println("codigo: ", no1.codigo, " codigo_intero: ", no1.index, " nivel: ", no1.periodo , " pai: ", no1.pai)
     printa_nos(no1)
 
+    print(dat_horas)
+    conversao_m3_hm3 = (60*60)/1000000
     global Vi = zeros(length(lista_total_de_nos) ,caso.n_uhes)
     [Vi[1,i] = lista_uhes[i].v0 for i in 1:caso.n_uhes]
     FCF_coef = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
@@ -16,6 +18,7 @@ module Main
     arq_01 = open("backward2.txt","w")
 
     function retornaModelo(est, no)
+        converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         global m = Model(GLPK.Optimizer)
         @variable(m, 0 <= gt[1:caso.n_term])
         @variable(m, 0 <= gh[1:caso.n_uhes])
@@ -25,15 +28,16 @@ module Main
         @variable(m, 0 <= deficit )
         @variable(m, 0 <= alpha )
         @constraint(m, [i = 1:caso.n_uhes], Turb[i] <= lista_uhes[i].turbmax) #linha, coluna
-        @constraint(m, [i = 1:caso.n_uhes], gh[i] == Turb[i]) #linha, coluna
+        @constraint(m, [i = 1:caso.n_uhes], gh[i] == Turb[i]) #linha, coluna      /converte_m3s_hm3
         @constraint(m, [i = 1:caso.n_term], gt[i] <= lista_utes[i].gtmax) #linha, coluna
         @objective(m, Min, sum(Vert[i]*0.01 for i in 1:caso.n_uhes) + sum(lista_utes[i].custo_geracao*gt[i] for i in 1:caso.n_term) + sistema.deficit_cost*deficit + alpha)
         @constraint(m, balanco, sum(m[:gh][i] for i in 1:caso.n_uhes) + sum(m[:gt][i] for i in 1:caso.n_term) + m[:deficit] == sistema.demanda[est])
-        @constraint(m, c_hidr[i = 1:caso.n_uhes], Vf[i] + Turb[i] + Vert[i] == Vi[no.codigo,i] + (dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])) #linha, colun
+        @constraint(m, c_hidr[i = 1:caso.n_uhes], Vf[i] + Turb[i] + Vert[i] == Vi[no.codigo,i] + (dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])) #linha, colun * converte_m3s_hm3
         return m
     end
 
     function imprimePolitica(arq, m, text, est, it, no)
+        converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         write(arq, string(text, "\n"))
         write(arq, string(" Estagio: ", est, " No: ", no.codigo, " Iteracao: ", it, " \n"))
         write(arq, string("--------------------------------------------------------------- \n"))
@@ -53,7 +57,7 @@ module Main
         write(arq, string("--------------------------------------------------------------- \n"))
         write(arq, string("BALANCO HIDRICO \n"))
         write(arq, string("--------------------------------------------------------------- \n"))
-        [write(arq, string(" AFL",i, ": ",(dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]), "\n")) for i in 1:caso.n_uhes]
+        [write(arq, string(" AFL",i, ": ",(dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]), "\n")) for i in 1:caso.n_uhes] #* converte_m3s_hm3
         [write(arq, string(" Vi",i, ": ",Vi[no.codigo,i], "\n")) for i in 1:caso.n_uhes]
         [write(arq, string(" Turb",i, ": ",JuMP.value(m[:Turb][i]), "\n")) for i in 1:caso.n_uhes]
         [write(arq, string(" Vert",i, ": ",JuMP.value(m[:Vert][i]), "\n")) for i in 1:caso.n_uhes]
@@ -77,6 +81,9 @@ module Main
                 m = retornaModelo(est,i_no)
                 if est < caso.n_est && it > 1
                     @constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
+                end
+                if(est == caso.n_est)
+                    @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
                 end
                 JuMP.optimize!(m)         
                 if est < caso.n_est
@@ -108,6 +115,9 @@ module Main
                     m = retornaModelo(est, i_no)
                     if est < caso.n_est && est > 1
                         @constraint(m, [iter = 1:caso.n_iter], m[:alpha] -sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes) >= FCF_indep[est+1,iter] ) #linha, coluna
+                    end
+                    if(est == caso.n_est)
+                        @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
                     end
                     print(m)
                     JuMP.optimize!(m)     
