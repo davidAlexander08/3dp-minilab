@@ -1,7 +1,26 @@
 module Main
 
-    using JuMP, GLPK, Plots, Measures
+    using JuMP, GLPK, Plots, Measures, Plots, SparseArrays
+
     include("arvore.jl")
+    include("Rede/FluxoDC.jl")
+
+    for ilha in lista_ilhas
+        #calculaFluxosIlhaMetodoDeltaDC(ilha)
+        calculaFluxosIlhaMetodoSensibilidadeDC(ilha)
+        println("EXECUTANDO FLUXO DC")
+        for fluxo in ilha.fluxo_linhas
+            println("De: ", fluxo.linha.de.codigo, " Para: ", fluxo.linha.para.codigo, " Fluxo: ", fluxo.fluxoDePara)
+        end
+    end
+
+    ## METODO PL UNICO
+    
+
+
+
+    #METODO PDD
+    
     println("codigo: ", no1.codigo, " codigo_intero: ", no1.index, " nivel: ", no1.periodo , " pai: ", no1.pai)
     printa_nos(no1)
 
@@ -82,9 +101,9 @@ module Main
                 if est < caso.n_est && it > 1
                     @constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
                 end
-                if(est == caso.n_est)
-                    @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
-                end
+                #if(est == caso.n_est)
+                #    @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
+                #end
                 JuMP.optimize!(m)         
                 if est < caso.n_est
                     i_filhos = i_no.filhos
@@ -116,9 +135,9 @@ module Main
                     if est < caso.n_est && est > 1
                         @constraint(m, [iter = 1:caso.n_iter], m[:alpha] -sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes) >= FCF_indep[est+1,iter] ) #linha, coluna
                     end
-                    if(est == caso.n_est)
-                        @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
-                    end
+                    #if(est == caso.n_est)
+                    #    @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
+                    #end
                     print(m)
                     JuMP.optimize!(m)     
                     custo_presente = retornaCustoPresente(m)
@@ -134,7 +153,7 @@ module Main
             end 
         end
     end
-
+    
     fig = plot(1:caso.n_iter, [zinf,zsup],size=(800,400), margin=10mm)
     savefig(fig, "myplot.png")
     close(arq_00)

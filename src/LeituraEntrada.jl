@@ -4,6 +4,10 @@ include("DefStructs.jl")
 using JSON
 using CSV
 using DataFrames
+#using Graphs
+using LightGraphs
+using SparseArrays
+using DataStructures
 
 #CONFIG_PATH = "caso_deterministico/dadosEntrada.json"
 #PATH_VAZOES = "caso_deterministico/vazao.csv"

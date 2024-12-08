@@ -23,7 +23,7 @@ no1 = no(1, 1, 1, 0, [])
 global codigos = [no1.codigo]
 push!(lista_total_de_nos, no1)
 percorre_abertura(no1, caso.estrutura_arvore, 0, lista_total_de_nos)
-mapa_periodos = Dict()
+mapa_periodos = OrderedDict()
 for i in 1:length(caso.estrutura_arvore)+1
     periodo = tipo_periodo(i,[])
     #println("estagio: ", periodo.estagio)
