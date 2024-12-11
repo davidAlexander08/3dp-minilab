@@ -23,8 +23,10 @@ module Main
     global Vi = zeros(length(lista_total_de_nos) ,caso.n_uhes)
     [Vi[1,i] = lista_uhes[i].v0 for i in 1:caso.n_uhes]
 
-    #METODO PL UNICO
 
+
+    #METODO PL UNICO
+#   ##################################################################################################################################################################
 
 
     global m = Model(GLPK.Optimizer)
@@ -116,15 +118,20 @@ module Main
                 
             for term in 1:caso.n_term
                 gt = JuMP.value(gt_vars[(est, i_no.codigo)][term])
-                println("GT: ", JuMP.value(gt)," est: ", est, " node: ", i_no.codigo)
+                println("GT: ", gt," est: ", est, " node: ", i_no.codigo)
             end
             def = JuMP.value(deficit_vars[(est, i_no.codigo)])
-            println("Deficit = ", def)
 
+            custo_presente = 0
+            for term in 1:caso.n_term
+                custo_presente += JuMP.value.(gt_vars[(est, i_no.codigo)])[term]*lista_utes[term].custo_geracao
+            end
+            custo_presente += JuMP.value(deficit_vars[(est, i_no.codigo)])*sistema.deficit_cost
+            println("Deficit = ", def, " Custo Presente: ", custo_presente)
         end
     end
 
-
+    #######################################################################################################################################################
     #@variable(m, 0 <= gt[1:caso.n_term])
     #@variable(m, 0 <= gh[1:caso.n_uhes])
     #@variable(m, 0 <= Turb[1:caso.n_uhes])
