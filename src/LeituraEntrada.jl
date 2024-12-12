@@ -17,10 +17,25 @@ using DataStructures
 #PATH_VAZOES = "caso_arvore/vazao.csv"
 #PATH_PROBABILIDADES = "caso_arvore/probabilidades.csv"
 
-CONFIG_PATH = "caso_decomp/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp/probabilidades.csv"
-PATH_HORAS = "caso_decomp/horas.csv"
+
+
+CONFIG_PATH = "caso_decomp_pente/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_pente/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_pente/probabilidades.csv"
+PATH_HORAS = "caso_decomp_pente/horas.csv"
+
+
+CONFIG_PATH = "caso_decomp_deterministico/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico/horas.csv"
+
+
+CONFIG_PATH = "caso_decomp_arvore/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_arvore/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_arvore/probabilidades.csv"
+PATH_HORAS = "caso_decomp_arvore/horas.csv"
+
 
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)

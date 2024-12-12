@@ -15,7 +15,9 @@ module Main
     end
     println("codigo: ", no1.codigo, " codigo_intero: ", no1.index, " nivel: ", no1.periodo , " pai: ", no1.pai)
     printa_nos(no1)
-    print(dat_horas)
+    #println(dat_horas)
+    println(dat_vaz)
+
     conversao_m3_hm3 = (60*60)/1000000
     global Vi = zeros(length(lista_total_de_nos) ,caso.n_uhes)
     [Vi[1,i] = lista_uhes[i].v0 for i in 1:caso.n_uhes]
@@ -26,13 +28,13 @@ module Main
     zsup = zeros(caso.n_iter)
 
     balanco_energetico = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
-    termicas           = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], usina = Int[], generation = Float64[])
-    hidreletricas      = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
+    termicas           = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], nome = String[] , usina = Int[], generation = Float64[])
+    hidreletricas      = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_convergencia    = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[])
     df_cortes          = DataFrame(est = Int[], iter = Int[], usina = Int[], Indep = Float64[], Coef = Float64[])
 
     function retornaModelo(est, no)
-        converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
+        #converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         global m = Model(GLPK.Optimizer)
         @variable(m, 0 <= gt[1:caso.n_term])
         @variable(m, 0 <= gh[1:caso.n_uhes])
@@ -41,6 +43,7 @@ module Main
         @variable(m, 0 <= Vf[1:caso.n_uhes])
         @variable(m, 0 <= deficit )
         @variable(m, 0 <= alpha )
+        @constraint(m, [i = 1:caso.n_uhes], Vf[i] <= lista_uhes[i].vmax) #linha, coluna
         @constraint(m, [i = 1:caso.n_uhes], Turb[i] <= lista_uhes[i].turbmax) #linha, coluna
         @constraint(m, [i = 1:caso.n_uhes], gh[i] == Turb[i]) #linha, coluna      /converte_m3s_hm3
         @constraint(m, [i = 1:caso.n_term], gt[i] <= lista_utes[i].gtmax) #linha, coluna
@@ -55,13 +58,13 @@ module Main
         GT_TOT = 0
         for i in 1:n_term
             geracao = JuMP.value(m[:gt][i])
-            push!(termicas, (etapa = text, iter = it, est = est, node = no.codigo, usina = i, generation = geracao))
+            push!(termicas, (etapa = text, iter = it, est = est, node = no.codigo, nome = lista_utes[i].nome, usina = i, generation = geracao))
             GT_TOT += geracao
         end
         GH_TOT = 0
         for i in 1:caso.n_uhes
             geracao = JuMP.value(m[:gh][i])
-            push!(hidreletricas, (etapa = text, iter = it, est = est, node = no.codigo, usina = i, generation = geracao,
+            push!(hidreletricas, (etapa = text, iter = it, est = est, node = no.codigo, nome = lista_uhes[i].nome, usina = i, generation = geracao,
                             VI = Vi[no.codigo,i], AFL = (dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
                             TURB = JuMP.value(m[:Turb][i]), VERT = JuMP.value(m[:Vert][i]), VF = JuMP.value(m[:Vf][i])))
             GH_TOT += geracao
@@ -90,6 +93,7 @@ module Main
                 #if(est == caso.n_est)
                 #    @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
                 #end
+                print(m)
                 JuMP.optimize!(m)         
                 if est < caso.n_est
                     i_filhos = i_no.filhos
@@ -107,7 +111,7 @@ module Main
         end 
         println("zinf: ", zinf, " zsup: ", zsup)
         push!(df_convergencia, (iter = it, ZINF = zinf[it], ZSUP = zsup[it]))
-        if abs(zinf[it]-zsup[it]) < 0.1 
+        if abs(zinf[it]-zsup[it]) < 1 
             println("CONVERGIU")
             break
         end
@@ -124,12 +128,16 @@ module Main
                     JuMP.optimize!(m)     
                     custo_presente = retornaCustoPresente(m)
                     custo_futuro = JuMP.value(m[:alpha])
+                    probabilidade_no = (dat_prob[(dat_prob.NO .== i_no.codigo), "PROBABILIDADE"][1])
+                    FCF_indep[est, it] = FCF_indep[est, it] + (custo_presente + custo_futuro)*probabilidade_no
                     for i in 1:caso.n_uhes
-                        FCF_coef[est,i, it]  = FCF_coef[est,i, it] + JuMP.shadow_price( m[:c_hidr][i])*(dat_prob[(dat_prob.NO .== i_no.codigo), "PROBABILIDADE"][1])
-                        FCF_indep[est, it] = FCF_indep[est, it] + ((custo_presente + custo_futuro) - JuMP.shadow_price( m[:c_hidr][i])*Vi[i_no.codigo,i])*(dat_prob[(dat_prob.NO .== i_no.codigo), "PROBABILIDADE"][1]) 
+                        dual_balanco_hidrico = JuMP.shadow_price( m[:c_hidr][i])
+                        println("usina: ", i, " dual balanco: ", dual_balanco_hidrico, " custo_presente: ", custo_presente, " custo_futuro: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[i_no.codigo,i])
+                        FCF_coef[est,i, it]  = FCF_coef[est,i, it] + dual_balanco_hidrico*probabilidade_no
+                        FCF_indep[est, it] = FCF_indep[est, it] - dual_balanco_hidrico*Vi[i_no.codigo,i]*probabilidade_no
                     end
-                    println("FCF_coef: ", FCF_coef)
-                    println("FCF_indep: ", FCF_indep)
+                    #println("FCF_coef: ", FCF_coef)
+                    #println("FCF_indep: ", FCF_indep)
                     imprimePolitica(m, "BACKWARD", est, it, i_no)
                     
 

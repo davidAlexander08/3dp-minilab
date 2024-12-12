@@ -40,7 +40,7 @@ struct UTEConfigData
 end
 
 struct UHEConfigData
-    name::String
+    nome::String
     downstream::String #Jusante
     ghmin::Float64
     ghmax::Float64

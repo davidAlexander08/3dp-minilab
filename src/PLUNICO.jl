@@ -68,6 +68,8 @@ module Main
 
                 @constraint(m, gh_vars[(est, i_no.codigo)][i] == turb_vars[(est, i_no.codigo)][i]) #linha, coluna      /converte_m3s_hm3
                 @constraint(m, turb_vars[(est, i_no.codigo)][i] <= lista_uhes[i].turbmax) #linha, coluna
+                @constraint(m, vf_vars[(est, i_no.codigo)][i] <= lista_uhes[i].vmax) #linha, coluna
+
 
                 inflow = dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== i_no.codigo), "VAZAO"][1]
                 println("Hydro Plant: ", i, " Stage: ", est, " Node: ", i_no.codigo, " Inflow: ", inflow)
@@ -126,7 +128,8 @@ module Main
             end
             custo_presente += JuMP.value(deficit_vars[(est, i_no.codigo)])*sistema.deficit_cost
             Demanda = sistema.demanda[est]
-            println("Demanda: $Demanda GTTOT: $GeracaoTermicaTotal GHTOT: $GeracaoHidreletricaTotal Deficit = ", def, " Custo Presente: ", custo_presente)
+            codigo_no = i_no.codigo
+            println("Est: $est No: $codigo_no Demanda: $Demanda GTTOT: $GeracaoTermicaTotal GHTOT: $GeracaoHidreletricaTotal Deficit = ", def, " Custo Presente: ", custo_presente)
         end
     end
 
