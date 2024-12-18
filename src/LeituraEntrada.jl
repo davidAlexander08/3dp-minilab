@@ -25,10 +25,6 @@ PATH_PROBABILIDADES = "caso_decomp_pente/probabilidades.csv"
 PATH_HORAS = "caso_decomp_pente/horas.csv"
 
 
-CONFIG_PATH = "caso_decomp_deterministico/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico/horas.csv"
 
 
 CONFIG_PATH = "caso_decomp_arvore/dadosEntrada.json"
@@ -37,17 +33,81 @@ PATH_PROBABILIDADES = "caso_decomp_arvore/probabilidades.csv"
 PATH_HORAS = "caso_decomp_arvore/horas.csv"
 
 
+CONFIG_PATH = "caso_decomp_deterministico/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico/horas.csv"
+
+
+
+
+
+
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
+
+
+@info "Lendo arquivo de rede elétrica"
+
+dicionario_codigo_barra = OrderedDict()
+# BARRAS
+barras = dict["BARRAS"]
+lista_barras = []
+lista_barras_sem_slack = []
+lista_barras_slack = []
+for barra in barras
+    objeto = BarraConfig()
+    objeto.codigo = barra["CODIGO"]
+    objeto.potenciaGerada = barra["GERACAO"]
+    objeto.carga = barra["CARGA"]
+    objeto.area = barra["AREA"]
+    objeto.estadoDeOperacao = barra["ESTADODEOPERACAO"]
+    objeto.tipo = barra["TIPO"]
+    push!(lista_barras,objeto)
+    dicionario_codigo_barra[objeto.codigo] = objeto
+    if objeto.tipo == 2
+        push!(lista_barras_slack, objeto)
+    else
+        push!(lista_barras_sem_slack, objeto)
+    end
+end
+#println(lista_barras)
+
+# BARRAS
+linhas = dict["LINHAS"]
+lista_linhas = []
+for linha in linhas
+    objeto = LinhaConfig()
+    objeto.de = dicionario_codigo_barra[linha["DE"]] 
+    objeto.para = dicionario_codigo_barra[linha["PARA"]] 
+    objeto.indice = linha["N_CIRCUITOS"]
+    objeto.X = linha["REATANCIA"]
+    objeto.Capacidade = linha["CAPACIDADE"]
+    objeto.estadoDeOperacao = linha["ESTADODEOPERACAO"]
+    objeto.defasador = linha["DEFASADOR"]
+    push!(lista_linhas,objeto)
+end
+#println(lista_linhas)
+
 
 # UTEs
 usinas = dict["UTEs"]
 lista_utes = []
 for usi in usinas
-    usina = UTEConfigData(usi["NOME"],usi["GTMIN"], usi["GTMAX"], usi["CUSTO_GERACAO"])
+    usina = UTEConfigData(usi["NOME"],usi["GTMIN"], usi["GTMAX"], usi["CUSTO_GERACAO"], dicionario_codigo_barra[usi["BARRA"]] )
     push!(lista_utes,usina)
 end
-println(lista_utes)
+#println(lista_utes)
+
+
+# UHEs
+usinas = dict["UHEs"]
+lista_uhes = []
+for usi in usinas
+    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]])
+    push!(lista_uhes,usina)
+end
+#println(lista_uhes)
 
 
 @info "Lendo arquivo de vazoes $(PATH_VAZOES)"
@@ -61,24 +121,19 @@ dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
 @info "Lendo arquivo de horas $(PATH_HORAS)"
 dat_horas = CSV.read(PATH_HORAS, DataFrame)
 
-# UHEs
-usinas = dict["UHEs"]
-lista_uhes = []
-for usi in usinas
-    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"])
-    push!(lista_uhes,usina)
-end
-println(lista_uhes)
+
 
 n_iter = dict["MAX_ITERACOES"]
 n_est = dict["ESTAGIOS"]
+rede_eletrica = dict["REDE"]
 n_term = size(lista_utes)[1]
 n_uhes = size(lista_uhes)[1]
 estrutura_arvore = dict["ARVORE"]
 caso = CaseData(n_iter, n_est, n_term, n_uhes, estrutura_arvore)
-println(caso)
+#println(caso)
 
 #SISTEMA
 sist = dict["SISTEMA"]
 sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
-println(sistema)
+#println(sistema)
+

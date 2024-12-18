@@ -10,7 +10,10 @@ using SparseArrays
 using DataStructures
 
 
-file_path_rede = "3barras.pwf"
+#file_path_rede = "3barras.pwf"
+file_path_rede = "6barrasanarede.txt"
+file_path_rede = "6barrasanaredeFPO.txt"
+
 
 @info "Lendo barras da rede $(file_path_rede)"
 lista_barras = []
@@ -102,7 +105,7 @@ open(file_path_out, "w") do file_out
                     linha.X = X/100
                     linha.MVAR = MVAR
                     linha.defasador = defasador
-                    println(file_out, " ", linha.de.codigo , "  ", linha.para.codigo, "     ", linha.indice, "     ", linha.X/100, "     ", linha.MVAR, "    ", linha.defasador)
+                    println(file_out, " ", linha.de.codigo , "  ", linha.para.codigo, "     ", linha.indice, "     ", linha.X, "     ", linha.MVAR, "    ", linha.defasador)
                     push!(lista_linhas, linha)
                 else
                     println(file_out, "De Para  Indice   X     MVAR    Defasa")
