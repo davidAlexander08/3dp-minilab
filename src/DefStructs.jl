@@ -43,11 +43,12 @@ mutable struct FluxoNasLinhas
     linhaMatrizSensibilidade::Vector{Float64}
     RHS::Float64
     linha::LinhaConfig
+    violado::Bool
     # Constructor with default values
     function FluxoNasLinhas()
         default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
         default_linha = LinhaConfig()
-        new(default_barra, default_barra, 0.0, 0.0, 0.0, [0], 0.0, default_linha)
+        new(default_barra, default_barra, 0.0, 0.0, 0.0, [0], 0.0, default_linha, false)
     end
 end
 
@@ -105,6 +106,7 @@ struct UTEConfigData
     gtmax::Float64
     custo_geracao::Float64
     barra::BarraConfig
+    codigo::Int32
 end
 
 struct UHEConfigData
@@ -117,6 +119,7 @@ struct UHEConfigData
     vmax::Float64
     v0::Float64
     barra::BarraConfig
+    codigo::Int32
 end
 
 struct Forward

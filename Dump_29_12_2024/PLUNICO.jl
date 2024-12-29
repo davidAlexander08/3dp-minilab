@@ -16,11 +16,11 @@ module Main
     end
 
     global m = Model(GLPK.Optimizer)
-    gt_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
-    gh_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
-    turb_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
-    vert_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
-    vf_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
+    gt_vars = Dict{Tuple{Int, Int}, Vector{JuMP.VariableRef}}()
+    gh_vars = Dict{Tuple{Int, Int}, Vector{JuMP.VariableRef}}()
+    turb_vars = Dict{Tuple{Int, Int}, Vector{JuMP.VariableRef}}()
+    vert_vars = Dict{Tuple{Int, Int}, Vector{JuMP.VariableRef}}()
+    vf_vars = Dict{Tuple{Int, Int}, Vector{JuMP.VariableRef}}()
     deficit_vars = Dict{Tuple{Int, Int}, JuMP.VariableRef}()
     folga_rede = Dict{Tuple{Int, Int, LinhaConfig}, JuMP.VariableRef}()
 
@@ -32,28 +32,23 @@ module Main
         #print(dat_horas)
         conversao_m3_hm3 = (60*60)/1000000
         global Vi = zeros(length(lista_total_de_nos) ,caso.n_uhes)
-        [Vi[1,i] = usi.v0 for usi in lista_uhes]
+        [Vi[1,i] = lista_uhes[i].v0 for i in 1:caso.n_uhes]
     
 
         ## METODO PL UNICO
         for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
                 #println("i_no: ", i_no.codigo, " est: ", est)
-                for term in lista_utes
-                    gt_vars[(est, i_no.codigo, term.nome)] = @variable(m, base_name="gt_$(est)_$(i_no.codigo)_$(term.codigo)")
-                end
-                for uhe in lista_uhes
-                    gh_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="gh_$(est)_$(i_no.codigo)_$(uhe.codigo)")
-                    turb_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="turb_$(est)_$(i_no.codigo)_$(uhe.codigo)")
-                    vert_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="vert_$(est)_$(i_no.codigo)_$(uhe.codigo)")
-                    vf_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="vf_$(est)_$(i_no.codigo)_$(uhe.codigo)")
-                end
+                gt_vars[(est, i_no.codigo)] = @variable(m, [1:caso.n_term], base_name="gt_$(est)_$(i_no.codigo)")
+                gh_vars[(est, i_no.codigo)] = @variable(m, [1:caso.n_uhes], base_name="gh_$(est)_$(i_no.codigo)")
+                turb_vars[(est, i_no.codigo)] = @variable(m, [1:caso.n_uhes], base_name="turb_$(est)_$(i_no.codigo)")
+                vert_vars[(est, i_no.codigo)] = @variable(m, [1:caso.n_uhes], base_name="vert_$(est)_$(i_no.codigo)")
+                vf_vars[(est, i_no.codigo)] = @variable(m, [1:caso.n_uhes], base_name="vf_$(est)_$(i_no.codigo)")
                 deficit_vars[(est, i_no.codigo)] = @variable(m, base_name="def_$(est)_$(i_no.codigo)")
             end
         end
-
-        @objective( m, Min, sum(term.custo_geracao * gt_vars[(est, i_no.codigo, term.nome)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, term in lista_utes)
-        + sum(0.01 * vert_vars[(est, i_no.codigo, uhe.nome)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, uhe in lista_uhes)+
+        @objective( m, Min, sum(lista_utes[i].custo_geracao * gt_vars[(est, i_no.codigo)][i] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, i in 1:caso.n_term)
+        + sum(0.01 * vert_vars[(est, i_no.codigo)][i] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, i in 1:caso.n_uhes)+
         sum(sistema.deficit_cost * deficit_vars[(est, i_no.codigo)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos))
         
         #@constraint(m, balanco, sum(m[:gh][i] for i in 1:caso.n_uhes) + sum(m[:gt][i] for i in 1:caso.n_term) + m[:deficit] == sistema.demanda[est])
@@ -67,27 +62,27 @@ module Main
                         for barra in ilha.barras
                             carga_estagio_ilha += barra.carga[est]
                         end
-                        @constraint(  m, sum(gh_vars[(est, i_no.codigo, uhe.nome)] for uhe in lista_uhes) + sum(gt_vars[(est, i_no.codigo, term.nome)] for term in lista_utes) + deficit_vars[(est, i_no.codigo)] == carga_estagio_ilha   )
+                        @constraint(  m, sum(gh_vars[(est, i_no.codigo)][i] for i in 1:caso.n_uhes) + sum(gt_vars[(est, i_no.codigo)][i] for i in 1:caso.n_term) + deficit_vars[(est, i_no.codigo)] == carga_estagio_ilha   )
                     end
                 else
-                    @constraint(  m, sum(gh_vars[(est, i_no.codigo, uhe.nome)] for uhe in lista_uhes) + sum(gt_vars[(est, i_no.codigo, term.nome)] for term in lista_utes) + deficit_vars[(est, i_no.codigo)] == sistema.demanda[est]   )
+                    @constraint(  m, sum(gh_vars[(est, i_no.codigo)][i] for i in 1:caso.n_uhes) + sum(gt_vars[(est, i_no.codigo)][i] for i in 1:caso.n_term) + deficit_vars[(est, i_no.codigo)] == sistema.demanda[est]   )
                 end
                     @constraint(  m, deficit_vars[(est, i_no.codigo)] >= 0 ) 
-                for term in lista_utes
-                    @constraint(m, gt_vars[(est, i_no.codigo, term.nome)] >= 0)
-                    @constraint(m, gt_vars[(est, i_no.codigo, term.nome)] <= term.gtmax) #linha, coluna
+                for term in 1:caso.n_term
+                    @constraint(m, gt_vars[(est, i_no.codigo)][term] >= 0)
+                    @constraint(m, gt_vars[(est, i_no.codigo)][term] <= lista_utes[term].gtmax) #linha, coluna
                 end
                 
-                for uhe in lista_uhes
+                for i in 1:caso.n_uhes
     
-                    @constraint(  m, gh_vars[(est, i_no.codigo, uhe.nome)] >= 0 ) 
-                    @constraint(  m, turb_vars[(est, i_no.codigo, uhe.nome)] >= 0 ) 
-                    @constraint(  m, vert_vars[(est, i_no.codigo, uhe.nome)] >= 0 ) 
-                    @constraint(  m, vf_vars[(est, i_no.codigo, uhe.nome)] >= 0 ) 
+                    @constraint(  m, gh_vars[(est, i_no.codigo)][i] >= 0 ) 
+                    @constraint(  m, turb_vars[(est, i_no.codigo)][i] >= 0 ) 
+                    @constraint(  m, vert_vars[(est, i_no.codigo)][i] >= 0 ) 
+                    @constraint(  m, vf_vars[(est, i_no.codigo)][i] >= 0 ) 
     
-                    @constraint(m, gh_vars[(est, i_no.codigo, uhe.nome)] == turb_vars[(est, i_no.codigo, uhe.nome)]) #linha, coluna      /converte_m3s_hm3
-                    @constraint(m, turb_vars[(est, i_no.codigo, uhe.nome)] <= uhe.turbmax) #linha, coluna
-                    @constraint(m, vf_vars[(est, i_no.codigo, uhe.nome)] <=  uhe.vmax) #linha, coluna
+                    @constraint(m, gh_vars[(est, i_no.codigo)][i] == turb_vars[(est, i_no.codigo)][i]) #linha, coluna      /converte_m3s_hm3
+                    @constraint(m, turb_vars[(est, i_no.codigo)][i] <= lista_uhes[i].turbmax) #linha, coluna
+                    @constraint(m, vf_vars[(est, i_no.codigo)][i] <= lista_uhes[i].vmax) #linha, coluna
     
     
                     inflow = dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== i_no.codigo), "VAZAO"][1]
@@ -96,18 +91,18 @@ module Main
                     if est == 1
                         @constraint(
                             m, 
-                            vf_vars[(est, i_no.codigo, uhe.nome)] + 
-                            turb_vars[(est, i_no.codigo, uhe.nome)] + 
-                            vert_vars[(est, i_no.codigo, uhe.nome)] == 
+                            vf_vars[(est, i_no.codigo)][i] + 
+                            turb_vars[(est, i_no.codigo)][i] + 
+                            vert_vars[(est, i_no.codigo)][i] == 
                             Vi[i_no.codigo, i] + inflow
                         )
                     else
                         @constraint(
                             m, 
-                            vf_vars[(est, i_no.codigo, uhe.nome)] + 
-                            turb_vars[(est, i_no.codigo, uhe.nome)] + 
-                            vert_vars[(est, i_no.codigo, uhe.nome)] == 
-                            vf_vars[(est-1, i_no.pai.codigo, uhe.nome)] + inflow
+                            vf_vars[(est, i_no.codigo)][i] + 
+                            turb_vars[(est, i_no.codigo)][i] + 
+                            vert_vars[(est, i_no.codigo)][i] == 
+                            vf_vars[(est-1, i_no.pai.codigo)][i] + inflow
                         )
                     end
                 end
@@ -125,25 +120,25 @@ module Main
             for i_no in mapa_periodos[est].nos
                 GeracaoHidreletricaTotal = 0
                 GeracaoTermicaTotal = 0
-                for uhe in lista_uhes
-                    vf = JuMP.value(vf_vars[(est, i_no.codigo, uhe.nome)])
-                    turb = JuMP.value(turb_vars[(est, i_no.codigo, uhe.nome)])
-                    vert = JuMP.value(vert_vars[(est, i_no.codigo, uhe.nome)])
-                    gh = JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)])
+                for i in 1:caso.n_uhes
+                    vf = JuMP.value(vf_vars[(est, i_no.codigo)][i])
+                    turb = JuMP.value(turb_vars[(est, i_no.codigo)][i])
+                    vert = JuMP.value(vert_vars[(est, i_no.codigo)][i])
+                    gh = JuMP.value(gh_vars[(est, i_no.codigo)][i])
                     GeracaoHidreletricaTotal += gh
                     #println("Stage: $est, Node: $(i_no.codigo), Hydro Plant: $i, VF: $vf, Turb: $turb, Vert: $vert, Generation: $gh")
                 end
                     
-                for term in lista_utes
-                    gt = JuMP.value(gt_vars[(est, i_no.codigo, term.nome)])
+                for term in 1:caso.n_term
+                    gt = JuMP.value(gt_vars[(est, i_no.codigo)][term])
                     GeracaoTermicaTotal += gt
                     #println("Térmica: $term, Generation: ", gt," est: ", est, " node: ", i_no.codigo)
                 end
                 def = JuMP.value(deficit_vars[(est, i_no.codigo)])
 
                 custo_presente = 0
-                for term in lista_utes
-                    custo_presente += JuMP.value.(gt_vars[(est, i_no.codigo, term.nome)])*term.custo_geracao
+                for term in 1:caso.n_term
+                    custo_presente += JuMP.value.(gt_vars[(est, i_no.codigo)])[term]*lista_utes[term].custo_geracao
                 end
                 custo_presente += JuMP.value(deficit_vars[(est, i_no.codigo)])*sistema.deficit_cost
                 Demanda = sistema.demanda[est]
@@ -159,12 +154,10 @@ module Main
 
 
     numero_iteracoes =  2
-    #mapa_ilha_fluxos_violados = OrderedDict()
-
-    mapa_ilha_fluxos_violados = OrderedDict{Tuple{Int, Int, Int}, Vector{FluxoNasLinhas}}()
-
-    for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, ilha in lista_ilhas_teste mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo] = [] end
-
+    mapa_ilha_fluxos_violados = OrderedDict()
+    for ilha in lista_ilhas_teste
+        mapa_ilha_fluxos_violados[ilha] = []
+    end
 
     for iter in 1:numero_iteracoes
         println("ITERACAO: ", iter)
@@ -177,7 +170,7 @@ module Main
             for est in 1:caso.n_est
                 for i_no in mapa_periodos[est].nos
                     for ilha in lista_ilhas_teste
-                        for fluxo in mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo]
+                        for fluxo in mapa_ilha_fluxos_violados[ilha]
                             linha = fluxo.linha
                             lista_variaveis = []
                             for barra in ilha.barras
@@ -187,11 +180,11 @@ module Main
                                     UHE = get(mapa_nome_UHE,usi,0)
                                     UTE = get(mapa_nome_UTE,usi,0)
                                     if UHE != 0
-                                        push!(lista_variaveis, gh_vars[(est, i_no.codigo, UHE.nome)])
+                                        push!(lista_variaveis, gh_vars[(est, i_no.codigo)][UHE.codigo])
                                     end
 
                                     if UTE != 0
-                                        push!(lista_variaveis, gt_vars[(est, i_no.codigo, UTE.nome)])
+                                        push!(lista_variaveis, gt_vars[(est, i_no.codigo)][UTE.codigo])
                                     end
 
                                     if UHE == 0 && UTE == 0
@@ -232,16 +225,18 @@ module Main
 
         for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
-                for uhe in lista_uhes
-                    gh = JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)])
+                for i in 1:caso.n_uhes
+                    uhe = lista_uhes[i]
+                    gh = JuMP.value(gh_vars[(est, i_no.codigo)][i])
                     uhe.barra.potenciaGerada[est] = gh
-                    println("Stage: $est, Node: $(i_no.codigo), Hydro Plant: $uhe.nome, Generation: $gh")
+                    println("Stage: $est, Node: $(i_no.codigo), Hydro Plant: $i, Generation: $gh")
                 end
                     
-                for ute in lista_utes
-                    gt = JuMP.value(gt_vars[(est, i_no.codigo, ute.nome)])
+                for term in 1:caso.n_term
+                    ute = lista_utes[term]
+                    gt = JuMP.value(gt_vars[(est, i_no.codigo)][term])
                     ute.barra.potenciaGerada[est] = gt
-                    println("Térmica: $ute.nome, Generation: ", gt," est: ", est, " node: ", i_no.codigo)
+                    println("Térmica: $term, Generation: ", gt," est: ", est, " node: ", i_no.codigo)
                 end
     
                 for ilha in lista_ilhas_teste
@@ -257,7 +252,7 @@ module Main
                             println("ENTROU AQUI FLUXO VIOLADO")
                             #push!(fluxos_violados, fluxo)
                             fluxo.violado = true
-                            push!(mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo], fluxo)
+                            push!(mapa_ilha_fluxos_violados[ilha], fluxo)
                         end
                     end
                 end

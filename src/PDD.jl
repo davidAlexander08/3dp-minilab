@@ -3,16 +3,16 @@ module Main
     using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames
 
     include("arvore.jl")
-    include("Rede/FluxoDC.jl")
+    include("FluxoDC.jl")
 
-    for ilha in lista_ilhas
-        #calculaFluxosIlhaMetodoDeltaDC(ilha)
-        calculaFluxosIlhaMetodoSensibilidadeDC(ilha)
-        println("EXECUTANDO FLUXO DC")
-        for fluxo in ilha.fluxo_linhas
-            println("De: ", fluxo.linha.de.codigo, " Para: ", fluxo.linha.para.codigo, " Fluxo: ", fluxo.fluxoDePara)
-        end
-    end
+    #for ilha in lista_ilhas
+    #    #calculaFluxosIlhaMetodoDeltaDC(ilha)
+    #    calculaFluxosIlhaMetodoSensibilidadeDC(ilha)
+    #    println("EXECUTANDO FLUXO DC")
+    #    for fluxo in ilha.fluxo_linhas
+    #        println("De: ", fluxo.linha.de.codigo, " Para: ", fluxo.linha.para.codigo, " Fluxo: ", fluxo.fluxoDePara)
+    #    end
+    #end
     println("codigo: ", no1.codigo, " codigo_intero: ", no1.index, " nivel: ", no1.periodo , " pai: ", no1.pai)
     printa_nos(no1)
     #println(dat_horas)
@@ -93,7 +93,7 @@ module Main
                 #if(est == caso.n_est)
                 #    @constraint(m, FCF, m[:alpha] -sum(m[:Vf][i]*-0.01 for i in 1:caso.n_uhes) >= 38524017.2 ) #linha, coluna
                 #end
-                print(m)
+                #print(m)
                 JuMP.optimize!(m)         
                 if est < caso.n_est
                     i_filhos = i_no.filhos
@@ -132,9 +132,10 @@ module Main
                     FCF_indep[est, it] = FCF_indep[est, it] + (custo_presente + custo_futuro)*probabilidade_no
                     for i in 1:caso.n_uhes
                         dual_balanco_hidrico = JuMP.shadow_price( m[:c_hidr][i])
-                        println("usina: ", i, " dual balanco: ", dual_balanco_hidrico, " custo_presente: ", custo_presente, " custo_futuro: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[i_no.codigo,i])
                         FCF_coef[est,i, it]  = FCF_coef[est,i, it] + dual_balanco_hidrico*probabilidade_no
                         FCF_indep[est, it] = FCF_indep[est, it] - dual_balanco_hidrico*Vi[i_no.codigo,i]*probabilidade_no
+                        println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", i, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[i_no.codigo,i], "FCF_coef[est,i, it]: ", FCF_coef[est,i, it], "FCF_indep[est, it]: ", FCF_indep[est, it])
+
                     end
                     #println("FCF_coef: ", FCF_coef)
                     #println("FCF_indep: ", FCF_indep)

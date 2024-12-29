@@ -39,6 +39,10 @@ PATH_PROBABILIDADES = "caso_decomp_deterministico/probabilidades.csv"
 PATH_HORAS = "caso_decomp_deterministico/horas.csv"
 
 
+CONFIG_PATH = "caso_decomp_deterministico_UTE/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_UTE/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_UTE/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_UTE/horas.csv"
 
 
 
@@ -59,6 +63,7 @@ for barra in barras
     objeto = BarraConfig()
     objeto.codigo = barra["CODIGO"]
     objeto.potenciaGerada = barra["GERACAO"]
+    objeto.potenciaLiquida = barra["GERACAO"]
     objeto.carga = barra["CARGA"]
     objeto.area = barra["AREA"]
     objeto.estadoDeOperacao = barra["ESTADODEOPERACAO"]
@@ -89,13 +94,19 @@ for linha in linhas
 end
 #println(lista_linhas)
 
+mapa_nomeUSINA_codigoBARRA = OrderedDict()
+mapa_codigoBARRA_nomeUSINA = OrderedDict()
 
 # UTEs
 usinas = dict["UTEs"]
 lista_utes = []
+mapa_nome_UTE = OrderedDict()
 for usi in usinas
-    usina = UTEConfigData(usi["NOME"],usi["GTMIN"], usi["GTMAX"], usi["CUSTO_GERACAO"], dicionario_codigo_barra[usi["BARRA"]] )
+    usina = UTEConfigData(usi["NOME"],usi["GTMIN"], usi["GTMAX"], usi["CUSTO_GERACAO"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"] )
     push!(lista_utes,usina)
+    mapa_nome_UTE[usi["NOME"]] = usina
+    mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
+    mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
 end
 #println(lista_utes)
 
@@ -103,9 +114,14 @@ end
 # UHEs
 usinas = dict["UHEs"]
 lista_uhes = []
+mapa_nome_UHE = OrderedDict()
+
 for usi in usinas
-    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]])
+    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"])
     push!(lista_uhes,usina)
+    mapa_nome_UHE[usi["NOME"]] = usina
+    mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
+    mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
 end
 #println(lista_uhes)
 

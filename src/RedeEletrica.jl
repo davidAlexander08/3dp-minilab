@@ -154,6 +154,7 @@ for est in 1:caso.n_est
         end
     
         matrizB = matrizDiagonalDeSusceptancia*matrizIncidencia
+        println("matrizB: ", Matrix(matrizB))
         matrizSensibilidade = spzeros(length(lista_linhas_da_ilha), length(lista_barras_da_ilha)-1)
         
         vetorPotenciaCarga = []
@@ -162,24 +163,28 @@ for est in 1:caso.n_est
                 push!(vetorPotenciaCarga,  barra.carga[est]) ## PEGANDO O PRIMEIRO VALOR DA CARGA, MAS NA VERDADE É TEMPORAL
             end
         end
-        
+        println("INverso: ", inv(Matrix(matrizSusceptancia)))
         fluxo_linhas = []
         contador = 1
         for linha in lista_linhas_da_ilha
             linhaMatrizSensibilidade = matrizSusceptancia \ Array(matrizB[contador,:])
             RHS = linha.Capacidade[est] +transpose(linhaMatrizSensibilidade)*vetorPotenciaCarga
-            #println("RHS: ",  RHS, " linhaMatrizSensibilidade: ", Array(linhaMatrizSensibilidade))
+            println("RHS: ",  RHS, " linhaMatrizSensibilidade: ", Array(linhaMatrizSensibilidade))
             fluxo = FluxoNasLinhas()
             fluxo.linhaMatrizSensibilidade = linhaMatrizSensibilidade
+            #println("linhaMatrizSensibilidade: ", linhaMatrizSensibilidade)
             fluxo.RHS = RHS
             fluxo.de = linha.de
             fluxo.para = linha.para
             fluxo.linha = linha
+            fluxo.violado = false
             push!(fluxo_linhas, fluxo)
             contador = contador + 1
         end
     
-    
+        println("matrizSusceptancia", Matrix(matrizSusceptancia))
+        println("matrizDiagonalDeSusceptancia: ", Matrix(matrizDiagonalDeSusceptancia))
+        println("matrizIncidencia: ", Matrix(matrizIncidencia))
         ilha = IlhaConfig(indiceIlhaEletrica , slack , lista_barras_da_ilha, lista_linhas_da_ilha, matrizSusceptancia, matrizDiagonalDeSusceptancia, matrizIncidencia, fluxo_linhas)
         push!(lista_ilhas, ilha)
     
