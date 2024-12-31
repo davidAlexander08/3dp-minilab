@@ -67,6 +67,7 @@ for est in 1:caso.n_est
     #@info "Definindo as ilhas elétricas da rede $(file_path_rede)"
     lista_ilhas = []
     indiceIlhaEletrica = 0
+    mapaCodigoBarra = OrderedDict()
     for slack in lista_barras_slack
         
         indiceIlhaEletrica += 1
@@ -91,12 +92,52 @@ for est in 1:caso.n_est
         #end
 
         for barra in lista_barras_da_ilha
+            mapaCodigoBarra[barra.codigo] = barra
             if haskey(dicionario_barraDE_linha, barra.codigo)
                 for linha_barra in dicionario_barraDE_linha[barra.codigo]
                     push!(lista_linhas_da_ilha, linha_barra)
                 end
             end
         end
+
+
+        ##REDUCAO DE REDE
+        # A Redução de rede tem por objetivo desativar linhas que conectam barras geradoras com barras geradoras.
+        funcionalidade_Reduz_rede = 0
+        lista_linhas_ativas = []
+        linha_linhas_nao_ativas = []
+        if funcionalidade_Reduz_rede == 1
+            lista_barras_geracao = []
+            for barra in lista_barras_da_ilha
+                for uhe in lista_uhes
+                    push!(lista_barras_geracao, uhe.barra.codigo)
+                end
+                for ute in lista_utes
+                    push!(lista_barras_geracao, ute.barra.codigo)
+                end
+            end
+
+            for linha in lista_linhas_da_ilha
+                if linha.de.codigo in lista_barras_geracao && linha.para.codigo in lista_barras_geracao
+                    push!(linha_linhas_nao_ativas, linha)
+                else
+                    push!(lista_linhas_ativas, linha)
+                end
+            end
+
+            lista_linhas_da_ilha = lista_linhas_ativas
+
+            #ECO
+            for linha in lista_linhas_da_ilha
+                println("LINHA ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
+            end
+            #ECO
+            for linha in linha_linhas_nao_ativas
+                println("LINHA NAO ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
+            end
+        end
+
+        ### FIM DA REDUCAO DE REDE
     
         ## CALCULANDO A MATRIZ SUSCEPTANCIA
     
@@ -189,13 +230,18 @@ for est in 1:caso.n_est
         println("matrizSusceptancia", Matrix(matrizSusceptancia))
         println("matrizDiagonalDeSusceptancia: ", Matrix(matrizDiagonalDeSusceptancia))
         println("matrizIncidencia: ", Matrix(matrizIncidencia))
-        ilha = IlhaConfig(indiceIlhaEletrica , slack , lista_barras_da_ilha, lista_linhas_da_ilha, matrizSusceptancia, matrizDiagonalDeSusceptancia, matrizIncidencia, fluxo_linhas, [], [])
+        ilha = IlhaConfig(indiceIlhaEletrica , slack , lista_barras_da_ilha, lista_linhas_da_ilha, matrizSusceptancia, matrizDiagonalDeSusceptancia, matrizIncidencia, fluxo_linhas, linha_linhas_nao_ativas, [], mapaCodigoBarra)
         push!(lista_ilhas, ilha)
     
     end
 
 
     mapa_estagio_ilha[est] = lista_ilhas
+
+
+
+
+
 
     ##IDENTIFICANDO PONTOS DE INFLEXAO NAS RESTRICOES, QUAL A CAPACIDADE MINIMA QUE CADA LINHA PODE ATINGIR PARA EVITAR INVIABILIDADE
     for est in 1:caso.n_est
@@ -205,7 +251,7 @@ for est in 1:caso.n_est
                 for barra in ilha.barras
                     if barra.codigo != ilha.slack.codigo
                         usi = get(mapa_codigoBARRA_nomeUSINA,barra.codigo,0)
-                        println("Barra: ", barra.codigo, " NOME_USI: ", usi)
+                        #println("Barra: ", barra.codigo, " NOME_USI: ", usi)
                         UHE = get(mapa_nome_UHE,usi,0)
                         UTE = get(mapa_nome_UTE,usi,0)
                         if UHE != 0 push!(lista_variaveis, UHE) end
@@ -228,55 +274,6 @@ for est in 1:caso.n_est
                 #valorMinimo = sum(fator*fluxo.linhaMatrizSensibilidade[i]*lista_variaveis[i] for i in 1:length(lista_variaveis) ) 
                 println("DE: $(fluxo.de.codigo) PARA: $(fluxo.para.codigo) valorMaximoCapacidadeLinha: $valorMinimo  CoefDEM: $(fluxo.coeficienteDemanda) RHS:  $(fluxo.RHS)")
                 #@constraint(  m, sum(fator*fluxo.linhaMatrizSensibilidade[i]*lista_variaveis[i] for i in 1:length(lista_variaveis) ) + fator*folga_rede[(est, i_no.codigo, fluxo.linha)] == fator*fluxo.RHS   )    
-            end
-        end
-    end
-
-
-    ##REDUCAO DE REDE
-    # A Redução de rede tem por objetivo desativar linhas que conectam barras geradoras com barras geradoras.
-    funcionalidade_Reduz_rede = 0
-    if funcionalidade_Reduz_rede == 1
-        for est in 1:caso.n_est
-            for ilha in mapa_estagio_ilha[est]    
-                lista_barras_geracao = []
-                for barra in ilha.barras
-                    for uhe in lista_uhes
-                        push!(lista_barras_geracao, uhe.barra.codigo)
-                    end
-                    for ute in lista_utes
-                        push!(lista_barras_geracao, ute.barra.codigo)
-                    end
-                end
-                lista_linhas_ativas = []
-                linha_linhas_nao_ativas = []
-                for linha in ilha.linhas
-                    if linha.de.codigo in lista_barras_geracao && linha.para.codigo in lista_barras_geracao
-                        push!(linha_linhas_nao_ativas, linha)
-                    else
-                        push!(lista_linhas_ativas, linha)
-                    end
-                end
-                ilha.linhas = lista_linhas_ativas
-                ilha.linhasNaoAtivas = linha_linhas_nao_ativas
-                
-                lista_fluxos_ativos = []
-                lista_fluxos_ativos_nao_ativos = []
-                for fluxo in ilha.fluxo_linhas
-                    if fluxo.linha in lista_linhas_ativas push!(lista_fluxos_ativos, fluxo) end
-                    if fluxo.linha in linha_linhas_nao_ativas push!(lista_fluxos_ativos_nao_ativos, fluxo) end
-                end
-                ilha.fluxo_linhas = lista_fluxos_ativos
-                ilha.fluxo_nao_ativos = lista_fluxos_ativos_nao_ativos
-
-                #ECO
-                for linha in ilha.linhas
-                    println("LINHA ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
-                end
-                #ECO
-                for linha in ilha.linhasNaoAtivas
-                    println("LINHA NAO ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
-                end
             end
         end
     end

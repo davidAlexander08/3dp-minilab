@@ -11,11 +11,12 @@ mutable struct BarraConfig
     #potenciaLiquida::Vector{Float64}
     potenciaLiquida::Dict{Tuple{Int, Int, Int}, Float64}
     area::Int32
+    deficitBarra::Dict{Tuple{Int, Int, Int}, Float64}
     
     # Custom constructor with default values
     function BarraConfig()
         #new(0, [0.0], [0.0], [0], 0, [0.0], 0)  # Default values for fields
-        new(0, Dict{Tuple{Int, Int, Int}, Float64}(), [0.0], [0], 0,Dict{Tuple{Int, Int, Int}, Float64}(), 0)  # Default values for fields
+        new(0, Dict{Tuple{Int, Int, Int}, Float64}(), [0.0], [0], 0,Dict{Tuple{Int, Int, Int}, Float64}(), 0, Dict{Tuple{Int, Int, Int}, Float64}())  # Default values for fields
     end
 end
 
@@ -67,6 +68,7 @@ mutable struct IlhaConfig
     fluxo_linhas::Vector{FluxoNasLinhas}
     linhasNaoAtivas::Vector{LinhaConfig}
     fluxo_nao_ativos::Vector{FluxoNasLinhas}
+    mapaCodigoBarra::Dict{Int,BarraConfig}
 end
 
 
