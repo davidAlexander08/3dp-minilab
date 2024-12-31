@@ -1,0 +1,5 @@
+iter,est,node,nome,usina,generation
+1,1,1,ANGRA1,1,80.0
+1,1,1,ANGRA2,2,20.0
+2,1,1,ANGRA1,1,37.993699369937
+2,1,1,ANGRA2,2,62.006300630063

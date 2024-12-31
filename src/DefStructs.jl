@@ -3,18 +3,20 @@ using SparseArrays
 
 mutable struct BarraConfig
     codigo::Int32
-    potenciaGerada::Vector{Float64}
+    #potenciaGerada::Vector{Float64}
+    potenciaGerada::Dict{Tuple{Int, Int, Int}, Float64}
     carga::Vector{Float64}
     estadoDeOperacao::Vector{Int32}
     tipo::Int32
-    potenciaLiquida::Vector{Float64}
+    #potenciaLiquida::Vector{Float64}
+    potenciaLiquida::Dict{Tuple{Int, Int, Int}, Float64}
     area::Int32
     
     # Custom constructor with default values
     function BarraConfig()
-        new(0, [0.0], [0.0], [0], 0, [0.0], 0)  # Default values for fields
+        #new(0, [0.0], [0.0], [0], 0, [0.0], 0)  # Default values for fields
+        new(0, Dict{Tuple{Int, Int, Int}, Float64}(), [0.0], [0], 0,Dict{Tuple{Int, Int, Int}, Float64}(), 0)  # Default values for fields
     end
-
 end
 
 
@@ -39,16 +41,18 @@ mutable struct FluxoNasLinhas
     para::BarraConfig
     anguloBarraDe::Float64
     anguloBarraPara::Float64
-    fluxoDePara::Float64
+    fluxoDePara::Dict{Tuple{Int, Int, Int}, Float64}
     linhaMatrizSensibilidade::Vector{Float64}
     RHS::Float64
     linha::LinhaConfig
     violado::Bool
+    coeficienteDemanda::Float64
     # Constructor with default values
     function FluxoNasLinhas()
         default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
         default_linha = LinhaConfig()
-        new(default_barra, default_barra, 0.0, 0.0, 0.0, [0], 0.0, default_linha, false)
+        #new(default_barra, default_barra, 0.0, 0.0, 0.0, [0], 0.0, default_linha, false)
+        new(default_barra, default_barra, 0.0, 0.0, Dict{Tuple{Int, Int, Int}, Float64}(), [0], 0.0, default_linha, false, 0.0)
     end
 end
 
@@ -61,6 +65,8 @@ mutable struct IlhaConfig
     mapaSusceptanciaDiagonalPrincipal::Union{SparseMatrixCSC{Float64, Int}, Nothing}
     matrizIncidencia::Union{SparseMatrixCSC{Float64, Int}, Nothing}
     fluxo_linhas::Vector{FluxoNasLinhas}
+    linhasNaoAtivas::Vector{LinhaConfig}
+    fluxo_nao_ativos::Vector{FluxoNasLinhas}
 end
 
 
@@ -102,8 +108,8 @@ end
 
 struct UTEConfigData
     nome::String
-    gtmin::Float64
-    gtmax::Float64
+    gmin::Float64
+    gmax::Float64
     custo_geracao::Float64
     barra::BarraConfig
     codigo::Int32
@@ -112,8 +118,8 @@ end
 struct UHEConfigData
     nome::String
     downstream::String #Jusante
-    ghmin::Float64
-    ghmax::Float64
+    gmin::Float64
+    gmax::Float64
     turbmax::Float64
     vmin::Float64
     vmax::Float64

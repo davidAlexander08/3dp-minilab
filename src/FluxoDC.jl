@@ -8,12 +8,13 @@ using SparseArrays
 using DataStructures
 
 
-function calculaVetorPotenciaLiquidaDaIlha(ilha,est)
+function calculaVetorPotenciaLiquidaDaIlha(ilha,iter,est, i_no)
     ## CALCULO DA POTENCIA LIQUIDA
     for barra in ilha.barras
-        barra.potenciaLiquida[est] = barra.potenciaGerada[est] - barra.carga[est]
+        barra.potenciaLiquida[iter,est,i_no.codigo] = get(barra.potenciaGerada,(iter,est,i_no.codigo),0) - barra.carga[est]
         #println("Codigo Barra: ", barra.codigo, " Potencia Liquida: ", barra.potenciaLiquida)
     end
+
     # TRAFO DEFASADOR
     for fluxo in ilha.fluxo_linhas
         if fluxo.linha.defasador != 0
@@ -21,19 +22,19 @@ function calculaVetorPotenciaLiquidaDaIlha(ilha,est)
             anguloDefasadorRad = fluxo.linha.defasador*valor_pi/180
             fatorDefasador = anguloDefasadorRad/linha.X
 
-            potenciaLiquidaDe = fluxo.linha.de.potenciaLiquida[est]
-            potenciaLiquidaPara = fluxo.linha.para.potenciaLiquida[est]
+            potenciaLiquidaDe = fluxo.linha.de.potenciaLiquida[iter,est,i_no.codigo]
+            potenciaLiquidaPara = fluxo.linha.para.potenciaLiquida[iter,est,i_no.codigo]
 
-            fluxo.linha.de.potenciaLiquida[est] = potenciaLiquidaDe - fatorDefasador
-            fluxo.linha.para.potenciaLiquida[est] = potenciaLiquidaPara + fatorDefasador
+            fluxo.linha.de.potenciaLiquida[iter,est,i_no.codigo] = potenciaLiquidaDe - fatorDefasador
+            fluxo.linha.para.potenciaLiquida[iter,est,i_no.codigo] = potenciaLiquidaPara + fatorDefasador
         end
     end
     #FIM TRAFO DEFASADOR
     vetorPotenciaLiquida = []
     for barra in ilha.barras
         if barra.codigo != ilha.slack.codigo
-            println("Codigo Barra: ", barra.codigo, " Potencia Liquida: ", barra.potenciaLiquida[est])
-            push!(vetorPotenciaLiquida, barra.potenciaLiquida[est])
+            #println("Codigo Barra: ", barra.codigo, " Potencia Liquida: ", barra.potenciaLiquida[est])
+            push!(vetorPotenciaLiquida, barra.potenciaLiquida[iter,est,i_no.codigo])
         end
     end
 
@@ -82,9 +83,9 @@ function calculaFluxosIlhaMetodoDeltaDC(ilha,est)
     end
 end
 
-function calculaFluxosIlhaMetodoSensibilidadeDC(ilha,est)
-    vetorPotenciaLiquida = calculaVetorPotenciaLiquidaDaIlha(ilha,est)
+function calculaFluxosIlhaMetodoSensibilidadeDC(ilha, it, est, i_no)
+    vetorPotenciaLiquida = calculaVetorPotenciaLiquidaDaIlha(ilha,it , est, i_no)
     for fluxo in ilha.fluxo_linhas
-        fluxo.fluxoDePara = transpose(fluxo.linhaMatrizSensibilidade)*vetorPotenciaLiquida
+        fluxo.fluxoDePara[it, est, i_no.codigo] = transpose(fluxo.linhaMatrizSensibilidade)*vetorPotenciaLiquida
     end
 end
