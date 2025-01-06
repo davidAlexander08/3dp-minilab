@@ -52,10 +52,7 @@ PATH_HORAS = "caso_decomp_deterministico/horas.csv"
 
 
 
-#CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UTEs_3EST/dadosEntrada.json"
-#PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/vazao.csv"
-#PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilidades.csv"
-#PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
+
 
 
 CONFIG_PATH = "caso_decomp_deterministico_6Barras_3UTEs_1EST/dadosEntrada.json"
@@ -63,8 +60,48 @@ PATH_VAZOES = "caso_decomp_deterministico_6Barras_3UTEs_1EST/vazao.csv"
 PATH_PROBABILIDADES = "caso_decomp_deterministico_6Barras_3UTEs_1EST/probabilidades.csv"
 PATH_HORAS = "caso_decomp_deterministico_6Barras_3UTEs_1EST/horas.csv"
 
+CONFIG_PATH = "caso_decomp_deterministico_24Barras_1EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_24Barras_1EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_1EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_24Barras_1EST/horas.csv"
+
+
+CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UTEs_3EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
+
+
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
+
+
+
+
+
+@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
+dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
+
+@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
+dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
+#print(dat_vaz[(dat_vaz.NOME_UHE .== 1) .& (dat_vaz.PERIODO .== 1), :])
+#print(dat_vaz[(dat_vaz.NOME_UHE .== 1) .& (dat_vaz.PERIODO .== 1), "VAZAO"][1])
+
+@info "Lendo arquivo de horas $(PATH_HORAS)"
+dat_horas = CSV.read(PATH_HORAS, DataFrame)
+
+
+caso = CaseData()
+caso.n_iter = dict["MAX_ITERACOES"]
+caso.n_est = dict["ESTAGIOS"]
+rede_eletrica = dict["REDE"]
+caso.estrutura_arvore = dict["ARVORE"]
+
+
+#SISTEMA
+sist = dict["SISTEMA"]
+sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
+#println(sistema)
 
 
 @info "Lendo arquivo de rede elétrica"
@@ -75,6 +112,7 @@ barras = dict["BARRAS"]
 lista_barras = []
 lista_barras_sem_slack = []
 lista_barras_slack = []
+mapaCodigoBarra = OrderedDict()
 for barra in barras
     objeto = BarraConfig()
     objeto.codigo = barra["CODIGO"]
@@ -82,7 +120,10 @@ for barra in barras
     #objeto.potenciaLiquida = barra["GERACAO"]
     objeto.carga = barra["CARGA"]
     objeto.area = barra["AREA"]
-    objeto.estadoDeOperacao = barra["ESTADODEOPERACAO"]
+    lista_estado_operacao = barra["ESTADODEOPERACAO"]
+    for (est,elemento) in enumerate(lista_estado_operacao)
+        objeto.estadoDeOperacao[est] = elemento 
+    end
     objeto.tipo = barra["TIPO"]
     push!(lista_barras,objeto)
     dicionario_codigo_barra[objeto.codigo] = objeto
@@ -91,11 +132,12 @@ for barra in barras
     else
         push!(lista_barras_sem_slack, objeto)
     end
+    mapaCodigoBarra[objeto.codigo] = objeto
 end
-println(lista_barras)
-for barra in lista_barras
-    println("BARRA: ", barra.codigo)
-end
+#println(lista_barras)
+#for barra in lista_barras
+#    println("BARRA: ", barra.codigo)
+#end
 
 # BARRAS
 linhas = dict["LINHAS"]
@@ -107,7 +149,10 @@ for linha in linhas
     objeto.indice = linha["N_CIRCUITOS"]
     objeto.X = linha["REATANCIA"]
     objeto.Capacidade = linha["CAPACIDADE"]
-    objeto.estadoDeOperacao = linha["ESTADODEOPERACAO"]
+    lista_estado_operacao = linha["ESTADODEOPERACAO"]
+    for (est,elemento) in enumerate(lista_estado_operacao)
+        objeto.estadoDeOperacao[est] = elemento 
+    end
     objeto.defasador = linha["DEFASADOR"]
     push!(lista_linhas,objeto)
 end
@@ -144,31 +189,6 @@ for usi in usinas
 end
 #println(lista_uhes)
 
-
-@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
-dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
-
-@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
-dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
-#print(dat_vaz[(dat_vaz.NOME_UHE .== 1) .& (dat_vaz.PERIODO .== 1), :])
-#print(dat_vaz[(dat_vaz.NOME_UHE .== 1) .& (dat_vaz.PERIODO .== 1), "VAZAO"][1])
-
-@info "Lendo arquivo de horas $(PATH_HORAS)"
-dat_horas = CSV.read(PATH_HORAS, DataFrame)
-
-
-
-n_iter = dict["MAX_ITERACOES"]
-n_est = dict["ESTAGIOS"]
-rede_eletrica = dict["REDE"]
-n_term = size(lista_utes)[1]
-n_uhes = size(lista_uhes)[1]
-estrutura_arvore = dict["ARVORE"]
-caso = CaseData(n_iter, n_est, n_term, n_uhes, estrutura_arvore)
-#println(caso)
-
-#SISTEMA
-sist = dict["SISTEMA"]
-sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
-#println(sistema)
+caso.n_term =size(lista_utes)[1]
+caso.n_uhes =size(lista_uhes)[1]
 

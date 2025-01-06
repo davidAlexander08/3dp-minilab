@@ -1,14 +1,12 @@
 
 using SparseArrays
-
+using DataStructures 
 mutable struct BarraConfig
     codigo::Int32
-    #potenciaGerada::Vector{Float64}
     potenciaGerada::Dict{Tuple{Int, Int, Int}, Float64}
     carga::Vector{Float64}
-    estadoDeOperacao::Vector{Int32}
+    estadoDeOperacao::Dict{Int, Int}
     tipo::Int32
-    #potenciaLiquida::Vector{Float64}
     potenciaLiquida::Dict{Tuple{Int, Int, Int}, Float64}
     area::Int32
     deficitBarra::Dict{Tuple{Int, Int, Int}, Float64}
@@ -16,7 +14,15 @@ mutable struct BarraConfig
     # Custom constructor with default values
     function BarraConfig()
         #new(0, [0.0], [0.0], [0], 0, [0.0], 0)  # Default values for fields
-        new(0, Dict{Tuple{Int, Int, Int}, Float64}(), [0.0], [0], 0,Dict{Tuple{Int, Int, Int}, Float64}(), 0, Dict{Tuple{Int, Int, Int}, Float64}())  # Default values for fields
+        new(0, 
+        Dict{Tuple{Int, Int, Int}, Float64}(), 
+        [0.0], 
+        Dict{Int, Int}(), 
+        0,
+        Dict{Tuple{Int, Int, Int}, Float64}(), 
+        0, 
+        Dict{Tuple{Int, Int, Int}, Float64}()
+        )  # Default values for fields
     end
 end
 
@@ -30,45 +36,83 @@ mutable struct LinhaConfig
     X::Float64
     Capacidade::Vector{Float64}
     defasador::Float64
-    estadoDeOperacao::Vector{Int32}
-    function LinhaConfig()
-        default_barra = BarraConfig()
-        new(default_barra, default_barra, 0, 0.0, [0.0], 0.0, [0])  # Default values for fields
-    end
-end
-
-mutable struct FluxoNasLinhas
-    de::BarraConfig
-    para::BarraConfig
+    estadoDeOperacao::Dict{Int, Int}
     anguloBarraDe::Float64
     anguloBarraPara::Float64
     fluxoDePara::Dict{Tuple{Int, Int, Int}, Float64}
-    linhaMatrizSensibilidade::Vector{Float64}
-    RHS::Float64
-    linha::LinhaConfig
-    violado::Bool
-    coeficienteDemanda::Float64
-    # Constructor with default values
-    function FluxoNasLinhas()
-        default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
-        default_linha = LinhaConfig()
-        #new(default_barra, default_barra, 0.0, 0.0, 0.0, [0], 0.0, default_linha, false)
-        new(default_barra, default_barra, 0.0, 0.0, Dict{Tuple{Int, Int, Int}, Float64}(), [0], 0.0, default_linha, false, 0.0)
+    linhaMatrizSensibilidade::Dict{Int, Vector{Float64}}
+    RHS::Dict{Int, Float64}
+    coeficienteDemanda::Dict{Int, Float64}
+    valorMinimoCapacidade::Dict{Int, Float64}
+    function LinhaConfig()
+        default_barra = BarraConfig()
+        #new(default_barra, default_barra, 0, 0.0, [0.0], 0.0, [0])  # Default values for fields
+        new(default_barra, 
+        default_barra, 
+        0, 
+        0.0, 
+        [0.0], 
+        0.0, 
+        Dict{Int,Int}(), 
+        0, 
+        0, 
+        Dict{Tuple{Int, Int, Int}, Float64}(), 
+        Dict{Int, Vector{Float64}}(), 
+        Dict{Int, Float64}(), 
+        Dict{Int, Float64}(), 
+        Dict{Int, Float64}())  # Default values for fields
     end
 end
+
+#mutable struct FluxoNasLinhas
+#    de::BarraConfig
+#    para::BarraConfig
+#    anguloBarraDe::Float64
+#    anguloBarraPara::Float64
+#    fluxoDePara::Dict{Tuple{Int, Int, Int}, Float64}
+#    linhaMatrizSensibilidade::Vector{Float64}
+#    RHS::Float64
+#    linha::LinhaConfig
+#    violado::Bool
+#    coeficienteDemanda::Float64
+#    # Constructor with default values
+#    function FluxoNasLinhas()
+#        default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
+#        default_linha = LinhaConfig()
+#        #new(default_barra, default_barra, 0.0, 0.0, 0.0, [0], 0.0, default_linha, false)
+#        new(default_barra, default_barra, 0.0, 0.0, Dict{Tuple{Int, Int, Int}, Float64}(), [0], 0.0, default_linha, false, 0.0)
+#    end
+#end
 
 mutable struct IlhaConfig
     codigo::Int32
     slack::BarraConfig
     barras::Vector{BarraConfig}
     linhas::Vector{LinhaConfig}
-    matrizSusceptancia::Union{SparseMatrixCSC{Float64, Int}, Nothing}
-    mapaSusceptanciaDiagonalPrincipal::Union{SparseMatrixCSC{Float64, Int}, Nothing}
-    matrizIncidencia::Union{SparseMatrixCSC{Float64, Int}, Nothing}
-    fluxo_linhas::Vector{FluxoNasLinhas}
-    linhasNaoAtivas::Vector{LinhaConfig}
-    fluxo_nao_ativos::Vector{FluxoNasLinhas}
-    mapaCodigoBarra::Dict{Int,BarraConfig}
+    matrizSusceptancia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
+    matrizIncidencia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
+    barrasAtivas::Dict{Int, Vector{BarraConfig}}
+    barrasNaoAtivas::Dict{Int, Vector{BarraConfig}}
+    linhasAtivas::Dict{Int, Vector{LinhaConfig}}
+    linhasNaoAtivas::Dict{Int, Vector{LinhaConfig}}
+
+    #mapaCodigoBarra::Dict{Int,BarraConfig}
+    function IlhaConfig()
+        default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
+        default_linha = LinhaConfig()
+        new(0,
+        default_barra, 
+        [default_barra], 
+        [default_linha], 
+        Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}(), 
+        Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}(),   
+        Dict{Int, BarraConfig}(),
+        Dict{Int, BarraConfig}(),
+        Dict{Int, LinhaConfig}(),
+        Dict{Int, LinhaConfig}()
+        )
+        #default_dict)
+    end
 end
 
 
@@ -99,12 +143,15 @@ struct SystemConfigData
     demanda::Vector{Float64}
 end
 
-struct CaseData
+mutable struct CaseData
     n_iter::Int32
     n_est::Int32
     n_term::Int32
     n_uhes::Int32
     estrutura_arvore::Vector
+    function CaseData()
+        new(0,0, 0,0,[]) 
+    end
 end
 
 

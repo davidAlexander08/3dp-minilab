@@ -16,17 +16,17 @@ function calculaVetorPotenciaLiquidaDaIlha(ilha,iter,est, i_no)
     end
 
     # TRAFO DEFASADOR
-    for linha in ilha.linhasAtivas[est]
-        if linha.defasador != 0
+    for fluxo in ilha.fluxo_linhas
+        if fluxo.linha.defasador != 0
             valor_pi = 3.141593
-            anguloDefasadorRad = linha.defasador*valor_pi/180
+            anguloDefasadorRad = fluxo.linha.defasador*valor_pi/180
             fatorDefasador = anguloDefasadorRad/linha.X
 
-            potenciaLiquidaDe = linha.de.potenciaLiquida[iter,est,i_no.codigo]
-            potenciaLiquidaPara = linha.para.potenciaLiquida[iter,est,i_no.codigo]
+            potenciaLiquidaDe = fluxo.linha.de.potenciaLiquida[iter,est,i_no.codigo]
+            potenciaLiquidaPara = fluxo.linha.para.potenciaLiquida[iter,est,i_no.codigo]
 
-            linha.de.potenciaLiquida[iter,est,i_no.codigo] = potenciaLiquidaDe - fatorDefasador
-            linha.para.potenciaLiquida[iter,est,i_no.codigo] = potenciaLiquidaPara + fatorDefasador
+            fluxo.linha.de.potenciaLiquida[iter,est,i_no.codigo] = potenciaLiquidaDe - fatorDefasador
+            fluxo.linha.para.potenciaLiquida[iter,est,i_no.codigo] = potenciaLiquidaPara + fatorDefasador
         end
     end
     #FIM TRAFO DEFASADOR
@@ -47,12 +47,12 @@ function calculaFluxosIlhaMetodoDeltaDC(ilha,est)
     vetorPotenciaLiquida = calculaVetorPotenciaLiquidaDaIlha(ilha,est)
 
     ## CALCULO DO FLUXO
-    delta_sparse = ilha.matrizSusceptancia[est] \ vetorPotenciaLiquida
+    delta_sparse = ilha.matrizSusceptancia \ vetorPotenciaLiquida
     #println(delta_sparse)
 
     anguloCadaBarra = OrderedDict()
     contador = 1
-    for barra in ilha.barrasAtivas[est]
+    for barra in ilha.barras
         anguloCadaBarra[ilha.slack.codigo] = 0
         if barra.codigo != ilha.slack.codigo
             anguloCadaBarra[barra.codigo] = delta_sparse[contador]
@@ -60,30 +60,32 @@ function calculaFluxosIlhaMetodoDeltaDC(ilha,est)
         end
     end
 
-    for barra in ilha.barrasAtivas[est]
+    for barra in ilha.barras
         println("Barra: ", barra.codigo, " Angulo: ", anguloCadaBarra[barra.codigo])
     end
 
-    for linha in ilha.linhasAtivas[est]
-        anguloBarraDe = anguloCadaBarra[linha.de.codigo]
-        anguloBarraPara = anguloCadaBarra[linha.para.codigo]
-        valor_fluxo = (anguloBarraDe - anguloBarraPara)/linha.X
 
-        if(linha.defasador != 0)
+    lista_fluxos_linha = []
+    for fluxo in ilha.fluxo_linhas
+        anguloBarraDe = anguloCadaBarra[fluxo.linha.de.codigo]
+        anguloBarraPara = anguloCadaBarra[fluxo.linha.para.codigo]
+        valor_fluxo = (anguloBarraDe - anguloBarraPara)/fluxo.linha.X
+
+        if(fluxo.linha.defasador != 0)
             valor_pi = 3.141593
-            anguloDefasadorRad = linha.X*valor_pi/180
-            fatorDefasador = anguloDefasadorRad/linha.X
-            valor_fluxo = (anguloBarraDe - anguloBarraPara + anguloDefasadorRad)/linha.X
+            anguloDefasadorRad = fluxo.linha.X*valor_pi/180
+            fatorDefasador = anguloDefasadorRad/fluxo.linha.X
+            valor_fluxo = (anguloBarraDe - anguloBarraPara + anguloDefasadorRad)/fluxo.linha.X
         end
-        linha.anguloBarraDe = anguloBarraDe
-        linha.anguloBarraPara = anguloBarraPara
-        linha.fluxoDePara = valor_fluxo
+        fluxo.anguloBarraDe = anguloBarraDe
+        fluxo.anguloBarraPara = anguloBarraPara
+        fluxo.fluxoDePara = valor_fluxo
     end
 end
 
 function calculaFluxosIlhaMetodoSensibilidadeDC(ilha, it, est, i_no)
     vetorPotenciaLiquida = calculaVetorPotenciaLiquidaDaIlha(ilha,it , est, i_no)
-    for linha in ilha.linhasAtivas[est]
-        linha.fluxoDePara[it, est, i_no.codigo] = transpose(linha.linhaMatrizSensibilidade[est])*vetorPotenciaLiquida
+    for fluxo in ilha.fluxo_linhas
+        fluxo.fluxoDePara[it, est, i_no.codigo] = transpose(fluxo.linhaMatrizSensibilidade)*vetorPotenciaLiquida
     end
 end

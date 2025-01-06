@@ -5,22 +5,10 @@ module Main
     include("arvore.jl")
     include("FluxoDC.jl")
 
-    #Inicializando variaveis da barra
-    for est in caso.n_est
-        for i_no in mapa_periodos[est].nos
-            for ilha in mapa_estagio_ilha[est]
-                for barra in ilha.barras
-                    barra.potenciaGerada[(est, i_no.codigo, barra.codigo) ] = 0
-                    barra.potenciaLiquida[(est, i_no.codigo, barra.codigo) ] = 0
-                    barra.deficitBarra[(est, i_no.codigo, barra.codigo) ] = 0
-                end
-            end
-        end
-    end
 
 
 
-    ger_vars = Dict{Tuple{Int,Int, Int}, JuMP.VariableRef}()
+    
     gt_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
     gh_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
     turb_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
@@ -28,9 +16,6 @@ module Main
     vf_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
     deficit_vars = Dict{Tuple{Int, Int}, JuMP.VariableRef}()
     folga_rede = Dict{Tuple{Int, Int, LinhaConfig}, JuMP.VariableRef}()
-    deficit_barra = Dict{Tuple{Int, Int, Int}, JuMP.VariableRef}()
-
-    
 
     function montaProblemaOtimizacaoBase(m)
 
@@ -45,29 +30,19 @@ module Main
                 #println("i_no: ", i_no.codigo, " est: ", est)
                 for term in lista_utes
                     gt_vars[(est, i_no.codigo, term.nome)] = @variable(m, base_name="gt_$(est)_$(i_no.codigo)_$(term.codigo)")
-                    ger_vars[(est, i_no.codigo, mapa_nomeUSINA_codigoBARRA[term.nome])] = @variable(m, base_name="gt_$(est)_$(i_no.codigo)_$(term.codigo)")
-                    println("EST: ", est, " NO: ", i_no.codigo, " BARRA: ", mapa_nomeUSINA_codigoBARRA[term.nome], " VAR: ", ger_vars[(est, i_no.codigo, mapa_nomeUSINA_codigoBARRA[term.nome])])
                 end
                 for uhe in lista_uhes
                     gh_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="gh_$(est)_$(i_no.codigo)_$(uhe.codigo)")
                     turb_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="turb_$(est)_$(i_no.codigo)_$(uhe.codigo)")
                     vert_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="vert_$(est)_$(i_no.codigo)_$(uhe.codigo)")
                     vf_vars[(est, i_no.codigo, uhe.nome)] = @variable(m, base_name="vf_$(est)_$(i_no.codigo)_$(uhe.codigo)")
-                    ger_vars[(est, i_no.codigo, mapa_nomeUSINA_codigoBARRA[uhe.nome])] = @variable(m, base_name="gh_$(est)_$(i_no.codigo)_$(uhe.codigo)")
-                    println("EST: ", est, " NO: ", i_no.codigo, " BARRA: ", mapa_nomeUSINA_codigoBARRA[uhe.nome], " VAR: ", ger_vars[(est, i_no.codigo, mapa_nomeUSINA_codigoBARRA[uhe.nome])])
                 end
                 deficit_vars[(est, i_no.codigo)] = @variable(m, base_name="def_$(est)_$(i_no.codigo)")
-                for ilha in mapa_estagio_ilha[est] ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
-                    for barra in ilha.barras
-                        deficit_barra[(est, i_no.codigo, barra.codigo)] = @variable(m, base_name="deficitBarra_$(est)_$(i_no.codigo)_$(barra.codigo)")
-                    end
-                end
             end
         end
 
         @objective( m, Min, sum(term.custo_geracao * gt_vars[(est, i_no.codigo, term.nome)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, term in lista_utes)
         + sum(0.01 * vert_vars[(est, i_no.codigo, uhe.nome)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, uhe in lista_uhes)+
-        sum(sistema.deficit_cost*deficit_barra[(est, i_no.codigo, barra.codigo)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, barra in lista_barras) +
         sum(sistema.deficit_cost * deficit_vars[(est, i_no.codigo)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos))
         
         for est in 1:caso.n_est
@@ -77,9 +52,8 @@ module Main
                     for ilha in mapa_estagio_ilha[est] ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
                         for barra in ilha.barras
                             carga_estagio_ilha += barra.carga[est]
-                            @constraint(  m, deficit_barra[(est, i_no.codigo, barra.codigo)] >= 0 ) 
                         end
-                        @constraint(  m, sum(deficit_barra[(est, i_no.codigo, barra.codigo)] for barra in ilha.barras) + sum(gh_vars[(est, i_no.codigo, uhe.nome)] for uhe in lista_uhes) + sum(gt_vars[(est, i_no.codigo, term.nome)] for term in lista_utes) == carga_estagio_ilha   )
+                        @constraint(  m, sum(gh_vars[(est, i_no.codigo, uhe.nome)] for uhe in lista_uhes) + sum(gt_vars[(est, i_no.codigo, term.nome)] for term in lista_utes) + deficit_vars[(est, i_no.codigo)] == carga_estagio_ilha   )
                     end
                 else
                     @constraint(  m, sum(gh_vars[(est, i_no.codigo, uhe.nome)] for uhe in lista_uhes) + sum(gt_vars[(est, i_no.codigo, term.nome)] for term in lista_utes) + deficit_vars[(est, i_no.codigo)] == sistema.demanda[est]   )
@@ -135,7 +109,7 @@ module Main
     df_balanco_energetico = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[])
     df_termicas           = DataFrame(iter = Int[], est = Int[], node = Int[], nome = String[] , usina = Int[], generation = Float64[])
     df_hidreletricas      = DataFrame(iter = Int[], est = Int[], node = Int[], nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
-    df_barras             = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarra = Int[], generation = Float64[], demanda = Float64[], potenciaLiquida = Float64[], deficit = Float64[])
+    df_barras             = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarra = Int[], generation = Float64[], demanda = Float64[], potenciaLiquida = Float64[])
     df_linhas             = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarraDE = Int[], codigoBarraPARA = Int[], capacidade = Float64[], fluxo = Float64[], folga = Float64[])
 
 
@@ -158,23 +132,20 @@ module Main
             push!(df_termicas,  (iter = it, est = est, node = i_no.codigo, nome = term.nome, usina = term.codigo, generation = gt))
         end
 
-        
+        def = JuMP.value(deficit_vars[(est, i_no.codigo)])
 
         custo_presente = 0
         for term in lista_utes
             custo_presente += JuMP.value.(gt_vars[(est, i_no.codigo, term.nome)])*term.custo_geracao
         end
-        
-        def = 0
+        custo_presente += JuMP.value(deficit_vars[(est, i_no.codigo)])*sistema.deficit_cost
+
         if rede_eletrica == 1
             carga_estagio_ilha = 0
             for ilha in mapa_estagio_ilha[1] ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
                 for barra in ilha.barras
                     carga_estagio_ilha += barra.carga[est]
-                    valor_deficit = JuMP.value(deficit_barra[(est, i_no.codigo, barra.codigo)])
-                    custo_presente += valor_deficit
-                    def += valor_deficit
-                    push!(df_barras,  (iter = it, est = est, node = i_no.codigo, ilha = ilha.codigo, codigoBarra = barra.codigo, generation = get(barra.potenciaGerada, (it, est, i_no.codigo), 0), demanda = barra.carga[est], potenciaLiquida = barra.potenciaLiquida[it, est, i_no.codigo], deficit= valor_deficit))
+                    push!(df_barras,  (iter = it, est = est, node = i_no.codigo, ilha = ilha.codigo, codigoBarra = barra.codigo, generation = get(barra.potenciaGerada, (it, est, i_no.codigo), 0), demanda = barra.carga[est], potenciaLiquida = barra.potenciaLiquida[it, est, i_no.codigo]))
                 end
                 for fluxo in ilha.fluxo_linhas
                     folga_da_rede = get(folga_rede , (est, i_no.codigo, fluxo.linha), 0)
@@ -188,12 +159,11 @@ module Main
                 push!(df_balanco_energetico,  (iter = it, est = est, node = i_no.codigo, ilha = ilha.codigo, Demanda = carga_estagio_ilha, GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente))
             end
         else
-            def = JuMP.value(deficit_vars[(est, i_no.codigo)])
             push!(df_balanco_energetico,  (iter = it, est = est, node = i_no.codigo, ilha = 0, Demanda = sistema.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente))
         end
     end
 
-    numero_iteracoes =  5
+    numero_iteracoes =  2
     mapa_ilha_fluxos_violados = OrderedDict{Tuple{Int, Int, Int}, Set{FluxoNasLinhas}}()
     for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, ilha in mapa_estagio_ilha[est] mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo] = Set() end
     function add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
@@ -202,76 +172,49 @@ module Main
             for barra in ilha.barras
                 if barra.codigo != ilha.slack.codigo
                     usi = get(mapa_codigoBARRA_nomeUSINA,barra.codigo,0)
-                    #println("Barra: ", barra.codigo, " NOME_USI: ", usi)
+                    println("Barra: ", barra.codigo, " NOME_USI: ", usi)
                     UHE = get(mapa_nome_UHE,usi,0)
                     UTE = get(mapa_nome_UTE,usi,0)
                     if UHE != 0 push!(lista_variaveis, gh_vars[(est, i_no.codigo, UHE.nome)]) end
                     if UTE != 0   push!(lista_variaveis, gt_vars[(est, i_no.codigo, UTE.nome)]) end
-                    
-                    if UHE == 0 && UTE == 0 
-                        variavel = deficit_barra[(est, i_no.codigo, barra.codigo)]
-                        push!(lista_variaveis,variavel) 
-                    end
+                    if UHE == 0 && UTE == 0 push!(lista_variaveis,0) end                        
                 end
             end
             fator = ifelse(fluxo.RHS <= 0, -1 , 1)
             folga_rede[(est, i_no.codigo, fluxo.linha)] = @variable(m, base_name="sFluxo_$(est)_$(i_no.codigo)_$(fluxo.de.codigo)_$(fluxo.para.codigo)")
             @constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] >= 0)
             #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= 2*fluxo.linha.Capacidade[est])
-            @constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= fluxo.linha.Capacidade[est])
-            #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= fator*fluxo.RHS)
+            #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= fluxo.linha.Capacidade[est])
+            @constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= fator*fluxo.RHS)
             @constraint(  m, sum(fator*fluxo.linhaMatrizSensibilidade[i]*lista_variaveis[i] for i in 1:length(lista_variaveis) ) + fator*folga_rede[(est, i_no.codigo, fluxo.linha)] == fator*fluxo.RHS   )
         end
     end
     
 
 
-    function transfere_resultados_para_Barras(ilha, iter, est, i_no)
-        for barra in ilha.barras
-            geracao = 0
-            nome_usi = get(mapa_codigoBARRA_nomeUSINA, barra.codigo, 0) 
-            variavel_gh = get(gh_vars, (est, i_no.codigo, nome_usi), 0)
-            variavel_gt = get(gt_vars, (est, i_no.codigo, nome_usi), 0)
-            if nome_usi != 0
-                if variavel_gh != 0 
-                    geracao = JuMP.value(variavel_gh) 
-                elseif variavel_gt != 0
-                    geracao = JuMP.value(variavel_gt)
-                else
-                    geracao = 0
-                end
-            else
-                geracao = 0
-            end
-
-            barra.potenciaGerada[iter, est, i_no.codigo] = geracao
-
-            def = JuMP.value(deficit_barra[(est, i_no.codigo, barra.codigo)])
-            barra.deficitBarra[(iter, est, i_no.codigo)] = def
-            #println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, "GerBarra: ", barra.potenciaGerada[(iter, est, i_no.codigo)], " Carga: ", barra.carga[est], " Deficit: ", get(barra.deficitBarra,(iter, est, i_no.codigo),0), " PotLiq: ", get(barra.potenciaLiquida,(iter, est, i_no.codigo),0) )
+    function transfere_resultados_para_Barras(iter, est, i_no)
+        for uhe in lista_uhes
+            uhe.barra.potenciaGerada[iter, est, i_no.codigo] = JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)])
         end
-        #for uhe in lista_uhes
-        #    uhe.barra.potenciaGerada[iter, est, i_no.codigo] = JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)])
-        #end
-        #for ute in lista_utes
-        #    ute.barra.potenciaGerada[iter, est, i_no.codigo] = JuMP.value(gt_vars[(est, i_no.codigo, ute.nome)])
-        #end
+        for ute in lista_utes
+            ute.barra.potenciaGerada[iter, est, i_no.codigo] = JuMP.value(gt_vars[(est, i_no.codigo, ute.nome)])
+        end
     end
 
     function verificaFluxosViolados(iter, est, i_no, ilha, mapa_ilha_fluxos_violados)
         #for barra in ilha.barras
-        #    println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, " GerBarra: ", get(barra.potenciaGerada,(est, i_no.codigo, barra.codigo),0), " Carga: ", barra.carga[est], " Deficit: ", get(barra.deficitBarra,(est, i_no.codigo, barra.codigo),0), " PotLiq: ", get(barra.potenciaLiquida,(est, i_no.codigo, barra.codigo),0) )
+        #    println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, " GerBarra: ", barra.potenciaGerada )
         #end
         calculaFluxosIlhaMetodoSensibilidadeDC(ilha,iter, est, i_no)
         println("EXECUTANDO FLUXO DC PARA O ITERACAO $iter ESTAGIO  $est Node: $(i_no.codigo)")
         contador_violacao = 0
         for fluxo in ilha.fluxo_linhas
             println("De: ", fluxo.linha.de.codigo, " Para: ", fluxo.linha.para.codigo, " Fluxo: ", fluxo.fluxoDePara[iter,est,i_no.codigo], " Capacidade: ", fluxo.linha.Capacidade[est], " Linha: ", fluxo.linhaMatrizSensibilidade, " RHS: ", fluxo.RHS)
-            if abs(round(fluxo.fluxoDePara[iter,est,i_no.codigo], digits=1)) > fluxo.linha.Capacidade[est] 
-                println("VIOLADO: De: ", fluxo.linha.de.codigo, " Para: ", fluxo.linha.para.codigo, " Fluxo: ", round(fluxo.fluxoDePara[iter,est,i_no.codigo], digits=1), " Capacidade: ", fluxo.linha.Capacidade[est], " Linha: ", fluxo.linhaMatrizSensibilidade, " RHS: ", fluxo.RHS)
-                push!(mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo], fluxo)    
-                contador_violacao = contador_violacao + 1
-            end
+            #if abs(round(fluxo.fluxoDePara[iter,est,i_no.codigo], digits=1)) > fluxo.linha.Capacidade[est] 
+            println("VIOLADO: De: ", fluxo.linha.de.codigo, " Para: ", fluxo.linha.para.codigo, " Fluxo: ", round(fluxo.fluxoDePara[iter,est,i_no.codigo], digits=1), " Capacidade: ", fluxo.linha.Capacidade[est], " Linha: ", fluxo.linhaMatrizSensibilidade, " RHS: ", fluxo.RHS)
+            push!(mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo], fluxo)    
+            contador_violacao = contador_violacao + 1
+            #end
         end
         return contador_violacao
     end
@@ -309,8 +252,8 @@ module Main
         contador_violacao = 0
         for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
+                transfere_resultados_para_Barras(iter, est, i_no)
                 for ilha in mapa_estagio_ilha[est]
-                    transfere_resultados_para_Barras(ilha, iter, est, i_no)
                     contador_violacao = verificaFluxosViolados(iter, est, i_no, ilha, mapa_ilha_fluxos_violados)
                 end
                 no = i_no.codigo
