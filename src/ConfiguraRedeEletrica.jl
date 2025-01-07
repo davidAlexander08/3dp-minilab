@@ -112,7 +112,44 @@ end
 
 
 
-function atualizaValorMinimoCapacidadeLinhas(ilha,est)
+
+
+
+function realizaReducaoDeRedePeloMetodoDoValorMinimoDeCapacidadeDasLinhas(ilha, est)
+    lista_linhas_ativas = []
+    linha_linhas_nao_ativas = []
+    lista_barras_existentes = []
+    lista_barras_invativas = []
+    lista_barras_ativas = []
+    for linha in ilha.linhasAtivas[est]
+        #if mapa_linha_valorMinimoCapacidadeLinha[(linha.de.codigo, linha.para.codigo, est)] >= 0
+        if linha.valorMinimoCapacidade[est] >= 0
+            push!(lista_linhas_ativas, linha)
+            println("LINHA ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
+            push!(lista_barras_existentes,linha.de.codigo)
+            push!(lista_barras_existentes,linha.para.codigo)
+        else
+            push!(linha_linhas_nao_ativas, linha)
+            println("LINHA NAO ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
+        end
+    end
+    for barra in ilha.barrasAtivas[est]
+        if barra.codigo in lista_barras_existentes
+            println("BARRA ATIVA: ", barra.codigo)
+            push!(lista_barras_ativas, barra)
+        else
+            println("BARRA INATIVA: ", barra.codigo)
+            push!(lista_barras_invativas, barra)
+        end
+    end
+    ilha.linhasAtivas[est] = lista_linhas_ativas
+    ilha.linhasNaoAtivas[est] = linha_linhas_nao_ativas
+    ilha.barrasAtivas[est] = lista_barras_ativas
+    ilha.barrasNaoAtivas[est] = lista_barras_invativas
+end
+
+
+function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes)
     for linha in ilha.linhasAtivas[est]
         lista_variaveis = []
         demanda_total = 0
@@ -139,14 +176,16 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est)
             UTE = get(mapa_nome_UTE,nome_usi,0)
             if UHE != 0 
                 gh_vars_capacidade[UHE.nome] = @variable(m_cap, base_name="gt_$(UHE.codigo)")
-                @constraint(m_cap, gh_vars_capacidade[UHE.nome] >= UHE.gmin)
+                #@constraint(m_cap, gh_vars_capacidade[UHE.nome] >= UHE.gmin)
+                @constraint(m_cap, gh_vars_capacidade[UHE.nome] >= mapa_valores_minimos_geracoes[UHE.nome])
                 @constraint(m_cap, gh_vars_capacidade[UHE.nome] <= UHE.gmax) #linha, coluna
                 #push!(lista_variaveis, UHE) 
                 push!(lista_uhes_cap, UHE)
             end
             if UTE != 0   
                 gt_vars_capacidade[UTE.nome] = @variable(m_cap, base_name="gt_$(UTE.codigo)")
-                @constraint(m_cap, gt_vars_capacidade[UTE.nome] >= UTE.gmin)
+                #@constraint(m_cap, gt_vars_capacidade[UTE.nome] >= UTE.gmin)
+                @constraint(m_cap, gt_vars_capacidade[UTE.nome] >= mapa_valores_minimos_geracoes[UTE.nome])
                 @constraint(m_cap, gt_vars_capacidade[UTE.nome] <= UTE.gmax) #linha, coluna
                 #push!(lista_variaveis, UTE) 
                 push!(lista_utes_cap,UTE)
@@ -191,47 +230,18 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est)
 end
 
 
-
-
-function realizaReducaoDeRedePeloMetodoDoValorMinimoDeCapacidadeDasLinhas(ilha, est)
-    lista_linhas_ativas = []
-    linha_linhas_nao_ativas = []
-    lista_barras_existentes = []
-    lista_barras_invativas = []
-    lista_barras_ativas = []
-    for linha in ilha.linhasAtivas[est]
-        #if mapa_linha_valorMinimoCapacidadeLinha[(linha.de.codigo, linha.para.codigo, est)] >= 0
-        if linha.valorMinimoCapacidade[est] >= 0
-            push!(lista_linhas_ativas, linha)
-            println("LINHA ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
-            push!(lista_barras_existentes,linha.de.codigo)
-            push!(lista_barras_existentes,linha.para.codigo)
-        else
-            push!(linha_linhas_nao_ativas, linha)
-            println("LINHA NAO ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
-        end
-    end
-    for barra in ilha.barrasAtivas[est]
-        if barra.codigo in lista_barras_existentes
-            println("BARRA ATIVA: ", barra.codigo)
-            push!(lista_barras_ativas, barra)
-        else
-            println("BARRA INATIVA: ", barra.codigo)
-            push!(lista_barras_invativas, barra)
-        end
-    end
-    ilha.linhasAtivas[est] = lista_linhas_ativas
-    ilha.linhasNaoAtivas[est] = linha_linhas_nao_ativas
-    ilha.barrasAtivas[est] = lista_barras_ativas
-    ilha.barrasNaoAtivas[est] = lista_barras_invativas
-end
-
 flag_reducao_rede = 0
-
+mapa_valores_minimos_geracoes = OrderedDict()
+for uhe in lista_uhes
+    mapa_valores_minimos_geracoes[uhe.nome] = uhe.gmin
+end
+for term in lista_utes
+    mapa_valores_minimos_geracoes[term.nome] = term.gmin
+end
 for ilha in lista_ilhas_eletricas    
     for est in caso.n_est
         calculaParametrosDaIlha(ilha,est)
-        atualizaValorMinimoCapacidadeLinhas(ilha,est)
+        atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes)
         
         if flag_reducao_rede == 1
             realizaReducaoDeRedePeloMetodoDoValorMinimoDeCapacidadeDasLinhas(ilha,est)

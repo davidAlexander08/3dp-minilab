@@ -325,6 +325,29 @@ module Main
         end
     end
 
+    ##DESCOBRINDO NOVOS LIMITES MINIMOS DAS LINHAS
+    mapa_valores_minimos_geracoes = OrderedDict()
+    for est in caso.n_est
+        for uhe in lista_uhes
+            #gmax = maximum(JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)]) for i_no in mapa_periodos[est].nos)
+            mapa_valores_minimos_geracoes[uhe.nome] =  gmax
+        end
+                
+        for term in lista_utes
+            gmax = maximum(JuMP.value(gt_vars[(est, i_no.codigo, term.nome)]) for i_no in mapa_periodos[est].nos)
+            #println("UTE: ", term.nome, " G: ", gmax)
+            mapa_valores_minimos_geracoes[term.nome] =  gmax
+        end
+    end
+
+    for ilha in lista_ilhas_eletricas    
+        for est in caso.n_est
+            atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes)
+        end
+    end
+
+
+
     println(df_balanco_energetico)
     println(df_termicas)
     println(df_hidreletricas)
