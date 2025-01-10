@@ -44,6 +44,7 @@ mutable struct LinhaConfig
     RHS::Dict{Int, Float64}
     coeficienteDemanda::Dict{Int, Float64}
     valorMinimoCapacidade::Dict{Int, Float64}
+    codigo::Int32
     function LinhaConfig()
         default_barra = BarraConfig()
         #new(default_barra, default_barra, 0, 0.0, [0.0], 0.0, [0])  # Default values for fields
@@ -60,7 +61,9 @@ mutable struct LinhaConfig
         Dict{Int, Vector{Float64}}(), 
         Dict{Int, Float64}(), 
         Dict{Int, Float64}(), 
-        Dict{Int, Float64}())  # Default values for fields
+        Dict{Int, Float64}(),
+        0)  # Default values for fields
+        
     end
 end
 
@@ -91,10 +94,10 @@ mutable struct IlhaConfig
     linhas::Vector{LinhaConfig}
     matrizSusceptancia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
     matrizIncidencia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
-    barrasAtivas::Dict{Int, Vector{BarraConfig}}
-    barrasNaoAtivas::Dict{Int, Vector{BarraConfig}}
-    linhasAtivas::Dict{Int, Vector{LinhaConfig}}
-    linhasNaoAtivas::Dict{Int, Vector{LinhaConfig}}
+    barrasAtivas::Dict{Int, Vector{BarraConfig}} #Chave EST
+    barrasNaoAtivas::Dict{Int, Vector{BarraConfig}} #Chave EST
+    linhasAtivas::Dict{Int, Vector{LinhaConfig}} #Chave EST
+    linhasNaoAtivas::Dict{Int, Vector{LinhaConfig}} #Chave EST
 
     #mapaCodigoBarra::Dict{Int,BarraConfig}
     function IlhaConfig()

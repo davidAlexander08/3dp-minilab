@@ -72,6 +72,12 @@ PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilida
 PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
 
 
+CONFIG_PATH = "caso_decomp_deterministico_24Barras_1EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_24Barras_1EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_1EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_24Barras_1EST/horas.csv"
+
+
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
 
@@ -142,7 +148,7 @@ end
 # BARRAS
 linhas = dict["LINHAS"]
 lista_linhas = []
-for linha in linhas
+for (contador,linha) in enumerate(linhas)
     objeto = LinhaConfig()
     objeto.de = dicionario_codigo_barra[linha["DE"]] 
     objeto.para = dicionario_codigo_barra[linha["PARA"]] 
@@ -153,8 +159,10 @@ for linha in linhas
     for (est,elemento) in enumerate(lista_estado_operacao)
         objeto.estadoDeOperacao[est] = elemento 
     end
+    objeto.codigo = contador
     objeto.defasador = linha["DEFASADOR"]
     push!(lista_linhas,objeto)
+    contador = contador + 1
 end
 #println(lista_linhas)
 

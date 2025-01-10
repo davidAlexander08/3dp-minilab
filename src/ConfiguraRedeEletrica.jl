@@ -109,6 +109,12 @@ function calculaParametrosDaIlha(ilha,est)
     end
 end
 
+for ilha in lista_ilhas_eletricas    
+    for est in caso.n_est
+        calculaParametrosDaIlha(ilha,est)
+    end
+end
+
 
 
 
@@ -147,145 +153,3 @@ function realizaReducaoDeRedePeloMetodoDoValorMinimoDeCapacidadeDasLinhas(ilha, 
     ilha.barrasAtivas[est] = lista_barras_ativas
     ilha.barrasNaoAtivas[est] = lista_barras_invativas
 end
-
-
-function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes)
-    for linha in ilha.linhasAtivas[est]
-        lista_variaveis = []
-        demanda_total = 0
-        mapa_nomeUsina_CoefSensibilidade = OrderedDict()
-        linha_matriz_sensibilidade = linha.linhaMatrizSensibilidade[est]
-       
-        gt_vars_capacidade = OrderedDict{String, JuMP.VariableRef}()
-        gh_vars_capacidade = OrderedDict{String, JuMP.VariableRef}()
-
-        m_cap = Model(GLPK.Optimizer)
-        lista_uhes_cap = []
-        lista_utes_cap = []
-        indice = 1
-        for barra in ilha.barrasAtivas[est]
-            nome_usi = get(mapa_codigoBARRA_nomeUSINA,barra.codigo,0)
-            if barra.codigo == ilha.slack.codigo && nome_usi != 0
-                mapa_nomeUsina_CoefSensibilidade[nome_usi] = 0
-            else
-                mapa_nomeUsina_CoefSensibilidade[nome_usi] = linha_matriz_sensibilidade[indice]
-                indice += 1
-            end
-            #println("Barra: ", barra.codigo, " NOME_USI: ", usi)
-            UHE = get(mapa_nome_UHE,nome_usi,0)
-            UTE = get(mapa_nome_UTE,nome_usi,0)
-            if UHE != 0 
-                gh_vars_capacidade[UHE.nome] = @variable(m_cap, base_name="gt_$(UHE.codigo)")
-                #@constraint(m_cap, gh_vars_capacidade[UHE.nome] >= UHE.gmin)
-                @constraint(m_cap, gh_vars_capacidade[UHE.nome] >= mapa_valores_minimos_geracoes[UHE.nome])
-                @constraint(m_cap, gh_vars_capacidade[UHE.nome] <= UHE.gmax) #linha, coluna
-                #push!(lista_variaveis, UHE) 
-                push!(lista_uhes_cap, UHE)
-            end
-            if UTE != 0   
-                gt_vars_capacidade[UTE.nome] = @variable(m_cap, base_name="gt_$(UTE.codigo)")
-                #@constraint(m_cap, gt_vars_capacidade[UTE.nome] >= UTE.gmin)
-                @constraint(m_cap, gt_vars_capacidade[UTE.nome] >= mapa_valores_minimos_geracoes[UTE.nome])
-                @constraint(m_cap, gt_vars_capacidade[UTE.nome] <= UTE.gmax) #linha, coluna
-                #push!(lista_variaveis, UTE) 
-                push!(lista_utes_cap,UTE)
-            end                    
-            demanda_total += barra.carga[est]
-        end
-
-        @constraint( m_cap, sum(gh_vars_capacidade[uhe.nome] for uhe in lista_uhes_cap) + sum(gt_vars_capacidade[term.nome] for term in lista_utes_cap) == demanda_total   )
-                        
-        @objective( m_cap, Min, sum(mapa_nomeUsina_CoefSensibilidade[term.nome] * gt_vars_capacidade[term.nome] for term in lista_utes_cap) 
-        + sum(mapa_nomeUsina_CoefSensibilidade[uhe.nome] * gh_vars_capacidade[uhe.nome] for uhe in lista_uhes_cap) )
-
-        JuMP.optimize!(m_cap) 
-
-       #valorMinimo = 0
-       #geracao_total = 0
-        #if abs(linha.coeficienteDemanda[est]) > linha.Capacidade[est] # SE COEFDEM > CAP, RESULTA EM RHS NEGATIVO, FOLGA NEGATIVA
-        println(m_cap)
-        valorMinimo = 0
-        geracao = 0
-        geracao_total = 0
-        for uhe in lista_uhes_cap
-            geracao = JuMP.value(gh_vars_capacidade[uhe.nome])
-            
-            valorMinimo += geracao*mapa_nomeUsina_CoefSensibilidade[uhe.nome]
-            geracao_total += geracao
-        end                
-        for term in lista_utes_cap
-            geracao = JuMP.value(gt_vars_capacidade[term.nome])
-            println(term.nome, geracao)
-            valorMinimo += geracao*mapa_nomeUsina_CoefSensibilidade[term.nome]
-            geracao_total += geracao
-        end
-        #println(valorMinimo)
-        #println(valorMinimo -linha.coeficienteDemanda[est])     
-        capacidadeMinima =    valorMinimo -linha.coeficienteDemanda[est] ##MENOR VALOR DE CAPACIDADE PARA EVITAR DEFICIT, CONSIDERANDO APENAS ESSA LINHA
-        #end
-        println("EST: ", est, "DE: $(linha.de.codigo) PARA: $(linha.para.codigo) valorMaximoCapacidadeLinha: $capacidadeMinima ValMin: $valorMinimo CoefDEM: $(linha.coeficienteDemanda[est]) RHS:  $(linha.RHS[est]) CAP: $(linha.Capacidade[est]) GerTot: $geracao_total DemTot: $demanda_total")
-        #mapa_linha_valorMinimoCapacidadeLinha[(linha.de.codigo, linha.para.codigo,est)] = valorMinimo
-        linha.valorMinimoCapacidade[est] = capacidadeMinima
-    end
-end
-
-
-flag_reducao_rede = 0
-mapa_valores_minimos_geracoes = OrderedDict()
-for uhe in lista_uhes
-    mapa_valores_minimos_geracoes[uhe.nome] = uhe.gmin
-end
-for term in lista_utes
-    mapa_valores_minimos_geracoes[term.nome] = term.gmin
-end
-for ilha in lista_ilhas_eletricas    
-    for est in caso.n_est
-        calculaParametrosDaIlha(ilha,est)
-        atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes)
-        
-        if flag_reducao_rede == 1
-            realizaReducaoDeRedePeloMetodoDoValorMinimoDeCapacidadeDasLinhas(ilha,est)
-            calculaParametrosDaIlha(ilha,est)
-        end
-    end
-end
-
-
-
-###REDUCAO DE REDE
-## A Redução de rede tem por objetivo desativar linhas que conectam barras geradoras com barras geradoras.
-#funcionalidade_Reduz_rede = 1
-#lista_linhas_ativas = []
-#linha_linhas_nao_ativas = []
-#if funcionalidade_Reduz_rede == 1
-#    lista_barras_geracao = []
-#    for barra in lista_barras_da_ilha
-#        for uhe in lista_uhes
-#            push!(lista_barras_geracao, uhe.barra.codigo)
-#        end
-#        for ute in lista_utes
-#            push!(lista_barras_geracao, ute.barra.codigo)
-#        end
-#    end
-#
-#    for linha in lista_linhas_da_ilha
-#        if linha.de.codigo in lista_barras_geracao && linha.para.codigo in lista_barras_geracao
-#            push!(linha_linhas_nao_ativas, linha)
-#        else
-#            push!(lista_linhas_ativas, linha)
-#        end
-#    end
-#
-#    lista_linhas_da_ilha = lista_linhas_ativas
-#
-#    #ECO
-#    for linha in lista_linhas_da_ilha
-#        println("LINHA ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
-#    end
-#    #ECO
-#    for linha in linha_linhas_nao_ativas
-#        println("LINHA NAO ATIVA: BARRA DE $(linha.de.codigo) BARRA PARA: $(linha.para.codigo)")
-#    end
-#end
-#
-#### FIM DA REDUCAO DE RE

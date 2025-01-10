@@ -3,7 +3,7 @@ module Main
     using JuMP, GLPK, Plots, Measures, Plots, SparseArrays
 
     include("arvore.jl")
-    include("FluxoDC.jl")
+    include("CapacidadeLinhas.jl")
 
     #Inicializando variaveis da barra
     for ilha in lista_ilhas_eletricas
@@ -340,9 +340,10 @@ module Main
         end
     end
 
+    flagConsideraOutrasLinhas = 1
     for ilha in lista_ilhas_eletricas    
         for est in caso.n_est
-            atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes)
+            atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
         end
     end
 
