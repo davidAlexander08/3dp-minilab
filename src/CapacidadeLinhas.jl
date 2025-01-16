@@ -21,7 +21,7 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
        
         gt_vars_capacidade = OrderedDict{String, JuMP.VariableRef}()
         gh_vars_capacidade = OrderedDict{String, JuMP.VariableRef}()
-
+        deficit_barra = Dict{Int, JuMP.VariableRef}()
         m_cap = Model(GLPK.Optimizer)
         lista_uhes_cap = []
         lista_utes_cap = []
@@ -47,25 +47,25 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
                 @constraint(m_cap, gt_vars_capacidade[UTE.nome] >= mapa_valores_minimos_geracoes[UTE.nome])
                 @constraint(m_cap, gt_vars_capacidade[UTE.nome] <= UTE.gmax) #linha, coluna
                 push!(lista_utes_cap,UTE)
-            end                    
+            end          
+            
+            deficit_barra[barra.codigo] = @variable(m_cap, base_name="deficitBarra_$(barra.codigo)")
+            @constraint(m_cap, deficit_barra[barra.codigo] >= 0)
             demanda_total += barra.carga[est]
         end
-        @constraint( m_cap, sum(gh_vars_capacidade[uhe.nome] for uhe in lista_uhes_cap) + sum(gt_vars_capacidade[term.nome] for term in lista_utes_cap) == demanda_total   )
+        @constraint( m_cap, sum(gh_vars_capacidade[uhe.nome] for uhe in lista_uhes_cap) + sum(gt_vars_capacidade[term.nome] for term in lista_utes_cap) + sum(deficit_barra[barra.codigo] for barra in ilha.barrasAtivas[est])== demanda_total   )
                         
         @objective( m_cap, Min, sum(mapa_nomeUsina_CoefSensibilidade[term.nome] * gt_vars_capacidade[term.nome] for term in lista_utes_cap) 
-        + sum(mapa_nomeUsina_CoefSensibilidade[uhe.nome] * gh_vars_capacidade[uhe.nome] for uhe in lista_uhes_cap) )
+        + sum(mapa_nomeUsina_CoefSensibilidade[uhe.nome] * gh_vars_capacidade[uhe.nome] for uhe in lista_uhes_cap)
+        +sum(500000*deficit_barra[barra.codigo] for barra in ilha.barrasAtivas[est]) )
 
         ## FLAG Considera Outras Linhas Iterativamente também é possível
         if flagConsideraOutrasLinhas == 1
-            deficit_barra = Dict{Int, JuMP.VariableRef}()
+            
             folga_rede = Dict{LinhaConfig, JuMP.VariableRef}()
-            for barra in ilha.barrasAtivas[est]
-                deficit_barra[barra.codigo] = @variable(m_cap, base_name="deficitBarra_$(barra.codigo)")
-            end
-
             for outrasLinhas in ilha.linhasAtivas[est]
                 if linha.codigo != outrasLinhas.codigo
-                    println("PERCORRENDO LINHA: ", outrasLinhas.de.codigo, " - ", outrasLinhas.para.codigo)
+                    #println("PERCORRENDO LINHA: ", outrasLinhas.de.codigo, " - ", outrasLinhas.para.codigo)
                     lista_variaveis = []
                     for barra in ilha.barrasAtivas[est]
                         if barra.codigo != ilha.slack.codigo
@@ -75,12 +75,13 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
                             if UHE != 0 push!(lista_variaveis, gh_vars_capacidade[UHE.nome]) end
                             if UTE != 0   push!(lista_variaveis, gt_vars_capacidade[UTE.nome]) end
                             
-                            #if UHE == 0 && UTE == 0 
-                            #    variavel = deficit_barra[barra.codigo]
-                            #    push!(lista_variaveis,variavel) 
-                            #end
+                            if UHE == 0 && UTE == 0 
+                                variavel = deficit_barra[barra.codigo]
+                                push!(lista_variaveis,variavel) 
+                            end
                         end
                     end
+
                     fator = ifelse(outrasLinhas.RHS[est] <= 0, -1 , 1)
                     folga_rede[outrasLinhas] = @variable(m_cap, base_name="sFluxo_$(outrasLinhas.de.codigo)_$(outrasLinhas.para.codigo)")
                     @constraint(m_cap, folga_rede[outrasLinhas] >= 0)
@@ -92,11 +93,24 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
 
 
         JuMP.optimize!(m_cap) 
-
+        status = termination_status(m_cap)
+        if status == MOI.INFEASIBLE
+            println("The problem is infeasible.")
+        elseif status == MOI.OPTIMAL
+            println("The problem is feasible and optimal.")
+        elseif status == MOI.FEASIBLE_POINT
+            println("Solver returned a feasible point, but not necessarily optimal.")
+        else
+            println("Solver returned status: ", status)
+        end
        #valorMinimo = 0
        #geracao_total = 0
         #if abs(linha.coeficienteDemanda[est]) > linha.Capacidade[est] # SE COEFDEM > CAP, RESULTA EM RHS NEGATIVO, FOLGA NEGATIVA
+        
         println(m_cap)
+
+
+
         valorMinimo = 0
         geracao = 0
         geracao_total = 0
@@ -112,8 +126,12 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
             valorMinimo += geracao*mapa_nomeUsina_CoefSensibilidade[term.nome]
             geracao_total += geracao
         end
-        #println(valorMinimo)
-        #println(valorMinimo -linha.coeficienteDemanda[est])     
+
+        for barra in ilha.barrasAtivas[est]
+            valor_deficit = JuMP.value(deficit_barra[barra.codigo])
+            println("DEFICIT:  $(barra.codigo) valor: $valor_deficit")
+
+        end 
         capacidadeMinima =    valorMinimo -linha.coeficienteDemanda[est] ##MENOR VALOR DE CAPACIDADE PARA EVITAR DEFICIT, CONSIDERANDO APENAS ESSA LINHA
         #end
         println("EST: ", est, "DE: $(linha.de.codigo) PARA: $(linha.para.codigo) valorMaximoCapacidadeLinha: $capacidadeMinima ValMin: $valorMinimo CoefDEM: $(linha.coeficienteDemanda[est]) RHS:  $(linha.RHS[est]) CAP: $(linha.Capacidade[est]) GerTot: $geracao_total DemTot: $demanda_total")
@@ -132,9 +150,9 @@ for term in lista_utes
     mapa_valores_minimos_geracoes[term.nome] = term.gmin
 end
 for ilha in lista_ilhas_eletricas    
-    for est in caso.n_est
+    for est in 1:caso.n_est
         calculaParametrosDaIlha(ilha,est)
-        atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
+        #atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
     end
 end
 

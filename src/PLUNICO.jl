@@ -7,7 +7,7 @@ module Main
 
     #Inicializando variaveis da barra
     for ilha in lista_ilhas_eletricas
-        for est in caso.n_est
+        for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
                 for barra in ilha.barras
                     barra.potenciaGerada[(est, i_no.codigo, barra.codigo) ] = 0
@@ -36,7 +36,7 @@ module Main
 
         conversao_m3_hm3 = (60*60)/1000000
         global Vi = zeros(length(lista_total_de_nos) ,caso.n_uhes)
-        [Vi[1,i] = usi.v0 for usi in lista_uhes]
+        [Vi[1,usi.codigo] = usi.v0 for usi in lista_uhes]
     
 
         ## METODO PL UNICO
@@ -102,7 +102,7 @@ module Main
                     @constraint(m, vf_vars[(est, i_no.codigo, uhe.nome)] <=  uhe.vmax) #linha, coluna
     
     
-                    inflow = dat_vaz[(dat_vaz.NOME_UHE .== i) .& (dat_vaz.NO .== i_no.codigo), "VAZAO"][1]
+                    inflow = dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== i_no.codigo), "VAZAO"][1]
                     #println("Hydro Plant: ", i, " Stage: ", est, " Node: ", i_no.codigo, " Inflow: ", inflow)
                     
                     if est == 1
@@ -111,7 +111,7 @@ module Main
                             vf_vars[(est, i_no.codigo, uhe.nome)] + 
                             turb_vars[(est, i_no.codigo, uhe.nome)] + 
                             vert_vars[(est, i_no.codigo, uhe.nome)] == 
-                            Vi[i_no.codigo, i] + inflow
+                            Vi[i_no.codigo, uhe.codigo] + inflow
                         )
                     else
                         @constraint(
@@ -276,6 +276,8 @@ module Main
         return contador_violacao
     end
 
+    numerosViolacoes = Dict{Tuple{Int, Int, Int, Int}, Int}()
+
     for iter in 1:numero_iteracoes
         println("ITERACAO: ", iter)
         m = Model(GLPK.Optimizer)
@@ -306,12 +308,12 @@ module Main
             println("Solver returned status: ", status)
         end
        
-        contador_violacao = 0
         for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
                 for ilha in lista_ilhas_eletricas
                     transfere_resultados_para_Barras(ilha, iter, est, i_no)
-                    contador_violacao = verificaFluxosViolados(iter, est, i_no, ilha, mapa_ilha_fluxos_violados)
+                    qtd_viol_ilha = verificaFluxosViolados(iter, est, i_no, ilha, mapa_ilha_fluxos_violados)
+                    numerosViolacoes[iter, est, i_no.codigo, ilha.codigo] = qtd_viol_ilha
                 end
                 no = i_no.codigo
                 println("ITER  $iter ESTAGIO $est  NO  $no")
@@ -319,33 +321,43 @@ module Main
             end
         end
 
-        if contador_violacao == 0
-            println("TERMINOU SEM MAIS VIOLACOES DE FLUXO")
+
+        iter_sum = sum(v for (k, v) in numerosViolacoes if k[1] == iter)
+        if iter_sum == 0
+            println("Iteração $iter: TERMINOU SEM MAIS VIOLAÇÕES DE FLUXO")
             break
+        else
+            println("Iteração $iter: Continuando, ainda existem $iter_sum violações")
         end
+
+        #println("soma: ", sum(numerosViolacoes[iter,:,:,:]) == 0)
+        #if sum(numerosViolacoes[iter,:,:,:]) == 0
+        #    println("TERMINOU SEM MAIS VIOLACOES DE FLUXO")
+        #    break
+        #end
     end
 
-    ##DESCOBRINDO NOVOS LIMITES MINIMOS DAS LINHAS
-    mapa_valores_minimos_geracoes = OrderedDict()
-    for est in caso.n_est
-        for uhe in lista_uhes
-            #gmax = maximum(JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)]) for i_no in mapa_periodos[est].nos)
-            mapa_valores_minimos_geracoes[uhe.nome] =  gmax
-        end
-                
-        for term in lista_utes
-            gmax = maximum(JuMP.value(gt_vars[(est, i_no.codigo, term.nome)]) for i_no in mapa_periodos[est].nos)
-            #println("UTE: ", term.nome, " G: ", gmax)
-            mapa_valores_minimos_geracoes[term.nome] =  gmax
-        end
-    end
-
-    flagConsideraOutrasLinhas = 1
-    for ilha in lista_ilhas_eletricas    
-        for est in caso.n_est
-            atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
-        end
-    end
+#    ##DESCOBRINDO NOVOS LIMITES MINIMOS DAS LINHAS
+#    mapa_valores_minimos_geracoes = OrderedDict()
+#    for est in caso.n_est
+#        for uhe in lista_uhes
+#            #gmax = maximum(JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)]) for i_no in mapa_periodos[est].nos)
+#            mapa_valores_minimos_geracoes[uhe.nome] =  gmax
+#        end
+#                
+#        for term in lista_utes
+#            gmax = maximum(JuMP.value(gt_vars[(est, i_no.codigo, term.nome)]) for i_no in mapa_periodos[est].nos)
+#            #println("UTE: ", term.nome, " G: ", gmax)
+#            mapa_valores_minimos_geracoes[term.nome] =  gmax
+#        end
+#    end
+#
+#    flagConsideraOutrasLinhas = 1
+#    for ilha in lista_ilhas_eletricas    
+#        for est in caso.n_est
+#            atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
+#        end
+#    end
 
 
 

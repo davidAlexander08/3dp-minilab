@@ -105,7 +105,7 @@ end
 
 lista_ilhas_eletricas = calculaIlhasEletricas(lista_barras_slack)
 for ilha in lista_ilhas_eletricas
-    for est in caso.n_est
+    for est in 1:caso.n_est
         vetorBarrasAtivas= []
         vetorBarrasNaoAtivas =[]
         vetorLinhasAtivas = []

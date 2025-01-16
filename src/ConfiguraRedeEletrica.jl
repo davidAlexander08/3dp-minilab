@@ -110,7 +110,7 @@ function calculaParametrosDaIlha(ilha,est)
 end
 
 for ilha in lista_ilhas_eletricas    
-    for est in caso.n_est
+    for est in 1:caso.n_est
         calculaParametrosDaIlha(ilha,est)
     end
 end

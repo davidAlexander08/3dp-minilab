@@ -1,3 +1,4 @@
 etapa,iter,est,node,nome,usina,generation
 FORWARD,2,1,1,ANGRA1,1,100.0
-FORWARD,2,2,2,ANGRA1,1,83.0
+FORWARD,2,2,2,ANGRA1,1,73.0
+FORWARD,2,3,3,ANGRA1,1,84.0

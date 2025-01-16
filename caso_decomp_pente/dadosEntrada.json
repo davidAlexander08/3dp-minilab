@@ -1,7 +1,8 @@
 {
     "MAX_ITERACOES": 10,
-    "ESTAGIOS": 5,
-    "ARVORE":[1, 2, 1, 1],
+    "ESTAGIOS": 3,
+    "ARVORE":[1, 1, 1],
+    "REDE":1,
     "UHEs": [
         {
             "NOME": "UHE1",
@@ -11,7 +12,9 @@
             "TURBMAX": 60.0,
             "VOLUME_MINIMO": 0.0,
             "VOLUME_MAXIMO": 100.0,
-            "VOLUME_INICIAL": 0.0
+            "VOLUME_INICIAL": 10.0,
+            "BARRA":2,
+            "CODIGO":1
         }
     ],
     "UTEs":[
@@ -19,11 +22,20 @@
             "NOME":"ANGRA1",
             "GTMIN": 0.0,
             "GTMAX": 100.0,
-            "CUSTO_GERACAO": 10.0
+            "CUSTO_GERACAO": 10.0,
+            "BARRA":1,
+            "CODIGO":1
         }
     ],
     "SISTEMA": {
         "CUSTO_DEFICIT": 100.0,
         "DEMANDA": [100.0, 100.0, 100.0, 200.0, 100.0]
-    }
+    },
+    "BARRAS":[{"NOME":"BARRA01", "CODIGO":1, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":2, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA02", "CODIGO":2, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA03", "CODIGO":3, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[100,100,100,0,0], "AREA":1}],
+
+    "LINHAS":[{"DE":1, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,200 ,200 ,10 ,10 ]},
+              {"DE":1, "PARA":3, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,200,200,500,500]},
+              {"DE":2, "PARA":3, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,200,200,500,500]}]
 }

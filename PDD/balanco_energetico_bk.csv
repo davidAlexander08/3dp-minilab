@@ -1,0 +1,4 @@
+etapa,iter,est,node,ilha,Demanda,GT,GH,Deficit,CustoPresente,CustoFuturo
+BACKWARD,1,3,3,1,100.0,84.0,16.0,0.0,840.0,0.0
+BACKWARD,1,2,2,1,100.0,93.0,7.0,0.0,930.0,420.0
+BACKWARD,1,1,1,1,100.0,80.0,20.0,0.0,800.0,0.0
