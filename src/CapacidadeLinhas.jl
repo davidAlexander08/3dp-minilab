@@ -85,7 +85,7 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
                     fator = ifelse(outrasLinhas.RHS[est] <= 0, -1 , 1)
                     folga_rede[outrasLinhas] = @variable(m_cap, base_name="sFluxo_$(outrasLinhas.de.codigo)_$(outrasLinhas.para.codigo)")
                     @constraint(m_cap, folga_rede[outrasLinhas] >= 0)
-                    @constraint(m_cap, folga_rede[outrasLinhas] <= outrasLinhas.Capacidade[est])
+                    @constraint(m_cap, folga_rede[outrasLinhas] <= 2*outrasLinhas.Capacidade[est])
                     @constraint(m_cap, sum(fator*outrasLinhas.linhaMatrizSensibilidade[est][i]*lista_variaveis[i] for i in 1:length(lista_variaveis) ) + fator*folga_rede[outrasLinhas] == fator*outrasLinhas.RHS[est]   )
                 end        
             end
@@ -107,7 +107,7 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
        #geracao_total = 0
         #if abs(linha.coeficienteDemanda[est]) > linha.Capacidade[est] # SE COEFDEM > CAP, RESULTA EM RHS NEGATIVO, FOLGA NEGATIVA
         
-        println(m_cap)
+        #println(m_cap)
 
 
 
@@ -152,7 +152,7 @@ end
 for ilha in lista_ilhas_eletricas    
     for est in 1:caso.n_est
         calculaParametrosDaIlha(ilha,est)
-        #atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
+        atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)
     end
 end
 

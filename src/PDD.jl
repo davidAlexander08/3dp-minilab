@@ -73,13 +73,13 @@ module Main
         zsup[it] = 0.0
     end
 
-    df_balanco_energetico = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[],  ilha = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
-    df_termicas           = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], nome = String[] , usina = Int[], generation = Float64[])
-    df_hidreletricas      = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
+    df_balanco_energetico = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[],  ilha = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    df_termicas           = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
+    df_hidreletricas      = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_convergencia    = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[])
     df_cortes          = DataFrame(est = Int[], iter = Int[], usina = Int[], Indep = Float64[], Coef = Float64[])
-    df_barras             = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarra = Int[], generation = Float64[], demanda = Float64[], potenciaLiquida = Float64[], deficit = Float64[])
-    df_linhas             = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarraDE = Int[], codigoBarraPARA = Int[], capacidade = Float64[], fluxo = Float64[], folga = Float64[])
+    df_barras             = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], ilha = Int[], codigoBarra = Int[], generation = Float64[], demanda = Float64[], potenciaLiquida = Float64[], deficit = Float64[])
+    df_linhas             = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], ilha = Int[], codigoBarraDE = Int[], codigoBarraPARA = Int[], capacidade = Float64[], fluxo = Float64[], folga = Float64[])
 
     ger_vars = Dict{Tuple{Int,Int, Int}, JuMP.VariableRef}()
     gt_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
@@ -163,13 +163,13 @@ module Main
         return m
     end
 
-    function imprimePolitica(text, est, it, no)
+    function imprimePolitica(text, est, it, miniIter, no)
         converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         GeracaoHidreletricaTotal = 0
         GeracaoTermicaTotal = 0
         for term in lista_utes
             geracao = JuMP.value(gt_vars[(est, no.codigo, term.nome)])
-            push!(df_termicas, (etapa = text, iter = it, est = est, node = no.codigo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 1)))
+            push!(df_termicas, (etapa = text, iter = it, miniIter = miniIter , est = est, node = no.codigo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 1) , custo = term.custo_geracao, custoTotal = round(geracao, digits = 1)*term.custo_geracao))
             GeracaoTermicaTotal += geracao
         end
         for uhe in lista_uhes
@@ -177,7 +177,7 @@ module Main
             turbinamento = JuMP.value(turb_vars[(est, no.codigo, uhe.nome)]) 
             vertimento = JuMP.value(vert_vars[(est, no.codigo, uhe.nome)]) 
             volumeFinal = JuMP.value(vf_vars[(est, no.codigo, uhe.nome)]) 
-            push!(df_hidreletricas, (etapa = text, iter = it, est = est, node = no.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
+            push!(df_hidreletricas, (etapa = text, iter = it, miniIter = miniIter , est = est, node = no.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
                             VI = Vi[no.codigo,uhe.codigo], AFL = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
                             TURB = turbinamento, 
                             VERT = vertimento, 
@@ -199,7 +199,7 @@ module Main
                     valor_deficit = JuMP.value(deficit_barra[(est, no.codigo, barra.codigo)])
                     custo_presente += valor_deficit*sistema.deficit_cost
                     def += valor_deficit
-                    push!(df_barras,  (etapa = text, iter = it, est = est, node = no.codigo, ilha = ilha.codigo, codigoBarra = barra.codigo, generation = round(get(barra.potenciaGerada, (it, est, no.codigo), 0), digits = 1), demanda = barra.carga[est], potenciaLiquida = round(get(barra.potenciaLiquida, (it, est, no.codigo), 0), digits = 1), deficit= round(valor_deficit, digits = 1)))
+                    push!(df_barras,  (etapa = text, iter = it, miniIter = miniIter , est = est, node = no.codigo, ilha = ilha.codigo, codigoBarra = barra.codigo, generation = round(get(barra.potenciaGerada, (it, est, no.codigo), 0), digits = 1), demanda = barra.carga[est], potenciaLiquida = round(get(barra.potenciaLiquida, (it, est, no.codigo), 0), digits = 1), deficit= round(valor_deficit, digits = 1)))
                 end
                 for linha in ilha.linhasAtivas[est]
                     folga_da_rede = get(folga_rede , (est, no.codigo, linha), 0)
@@ -208,14 +208,14 @@ module Main
                     else
                         valor_folga_rede = -9999
                     end
-                    push!(df_linhas,  (etapa = text, iter = it, est = est, node = no.codigo, ilha = ilha.codigo, codigoBarraDE = linha.de.codigo, codigoBarraPARA = linha.para.codigo, capacidade = linha.Capacidade[est], fluxo = round(get(linha.fluxoDePara,(it, est, no.codigo),0), digits = 1) ,  folga = valor_folga_rede))
+                    push!(df_linhas,  (etapa = text, iter = it, miniIter = miniIter , est = est, node = no.codigo, ilha = ilha.codigo, codigoBarraDE = linha.de.codigo, codigoBarraPARA = linha.para.codigo, capacidade = linha.Capacidade[est], fluxo = round(get(linha.fluxoDePara,(it, est, no.codigo),0), digits = 1) ,  folga = valor_folga_rede))
                 end
-                push!(df_balanco_energetico,  (etapa = text, iter = it, est = est, node = no.codigo, ilha = ilha.codigo, Demanda = carga_estagio_ilha, GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(m[:alpha])))
+                push!(df_balanco_energetico,  (etapa = text, iter = it, miniIter = miniIter ,est = est, node = no.codigo, ilha = ilha.codigo, Demanda = carga_estagio_ilha, GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(m[:alpha])))
             end
         else
             def = JuMP.value(deficit_vars[(est, no.codigo)])
             custo_presente += def*sistema.deficit_cost
-            push!(df_balanco_energetico,  (etapa = text, iter = it, est = est, node = no.codigo, ilha = 0, Demanda = sistema.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(m[:alpha])))
+            push!(df_balanco_energetico,  (etapa = text, iter = it, miniIter = miniIter ,est = est, node = no.codigo, ilha = 0, Demanda = sistema.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(m[:alpha])))
         end
         #push!(df_balanco_energetico,  (etapa = text, iter = it, est = est, node = no.codigo, ilha = 0, Demanda = sistema.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = Deficit, CustoPresente = retornaCustoPresente(m, est, no), CustoFuturo = JuMP.value(m[:alpha])))
     end
@@ -240,8 +240,7 @@ module Main
         return custo_presente
     end
 
-    mapa_ilha_fluxos_violados = OrderedDict{Tuple{Int, Int, Int}, Set{LinhaConfig}}()
-    for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, ilha in lista_ilhas_eletricas mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo] = Set() end
+
     function add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
         for linha in mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo]
             lista_variaveis = []
@@ -264,7 +263,7 @@ module Main
             folga_rede[(est, i_no.codigo, linha)] = @variable(m, base_name="sFluxo_$(est)_$(i_no.codigo)_$(linha.de.codigo)_$(linha.para.codigo)")
             @constraint(m, folga_rede[(est, i_no.codigo, linha)] >= 0)
             #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= 2*fluxo.linha.Capacidade[est])
-            @constraint(m, folga_rede[(est, i_no.codigo, linha)] <= linha.Capacidade[est])
+            @constraint(m, folga_rede[(est, i_no.codigo, linha)] <= 2*linha.Capacidade[est])
             #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= fator*fluxo.RHS)
             @constraint(  m, sum(fator*linha.linhaMatrizSensibilidade[est][i]*lista_variaveis[i] for i in 1:length(lista_variaveis)) + fator*folga_rede[(est, i_no.codigo, linha)] == fator*linha.RHS[est]   )
         end
@@ -317,27 +316,49 @@ module Main
     end
 
 
+    mapa_ilha_fluxos_violados = OrderedDict{Tuple{Int, Int, Int}, Set{LinhaConfig}}()
+    for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, ilha in lista_ilhas_eletricas mapa_ilha_fluxos_violados[est, i_no.codigo, ilha.codigo] = Set() end
 
+    
     for it in 1:caso.n_iter
         #ETAPA FORWARD
         for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
-                m = retornaModelo(est,i_no)
-                if est < caso.n_est && it > 1
-                    #@constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
-                    @constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(vf_vars[(est, i_no.codigo, lista_uhes[i].nome)]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
-                end
-                JuMP.optimize!(m) 
-                println(m) 
-                
 
-                for ilha in lista_ilhas_eletricas
-                    transfere_resultados_para_Barras(ilha, it, est, i_no)
-                    verificaFluxosViolados(it, est, i_no, ilha, mapa_ilha_fluxos_violados)
-                end
 
+                ###########################
+                numerosViolacoes = Dict{Tuple{Int, Int, Int, Int}, Int}()
+                for miniIt in 1:caso.n_iter
+                    m = retornaModelo(est,i_no)
+                    if est < caso.n_est && it > 1
+                        #@constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
+                        @constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(vf_vars[(est, i_no.codigo, lista_uhes[i].nome)]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
+                    end
+                    for ilha in lista_ilhas_eletricas
+                        add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
+                    end
+                    JuMP.optimize!(m) 
+                    println(m) 
+                    
+                    
+                    contador = 0
+                    for ilha in lista_ilhas_eletricas
+                        transfere_resultados_para_Barras(ilha, it, est, i_no)
+                        numerosViolacoes[miniIt, est, i_no.codigo, ilha.codigo] = verificaFluxosViolados(it, est, i_no, ilha, mapa_ilha_fluxos_violados)
+                    end
+
+                    imprimePolitica("FORWARD", est, it, miniIt, i_no)
+
+                    iter_sum = sum(v for (k, v) in numerosViolacoes if k[1] == miniIt)
+                    if iter_sum == 0
+                        println("Mini-Iteração $miniIt: TERMINOU SEM MAIS VIOLAÇÕES DE FLUXO")
+                        break
+                    else
+                        println("Mini-Iteração $miniIt: Continuando, ainda existem $iter_sum violações")
+                    end
+                end
                 
-                
+                #########################
 
 
                 if est < caso.n_est
@@ -353,7 +374,7 @@ module Main
                 custo_futuro = JuMP.value(m[:alpha])
                 zsup[it] = zsup[it] + custo_presente*(dat_prob[(dat_prob.NO .== i_no.codigo), "PROBABILIDADE"][1])
                 if est == 1 zinf[it] = custo_presente+custo_futuro end
-                imprimePolitica("FORWARD", est, it, i_no)
+                
             end
         end 
         println("zinf: ", zinf, " zsup: ", zsup)
@@ -372,8 +393,25 @@ module Main
                         #@constraint(m, [iter = 1:caso.n_iter], m[:alpha] -sum(m[:Vf][i]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes) >= FCF_indep[est+1,iter] ) #linha, coluna
                         @constraint(m, [iter = 1:caso.n_iter], m[:alpha] - sum(vf_vars[(est, i_no.codigo, lista_uhes[i].nome)]*FCF_coef[est+1,i,iter] for i in 1:caso.n_uhes)   >= FCF_indep[est+1,iter] ) #linha, coluna
                     end
+                    
+
+                    #for ilha in lista_ilhas_eletricas
+                    #    add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
+                    #end
+    
+                    JuMP.optimize!(m) 
+                    #println(m) 
+                    
+    
+                    #for ilha in lista_ilhas_eletricas
+                    #    transfere_resultados_para_Barras(ilha, it, est, i_no)
+                    #    verificaFluxosViolados(it, est, i_no, ilha, mapa_ilha_fluxos_violados)
+                    #end
+    
                     #print(m)
-                    JuMP.optimize!(m)
+                    #JuMP.optimize!(m)
+
+
                     custo_presente = retornaCustoPresente(est, i_no)
                     custo_futuro = JuMP.value(m[:alpha])
                     probabilidade_no = (dat_prob[(dat_prob.NO .== i_no.codigo), "PROBABILIDADE"][1])
@@ -386,7 +424,7 @@ module Main
                         println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", i, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[i_no.codigo,i], "FCF_coef[est,i, it]: ", FCF_coef[est,i, it], "FCF_indep[est, it]: ", FCF_indep[est, it])
 
                     end
-                    imprimePolitica("BACKWARD", est, it, i_no)
+                    imprimePolitica("BACKWARD", est, it, 0, i_no)
                     
 
                 end

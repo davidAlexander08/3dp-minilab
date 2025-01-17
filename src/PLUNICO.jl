@@ -28,6 +28,7 @@ module Main
     vf_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
     deficit_vars = Dict{Tuple{Int, Int}, JuMP.VariableRef}()
     folga_rede = Dict{Tuple{Int, Int, LinhaConfig}, JuMP.VariableRef}()
+    folga_rede_neg = Dict{Tuple{Int, Int, LinhaConfig}, JuMP.VariableRef}()
     deficit_barra = Dict{Tuple{Int, Int, Int}, JuMP.VariableRef}()
 
     
@@ -61,6 +62,10 @@ module Main
                     for barra in ilha.barrasAtivas[est]
                         deficit_barra[(est, i_no.codigo, barra.codigo)] = @variable(m, base_name="deficitBarra_$(est)_$(i_no.codigo)_$(barra.codigo)")
                     end
+                    for linha in ilha.linhasAtivas[est]
+                        folga_rede[(est, i_no.codigo, linha)] = @variable(m, base_name="sFluxo_$(est)_$(i_no.codigo)_$(linha.de.codigo)_$(linha.para.codigo)")
+                        folga_rede_neg[(est, i_no.codigo, linha)] = @variable(m, base_name="sFluxoNeg_$(est)_$(i_no.codigo)_$(linha.de.codigo)_$(linha.para.codigo)")
+                    end
                 end
             end
         end
@@ -69,6 +74,7 @@ module Main
         + sum(0.01 * vert_vars[(est, i_no.codigo, uhe.nome)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, uhe in lista_uhes)+
         sum(sistema.deficit_cost*deficit_barra[(est, i_no.codigo, barra.codigo)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, barra in lista_barras) +
         sum(sistema.deficit_cost * deficit_vars[(est, i_no.codigo)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos))
+        #sum(1000*folga_rede[(est,i_no.codigo,linha)] for est in 1:caso.n_est, i_no in mapa_periodos[est].nos, ilha in lista_ilhas_eletricas for linha in ilha.linhasAtivas[est]))
         
         for est in 1:caso.n_est
             for i_no in mapa_periodos[est].nos
@@ -133,7 +139,7 @@ module Main
 
 
     df_balanco_energetico = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[])
-    df_termicas           = DataFrame(iter = Int[], est = Int[], node = Int[], nome = String[] , usina = Int[], generation = Float64[])
+    df_termicas           = DataFrame(iter = Int[], est = Int[], node = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
     df_hidreletricas      = DataFrame(iter = Int[], est = Int[], node = Int[], nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_barras             = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarra = Int[], generation = Float64[], demanda = Float64[], potenciaLiquida = Float64[], deficit = Float64[])
     df_linhas             = DataFrame(iter = Int[], est = Int[], node = Int[], ilha = Int[], codigoBarraDE = Int[], codigoBarraPARA = Int[], capacidade = Float64[], fluxo = Float64[], folga = Float64[])
@@ -149,13 +155,14 @@ module Main
             vert = JuMP.value(vert_vars[(est, i_no.codigo, uhe.nome)])
             gh = JuMP.value(gh_vars[(est, i_no.codigo, uhe.nome)])
             GeracaoHidreletricaTotal += gh
-            push!(df_hidreletricas,  (iter = it, est = est, node = i_no.codigo, nome = uhe.nome, usina = uhe.codigo, generation = gh, VI = 0 , AFL = 0, TURB = turb, VERT = vert, VF = vf))
+            inflow = dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== i_no.codigo), "VAZAO"][1]
+            push!(df_hidreletricas,  (iter = it, est = est, node = i_no.codigo, nome = uhe.nome, usina = uhe.codigo, generation = gh, VI = uhe.v0 , AFL = inflow, TURB = turb, VERT = vert, VF = vf))
         end
             
         for term in lista_utes
             gt = JuMP.value(gt_vars[(est, i_no.codigo, term.nome)])
             GeracaoTermicaTotal += gt
-            push!(df_termicas,  (iter = it, est = est, node = i_no.codigo, nome = term.nome, usina = term.codigo, generation = round(gt, digits = 1)))
+            push!(df_termicas,  (iter = it, est = est, node = i_no.codigo, nome = term.nome, usina = term.codigo, generation = round(gt, digits = 1) , custo = term.custo_geracao, custoTotal = round(gt, digits = 1)*term.custo_geracao))
         end
 
         
@@ -215,12 +222,15 @@ module Main
                 end
             end
             fator = ifelse(linha.RHS[est] <= 0, -1 , 1)
-            folga_rede[(est, i_no.codigo, linha)] = @variable(m, base_name="sFluxo_$(est)_$(i_no.codigo)_$(linha.de.codigo)_$(linha.para.codigo)")
             @constraint(m, folga_rede[(est, i_no.codigo, linha)] >= 0)
+            @constraint(m, folga_rede[(est, i_no.codigo, linha)] <= 2*linha.Capacidade[est])
+            @constraint(m, folga_rede_neg[(est, i_no.codigo, linha)] >= 0)
+            @constraint(m, folga_rede_neg[(est, i_no.codigo, linha)] <= 2*linha.Capacidade[est])
+
+            
             #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= 2*fluxo.linha.Capacidade[est])
-            @constraint(m, folga_rede[(est, i_no.codigo, linha)] <= linha.Capacidade[est])
             #@constraint(m, folga_rede[(est, i_no.codigo, fluxo.linha)] <= fator*fluxo.RHS)
-            @constraint(  m, sum(fator*linha.linhaMatrizSensibilidade[est][i]*lista_variaveis[i] for i in 1:length(lista_variaveis) ) + fator*folga_rede[(est, i_no.codigo, linha)] == fator*linha.RHS[est]   )
+            @constraint(  m, sum(fator*linha.linhaMatrizSensibilidade[est][i]*lista_variaveis[i] for i in 1:length(lista_variaveis) ) + fator*folga_rede[(est, i_no.codigo, linha)]  == fator*linha.RHS[est]   )
         end
     end
     
@@ -367,11 +377,11 @@ module Main
     println(df_barras)
     println(df_linhas)
     df_linhas.fluxo .= round.(df_linhas.fluxo, digits=2)
-    CSV.write("PLUNICO/df_balanco_energetico.csv", df_balanco_energetico)
-    CSV.write("PLUNICO/df_termicas.csv", df_termicas)
-    CSV.write("PLUNICO/df_hidreletricas.csv", df_hidreletricas)
-    CSV.write("PLUNICO/df_barras.csv", df_barras)
-    CSV.write("PLUNICO/df_linhas.csv", df_linhas)
+    CSV.write("PLUNICO/PLUNICO_df_balanco_energetico.csv", df_balanco_energetico)
+    CSV.write("PLUNICO/PLUNICO_df_termicas.csv", df_termicas)
+    CSV.write("PLUNICO/PLUNICO_df_hidreletricas.csv", df_hidreletricas)
+    CSV.write("PLUNICO/PLUNICO_df_barras.csv", df_barras)
+    CSV.write("PLUNICO/PLUNICO_df_linhas.csv", df_linhas)
 end
 
 
