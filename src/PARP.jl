@@ -42,7 +42,7 @@ AIC = 2 * k - 2 * log_likelihood
 println("AIC: ", AIC)
 
 
-exit(1)
+#exit(1)
 
 
 
