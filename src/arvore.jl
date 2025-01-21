@@ -34,12 +34,19 @@ for no in lista_total_de_nos
     #println(" codigo: ", no.codigo, " periodo: ", no.periodo)
     push!(mapa_periodos[no.periodo].nos, no)
 end
+df_arvore = DataFrame(codigo = Int[], periodo = Int[], pai = Int[])
 
 function printa_nos(no)
     for elemento in no.filhos
         println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
+        push!(df_arvore, (codigo = elemento.codigo, periodo = elemento.periodo, pai = elemento.pai.codigo))
+
         printa_nos(elemento)
     end
 end
 println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
-#printa_nos(no1)
+push!(df_arvore, (codigo = no1.codigo, periodo = no1.periodo, pai = no1.pai))
+printa_nos(no1)
+
+println(df_arvore)
+CSV.write("CenariosSemanais/arvore_julia.csv", df_arvore)

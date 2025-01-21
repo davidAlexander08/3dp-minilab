@@ -31,9 +31,16 @@ print(mapaMatrizCorrelacoesPer)
 
 #SORTEIO DOS RUIDOS
 periodoInicial = 11
-numeroDeAberturasPeriodo = 5
+numeroDeAberturasPeriodo = 3
 
 matrizRuidos = geraMatrizRuidosPostos(lista_postos)
+##Clusteriza ruidos pelo método do GEVAZP
+
+
+
+
+
+
 matrizRuidosAgregados = agregaRuidosKmeansMatriz(numeroDeAberturasPeriodo, matrizRuidos, lista_postos)
 matrizCargaPer = mapaMatrizCorrelacoesPer[periodoInicial]
 ruidosCorrelacinados = np.dot(matrizCargaPer, matrizRuidosAgregados.T).T
