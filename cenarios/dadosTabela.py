@@ -4,8 +4,8 @@ import plotly.io as pio
 import plotly.express as px
 
 class DadosMensais:
-    def __init__(self):
-        df = pd.read_csv("/home/david/git/3dp-minilab/CenariosSemanais/vazoesMensaisCamargos.csv")
+    def __init__(self, arquivo):
+        df = pd.read_csv(arquivo)
         # Reshape the DataFrame
         df_melted = pd.melt(df, id_vars=["ANO"], var_name="MES", value_name="vazao")
         month_map = {

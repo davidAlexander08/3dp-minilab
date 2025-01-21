@@ -99,6 +99,15 @@ PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_2EST/probabilidades.c
 PATH_HORAS = "caso_decomp_deterministico_24Barras_2EST/horas.csv"
 
 
+
+CONFIG_PATH = "caso_decomp_pente_testeCen/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_pente_testeCen/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_pente_testeCen/probabilidades.csv"
+PATH_HORAS = "caso_decomp_pente_testeCen/horas.csv"
+
+
+
+
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
 

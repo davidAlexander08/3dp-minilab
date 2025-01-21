@@ -3,6 +3,16 @@ import numpy as np
 from scipy.linalg import solve
 
 
+def exec_PARP(df_parp, ordemMaxima):
+    ## Metodo PAR-P GEVAZP
+    df_FAC = calculaFAC(df_parp, ordemMaxima)
+    df_FACP = calculaFACP(df_parp, df_FAC, ordemMaxima)
+    mapaPeriodoOrdem = encontraOrdensPeriodos(df_parp, df_FACP, ordemMaxima)
+    df_Coefs = calculaCoeficientes(df_parp, df_FAC, mapaPeriodoOrdem)
+    df_residuos = calculaResiduosModelos(df_parp, df_Coefs)
+    return [df_Coefs, df_residuos]
+
+
 def calculaFAC(df_parp, ordemMaxima):
     lista_FAC_dataFrame = []
     for per in df_parp["periodo"].unique():
@@ -35,7 +45,7 @@ def calculaFAC(df_parp, ordemMaxima):
             #print("passado: ", passado , " per: ", per, " correlation: ", correlation)
 
     df_FAC = pd.concat(lista_FAC_dataFrame).reset_index(drop = True)
-    print(df_FAC)
+    #print(df_FAC)
     return df_FAC
 
 
@@ -66,7 +76,7 @@ def calculaFACP(df_parp, df_FAC, ordemMaxima):
                 df_temp = pd.DataFrame({"periodo": [per], "ordem": [ord], "partial_correl":[result[-1]]})
                 lista_FACP_dataFrame.append(df_temp)
     df_FACP= pd.concat(lista_FACP_dataFrame).reset_index(drop = True)
-    print(df_FACP)
+    #print(df_FACP)
     return df_FACP
 
 
@@ -80,7 +90,7 @@ def encontraOrdensPeriodos(df_parp, df_FACP, ordemMaxima):
             valor = df_FACP.loc[(df_FACP["periodo"] == per) & (df_FACP["ordem"] == ord)]["partial_correl"].iloc[0]
             if valor >= IC or valor <= -IC:
                 mapaPeriodoOrdem[per] = ord
-    print(mapaPeriodoOrdem)
+    #print(mapaPeriodoOrdem)
     return mapaPeriodoOrdem
 
 
@@ -100,7 +110,7 @@ def calculaCoeficientes(df_parp, df_FAC, mapaPeriodoOrdem):
             df_temp = pd.DataFrame({"periodo": [per], "ordem": [ordem], "per_anterior": [per_anterior], "coef":[coef]})
             lista_df_coeficientes.append(df_temp)
     df_Coefs= pd.concat(lista_df_coeficientes).reset_index(drop = True)
-    print(df_Coefs)
+    #print(df_Coefs)
     return df_Coefs
 
 
@@ -122,5 +132,5 @@ def calculaResiduosModelos(df_parp, df_Coefs):
             lista_residuos.append(df_temp)
 
     df_residuos = pd.concat(lista_residuos).reset_index(drop = True)
-    print(df_residuos)
+    #print(df_residuos)
 

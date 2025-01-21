@@ -6,30 +6,56 @@ from dadosTabela import DadosMensais
 from dadosSemanais import DadosSemanais
 import numpy as np
 from scipy.linalg import solve
+from scipy.linalg import svd
+
 from ParPGevazp import *
 from ParPAGevazp import *
-df_parp = DadosSemanais().dados
-#df_parp = DadosMensais().dados
+from matrizCarga import *
+from ruidos import *
+#df_parp = DadosSemanais().dados
 
-print(df_parp)
 ordemMaxima = 6
+arq = "/home/david/git/3dp-minilab/CenariosSemanais/vazoesMensaisCamargos.csv"
+df_camargos = DadosMensais(arq).dados
+#coef_residuos_camargos = exec_PARP(df_camargos, ordemMaxima)
 
-## Metodo PAR-P GEVAZP
-df_FAC = calculaFAC(df_parp, ordemMaxima)
-df_FACP = calculaFACP(df_parp, df_FAC, ordemMaxima)
-mapaPeriodoOrdem = encontraOrdensPeriodos(df_parp, df_FACP, ordemMaxima)
-df_Coefs = calculaCoeficientes(df_parp, df_FAC, mapaPeriodoOrdem)
-df_residuos = calculaResiduosModelos(df_parp, df_Coefs)
+arq = "/home/david/git/3dp-minilab/CenariosSemanais/vazoesMensaisFurnas.csv"
+df_furnas = DadosMensais(arq).dados
+#coef_residuos_furnas = exec_PARP(df_furnas, ordemMaxima)
+#coef_residuos_furnas = exec_PARPA(df_furnas, ordemMaxima)
+lista_postos = []
+lista_postos.append(df_camargos)
+lista_postos.append(df_furnas)
+mapaMatrizCorrelacoesPer = retornaMatrizCarga(lista_postos)
+print(mapaMatrizCorrelacoesPer)
+
+#SORTEIO DOS RUIDOS
+periodoInicial = 11
+numeroDeAberturasPeriodo = 5
+
+matrizRuidos = geraMatrizRuidosPostos(lista_postos)
+matrizRuidosAgregados = agregaRuidosKmeansMatriz(numeroDeAberturasPeriodo, matrizRuidos, lista_postos)
+matrizCargaPer = mapaMatrizCorrelacoesPer[periodoInicial]
+ruidosCorrelacinados = np.dot(matrizCargaPer, matrizRuidosAgregados.T).T
+print("ruidosCorrelacinados: ", ruidosCorrelacinados)
 
 
-##  Método PARP-A GEVAZP
-#df_FAC = calculaFAC(df_parp, ordemMaxima)
-#df_anual = calculaHistoricoMediasAnuais(df_parp)
-#df_FAC_Anual = calculaFACAnual(df_parp, df_anual, ordemMaxima)
-#df_FACP = calculaFACPPARPA(df_parp, df_anual, df_FAC, df_FAC_Anual, ordemMaxima)
-#mapaPeriodoOrdem = encontraOrdensPeriodos(df_parp, df_FACP, ordemMaxima-1)
-#df_Coefs = calculaCoeficientes(df_parp, df_FAC, mapaPeriodoOrdem)
-#df_residuos = calculaResiduosModelos(df_parp, df_Coefs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #print(df_anual.head(25))

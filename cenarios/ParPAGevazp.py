@@ -1,8 +1,18 @@
 import pandas as pd
 import numpy as np
 from scipy.linalg import solve
+from ParPGevazp import *
 
-
+def exec_PARPA(df_parp, ordemMaxima):
+    ## Metodo PAR-P GEVAZP
+    df_FAC = calculaFAC(df_parp, ordemMaxima)
+    df_anual = calculaHistoricoMediasAnuais(df_parp)
+    df_FAC_Anual = calculaFACAnual(df_parp, df_anual, ordemMaxima)
+    df_FACP = calculaFACPPARPA(df_parp, df_anual, df_FAC, df_FAC_Anual, ordemMaxima)
+    mapaPeriodoOrdem = encontraOrdensPeriodos(df_parp, df_FACP, ordemMaxima-1)
+    df_Coefs = calculaCoeficientes(df_parp, df_FAC, mapaPeriodoOrdem)
+    df_residuos = calculaResiduosModelos(df_parp, df_Coefs)
+    return [df_Coefs, df_residuos]
 
 def calculaHistoricoMediasAnuais(df_parp):
     df_anual = pd.DataFrame()
@@ -14,10 +24,10 @@ def calculaHistoricoMediasAnuais(df_parp):
     df_anual = df_anual.dropna()
     df_anual = df_anual.reset_index(drop = True)
     
-    print(df_anual)
+    #print(df_anual)
     for per in df_parp["periodo"].unique():
         df_teste = df_anual.loc[(df_anual["periodo"] == per)].reset_index(drop = True)
-        print("per: ",  per, " mean: ", df_teste["coefA"].mean(), " std: ", df_teste["coefA"].std(ddof = 0))
+        #print("per: ",  per, " mean: ", df_teste["coefA"].mean(), " std: ", df_teste["coefA"].std(ddof = 0))
     return df_anual
 
 

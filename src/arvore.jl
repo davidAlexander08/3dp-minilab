@@ -35,17 +35,6 @@ for no in lista_total_de_nos
     push!(mapa_periodos[no.periodo].nos, no)
 end
 
-#for per in mapa_periodos
-#    println("per: ", per[2].estagio)
-#    for no in per[2].nos
-#        print(no.codigo, " ")
-#    end
-#    println(" ")
-#end
-
-
-
-
 function printa_nos(no)
     for elemento in no.filhos
         println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
