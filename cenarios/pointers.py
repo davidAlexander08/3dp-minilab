@@ -9,11 +9,12 @@ from scipy.stats import mstats
 import math
 
 class Point:
-    def __init__(self, dimen=5):
+    def __init__(self, dimen=5, numero_clusters = 3):
         # Initialize coordinates with a given dimension (default 5)
         if dimen < 1:
             dimen = 2  # Default to 2 dimensions if less than 1
         self.coord = [0.0] * dimen  # Initialize coordinates to zeros
+        self.weightCentroids = [0.0]*numero_clusters
 
     def dist(self, other):
         sum = 0
@@ -21,17 +22,6 @@ class Point:
             sum += (self.coord[i] - other.coord[i]) ** 2
         return math.sqrt(sum)
 
-    def __add__(self, other):
-        # Define addition operation for Point objects
-        major_dim = max(len(self.coord), len(other.coord))
-        sum_point = Point(major_dim)
-
-        for i in range(major_dim):
-            if i < len(self.coord):
-                sum_point.coord[i] += self.coord[i]
-            if i < len(other.coord):
-                sum_point.coord[i] += other.coord[i]
-        return sum_point
 
     def __mul__(self, m1):
         # Define scalar multiplication for a Point

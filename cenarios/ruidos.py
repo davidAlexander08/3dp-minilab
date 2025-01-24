@@ -30,10 +30,10 @@ def agregaRuidosKmeansMatriz(numeroDeAberturasPeriodo, matrizRuidos, lista_posto
     gmm.fit(matrizRuidos)
     cluster_centers = gmm.means_
     probabilities = gmm.predict_proba(matrizRuidos)
-    print("cluster_centers: ", cluster_centers)
+    #print("cluster_centers: ", cluster_centers)
     #print("GMM Probabilities:\n", probabilities)
     aggregate_probabilities = probabilities.mean(axis=0)
-    print("\nAggregate Probabilities for Each Cluster:\n", aggregate_probabilities)
+    #print("\nAggregate Probabilities for Each Cluster:\n", aggregate_probabilities)
 
     # KMeans Clustering
     kmeans = KMeans(n_clusters=numero_clusters, max_iter=numero_iteracoes, init="random", n_init=1, random_state=42)
@@ -41,16 +41,15 @@ def agregaRuidosKmeansMatriz(numeroDeAberturasPeriodo, matrizRuidos, lista_posto
     distances = np.linalg.norm(matrizRuidos[:, np.newaxis] - kmeans.cluster_centers_, axis=2)
     probabilities_kmeans = np.exp(-distances) / np.sum(np.exp(-distances), axis=1, keepdims=True)
     aggregate_probabilities = probabilities_kmeans.mean(axis=0)
-    print("\nAggregate Probabilities for Each Cluster Kmeans:\n", aggregate_probabilities)
+    #print("\nAggregate Probabilities for Each Cluster Kmeans:\n", aggregate_probabilities)
     means = kmeans.cluster_centers_
-    print("CLUSTER CENTERS (MEANS):\n", means)
+    #print("CLUSTER CENTERS (MEANS):\n", means)
 
-    gvzp = KmeansGevazp(numero_clusters, matrizRuidos)
+    #gvzp = KmeansGevazp(numero_clusters, matrizRuidos)
 
-    print("matrizRuidosAgregados GEVAZP: ", gvzp.matrizRuidosAgregados)
-    exit(1)
-    matrizRuidosAgregados = means
-    return matrizRuidosAgregados
+    #print("matrizRuidosAgregados GEVAZP: ", gvzp.matrizRuidosAgregados)
+    #exit(1)
+    return [means, aggregate_probabilities]
     ## Prepare the aggregated noise matrix (matrizRuidosAgregados)
     #matrizRuidosAgregados = np.zeros((numero_clusters, len(lista_postos)))
     #for j in range(numero_clusters):

@@ -34,18 +34,18 @@ for no in lista_total_de_nos
     #println(" codigo: ", no.codigo, " periodo: ", no.periodo)
     push!(mapa_periodos[no.periodo].nos, no)
 end
-df_arvore = DataFrame(codigo = Int[], periodo = Int[], pai = Int[])
+df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], PER = Int[], VAZAO = Float64[], PROB = Float64[])
 
 function printa_nos(no)
     for elemento in no.filhos
         println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
-        push!(df_arvore, (codigo = elemento.codigo, periodo = elemento.periodo, pai = elemento.pai.codigo))
+        push!(df_arvore, (NO = elemento.codigo, PER = elemento.periodo, NO_PAI = elemento.pai.codigo, VAZAO = 0, PROB = 0))
 
         printa_nos(elemento)
     end
 end
 println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
-push!(df_arvore, (codigo = no1.codigo, periodo = no1.periodo, pai = no1.pai))
+push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, NO_PAI = no1.pai, VAZAO = 0, PROB = 0))
 printa_nos(no1)
 
 println(df_arvore)
