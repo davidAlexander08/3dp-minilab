@@ -133,4 +133,5 @@ def calculaResiduosModelos(df_parp, df_Coefs):
 
     df_residuos = pd.concat(lista_residuos).reset_index(drop = True)
     #print(df_residuos)
+    return df_residuos
 

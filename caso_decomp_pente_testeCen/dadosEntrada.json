@@ -1,7 +1,7 @@
 {
     "MAX_ITERACOES": 10,
     "ESTAGIOS": 3,
-    "ARVORE":[1, 2, 2],
+    "ARVORE":[50, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     "REDE":1,
     "UHEs": [
         {

@@ -4,8 +4,8 @@ import plotly.io as pio
 import plotly.express as px
 
 class DadosSemanais:
-    def __init__(self):
-        df = pd.read_csv("/home/david/git/3dp-minilab/CenariosSemanais/vazoesDiariasCamargos.csv")
+    def __init__(self, arq):
+        df = pd.read_csv(arq)
         df["Data"] = pd.to_datetime(df["Data"], dayfirst=True)
         df_week = df
         df_week.set_index("Data", inplace=True)

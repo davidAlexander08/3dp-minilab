@@ -93,26 +93,29 @@ PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilida
 PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
 
 
-CONFIG_PATH = "caso_decomp_deterministico_24Barras_2EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_24Barras_2EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_2EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_24Barras_2EST/horas.csv"
-
-
-
 CONFIG_PATH = "caso_decomp_pente_testeCen/dadosEntrada.json"
 PATH_VAZOES = "caso_decomp_pente_testeCen/vazao.csv"
 PATH_PROBABILIDADES = "caso_decomp_pente_testeCen/probabilidades.csv"
 PATH_HORAS = "caso_decomp_pente_testeCen/horas.csv"
 
+CONFIG_PATH = "caso_decomp_deterministico_24Barras_2EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_24Barras_2EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_2EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_24Barras_2EST/horas.csv"
 
+CONFIG_PATH = "caso_decomp_deterministico_5est_2UHE_2UTE/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_5est_2UHE_2UTE/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_5est_2UHE_2UTE/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_5est_2UHE_2UTE/horas.csv"
+
+CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE/dadosEntrada.json"
+PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE/vazao.csv"
+PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE/probabilidades.csv"
+PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE/horas.csv"
 
 
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
-
-
-
 
 
 @info "Lendo arquivo de vazoes $(PATH_VAZOES)"

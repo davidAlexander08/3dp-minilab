@@ -91,6 +91,8 @@ module Main
     folga_rede = Dict{Tuple{Int, Int, LinhaConfig}, JuMP.VariableRef}()
     deficit_barra = Dict{Tuple{Int, Int, Int}, JuMP.VariableRef}()
     folga_rede = Dict{Tuple{Int, Int, LinhaConfig}, JuMP.VariableRef}()
+    constraint_dict = Dict{Tuple{Int, Int, String}, JuMP.ConstraintRef}()
+
     function retornaModelo(est, no)
         #converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         global m = Model(GLPK.Optimizer)
@@ -121,15 +123,17 @@ module Main
             @constraint(m, gh_vars[(est, no.codigo, uhe.nome)] == turb_vars[(est, no.codigo, uhe.nome)]) #linha, coluna      /converte_m3s_hm3
             @constraint(m, turb_vars[(est, no.codigo, uhe.nome)] <= uhe.turbmax) #linha, coluna
             @constraint(m, vf_vars[(est, no.codigo, uhe.nome)] <=  uhe.vmax) #linha, coluna
+            
+            print("est: ", est, " no: ", no)
 
 
-            @constraint(m, 
-            c_hidr[i = 1:caso.n_uhes],
+            constraint_dict[(est, no.codigo, uhe.nome)] = @constraint(m, 
             vf_vars[(est, no.codigo, uhe.nome)] + 
             turb_vars[(est, no.codigo, uhe.nome)] + 
             vert_vars[(est, no.codigo, uhe.nome)]
             == Vi[no.codigo,uhe.codigo] + (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])) #linha, colun * converte_m3s_hm3
         end
+
         for term in lista_utes
             @constraint(m, gt_vars[(est, no.codigo, term.nome)] >= 0)
             @constraint(m, gt_vars[(est, no.codigo, term.nome)] <= term.gmax) #linha, coluna
@@ -416,13 +420,13 @@ module Main
                     custo_futuro = JuMP.value(m[:alpha])
                     probabilidade_no = (dat_prob[(dat_prob.NO .== i_no.codigo), "PROBABILIDADE"][1])
                     FCF_indep[est, it] = FCF_indep[est, it] + (custo_presente + custo_futuro)*probabilidade_no
-                    for i in 1:caso.n_uhes
-                        dual_balanco_hidrico = JuMP.shadow_price( m[:c_hidr][i])
+                    for uhe in lista_uhes
+                        #dual_balanco_hidrico = JuMP.shadow_price( m[:c_hidr][uhe.codigo])
+                        dual_balanco_hidrico = JuMP.shadow_price( constraint_dict[(est, i_no.codigo, uhe.nome)])
                         #FCF_coef[est,i, it]  = FCF_coef[est,i, it] + dual_balanco_hidrico*probabilidade_no
-                        FCF_coef[est,i, it]  = FCF_coef[est,i, it] + dual_balanco_hidrico*probabilidade_no
-                        FCF_indep[est, it] = FCF_indep[est, it] - dual_balanco_hidrico*Vi[i_no.codigo,i]*probabilidade_no
-                        println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", i, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[i_no.codigo,i], "FCF_coef[est,i, it]: ", FCF_coef[est,i, it], "FCF_indep[est, it]: ", FCF_indep[est, it])
-
+                        FCF_coef[est,uhe.codigo, it]  = FCF_coef[est,uhe.codigo, it] + dual_balanco_hidrico*probabilidade_no
+                        FCF_indep[est, it] = FCF_indep[est, it] - dual_balanco_hidrico*Vi[i_no.codigo,uhe.codigo]*probabilidade_no
+                        println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", uhe.codigo, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[i_no.codigo,uhe.codigo], "FCF_coef[est,i, it]: ", FCF_coef[est,uhe.codigo, it], "FCF_indep[est, it]: ", FCF_indep[est, it])
                     end
                     imprimePolitica("BACKWARD", est, it, 0, i_no)
                     
