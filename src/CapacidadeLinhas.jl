@@ -94,15 +94,15 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
 
         JuMP.optimize!(m_cap) 
         status = termination_status(m_cap)
-        if status == MOI.INFEASIBLE
-            println("The problem is infeasible.")
-        elseif status == MOI.OPTIMAL
-            println("The problem is feasible and optimal.")
-        elseif status == MOI.FEASIBLE_POINT
-            println("Solver returned a feasible point, but not necessarily optimal.")
-        else
-            println("Solver returned status: ", status)
-        end
+        #if status == MOI.INFEASIBLE
+        #    println("The problem is infeasible.")
+        #elseif status == MOI.OPTIMAL
+        #    println("The problem is feasible and optimal.")
+        #elseif status == MOI.FEASIBLE_POINT
+        #    println("Solver returned a feasible point, but not necessarily optimal.")
+        #else
+        #    println("Solver returned status: ", status)
+        #end
        #valorMinimo = 0
        #geracao_total = 0
         #if abs(linha.coeficienteDemanda[est]) > linha.Capacidade[est] # SE COEFDEM > CAP, RESULTA EM RHS NEGATIVO, FOLGA NEGATIVA
@@ -122,19 +122,19 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
         end                
         for term in lista_utes_cap
             geracao = JuMP.value(gt_vars_capacidade[term.nome])
-            println(term.nome, " ", geracao)
+            #println(term.nome, " ", geracao)
             valorMinimo += geracao*mapa_nomeUsina_CoefSensibilidade[term.nome]
             geracao_total += geracao
         end
 
         for barra in ilha.barrasAtivas[est]
             valor_deficit = JuMP.value(deficit_barra[barra.codigo])
-            println("DEFICIT:  $(barra.codigo) valor: $valor_deficit")
+            #println("DEFICIT:  $(barra.codigo) valor: $valor_deficit")
 
         end 
         capacidadeMinima =    valorMinimo -linha.coeficienteDemanda[est] ##MENOR VALOR DE CAPACIDADE PARA EVITAR DEFICIT, CONSIDERANDO APENAS ESSA LINHA
         #end
-        println("EST: ", est, "DE: $(linha.de.codigo) PARA: $(linha.para.codigo) valorMaximoCapacidadeLinha: $capacidadeMinima ValMin: $valorMinimo CoefDEM: $(linha.coeficienteDemanda[est]) RHS:  $(linha.RHS[est]) CAP: $(linha.Capacidade[est]) GerTot: $geracao_total DemTot: $demanda_total")
+        #println("EST: ", est, "DE: $(linha.de.codigo) PARA: $(linha.para.codigo) valorMaximoCapacidadeLinha: $capacidadeMinima ValMin: $valorMinimo CoefDEM: $(linha.coeficienteDemanda[est]) RHS:  $(linha.RHS[est]) CAP: $(linha.Capacidade[est]) GerTot: $geracao_total DemTot: $demanda_total")
         #mapa_linha_valorMinimoCapacidadeLinha[(linha.de.codigo, linha.para.codigo,est)] = valorMinimo
         linha.valorMinimoCapacidade[est] = capacidadeMinima
     end

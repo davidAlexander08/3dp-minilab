@@ -6,10 +6,11 @@
     "UHEs": [
         {
             "NOME": "UHE1",
-            "JUSANTE": "",
+            "JUSANTE": "UHE2",
             "GHMIN": 0.0,
             "GHMAX": 100.0,
             "TURBMAX": 60.0,
+            "PRODT": 1.0,
             "VOLUME_MINIMO": 0.0,
             "VOLUME_MAXIMO": 100.0,
             "VOLUME_INICIAL": 0.0,
@@ -22,6 +23,7 @@
             "GHMIN": 0.0,
             "GHMAX": 99.0,
             "TURBMAX": 59.0,
+            "PRODT": 1.0,
             "VOLUME_MINIMO": 0.0,
             "VOLUME_MAXIMO": 99.0,
             "VOLUME_INICIAL": 0.0,
@@ -33,7 +35,7 @@
         {
             "NOME":"ANGRA1",
             "GTMIN": 0.0,
-            "GTMAX": 60.0,
+            "GTMAX": 150.0,
             "CUSTO_GERACAO": 10.0,
             "BARRA":3,
             "CODIGO":1
@@ -41,7 +43,7 @@
         {
             "NOME":"ANGRA2",
             "GTMIN": 0.0,
-            "GTMAX": 50.0,
+            "GTMAX": 150.0,
             "CUSTO_GERACAO": 5.0,
             "BARRA":4,
             "CODIGO":2

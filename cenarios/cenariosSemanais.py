@@ -231,15 +231,12 @@ for posto in lista_postos:
 df_final = pd.concat(mapa_df_CenarioPosto).reset_index(drop = True)
 print(df_final)
 arq = "/home/david/git/3dp-minilab/cenarios/out/vazao.csv"
-df_final.to_csv(arq)
+df_final.to_csv(arq, index=False)
 
 arq = "/home/david/git/3dp-minilab/cenarios/out/probabilidades.csv"
 df_prob = pd.DataFrame()
 df_prob["NO"] = df_final["NO"]
-df_prob["PROB"] = df_final["PROB"]
-df_prob.to_csv(arq)
-
-
-
+df_prob["PROBABILIDADE"] = df_final["PROB"]
+df_prob.to_csv(arq, index=False)
 
 #print(df_parp.head(25))

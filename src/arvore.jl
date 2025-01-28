@@ -1,6 +1,4 @@
 
-include("LeituraEntrada.jl")
-
 function percorre_abertura(no_pai, lista_Arvore, periodo, lista_total_de_nos)
     codigo_interno = 1
     lista_filhos = []
@@ -18,6 +16,7 @@ function percorre_abertura(no_pai, lista_Arvore, periodo, lista_total_de_nos)
         end
     end
 end
+
 lista_total_de_nos = []
 no1 = no(1, 1, 1, 0, [])
 global codigos = [no1.codigo]
@@ -26,28 +25,60 @@ percorre_abertura(no1, caso.estrutura_arvore, 0, lista_total_de_nos)
 mapa_periodos = OrderedDict()
 for i in 1:length(caso.estrutura_arvore)+1
     periodo = tipo_periodo(i,[])
-    #println("estagio: ", periodo.estagio)
     mapa_periodos[i] = periodo
 end
 
 for no in lista_total_de_nos
-    #println(" codigo: ", no.codigo, " periodo: ", no.periodo)
     push!(mapa_periodos[no.periodo].nos, no)
 end
 df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], Abertura = [] , PER = Int[], VAZAO = Float64[], PROB = Float64[])
 
 function printa_nos(no)
     for elemento in no.filhos
-        println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
+        #println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
         push!(df_arvore, (NO_PAI = elemento.pai.codigo, NO = elemento.codigo, Abertura = elemento.index, PER = elemento.periodo,  VAZAO = 0, PROB = 0))
         printa_nos(elemento)
     end
 end
 
 
-println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
+#println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
 push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, Abertura = no1.index, NO_PAI = no1.pai, VAZAO = 0, PROB = 0))
 printa_nos(no1)
 
-println(df_arvore)
+#println(df_arvore)
 CSV.write("CenariosSemanais/arvore_julia.csv", df_arvore)
+
+
+
+function buscaPai(no)
+    pai =  (df_arvore[(df_arvore.NO .== no), "NO_PAI"][1])
+    return pai
+end
+
+function retornaListaCaminho(no)
+    lista = []
+    push!(lista,no)
+    no_inicial = no
+    periodo_no = (df_arvore[(df_arvore.NO .== no), "PER"][1])
+    for est in 1:(periodo_no-1)
+        pai = buscaPai(no_inicial)
+        push!(lista,pai)
+        no_inicial = pai
+    end
+    return lista
+end
+
+
+mapaProbCondicionalNo = Dict{Int, Float64}()
+for no in lista_total_de_nos
+    mapaProbCondicionalNo[no.codigo] = 1
+    for no_caminho in retornaListaCaminho(no.codigo)
+        mapaProbCondicionalNo[no.codigo] *= (dat_prob[(dat_prob.NO .== no_caminho), "PROBABILIDADE"][1])
+    end
+end
+println(mapaProbCondicionalNo)
+
+
+
+

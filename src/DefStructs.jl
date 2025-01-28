@@ -3,13 +3,13 @@ using SparseArrays
 using DataStructures 
 mutable struct BarraConfig
     codigo::Int32
-    potenciaGerada::Dict{Tuple{Int, Int, Int}, Float64}
+    potenciaGerada::Dict{Tuple{Int, Int}, Float64} #varia por nó
     carga::Vector{Float64}
     estadoDeOperacao::Dict{Int, Int}
     tipo::Int32
-    potenciaLiquida::Dict{Tuple{Int, Int, Int}, Float64}
+    potenciaLiquida::Dict{Tuple{Int, Int}, Float64}#varia por nó
     area::Int32
-    deficitBarra::Dict{Tuple{Int, Int, Int}, Float64}
+    deficitBarra::Dict{Tuple{Int, Int}, Float64}#varia por nó
     
     # Custom constructor with default values
     function BarraConfig()
@@ -39,7 +39,7 @@ mutable struct LinhaConfig
     estadoDeOperacao::Dict{Int, Int}
     anguloBarraDe::Float64
     anguloBarraPara::Float64
-    fluxoDePara::Dict{Tuple{Int, Int, Int}, Float64}
+    fluxoDePara::Dict{Tuple{Int, Int}, Float64}
     linhaMatrizSensibilidade::Dict{Int, Vector{Float64}}
     RHS::Dict{Int, Float64}
     coeficienteDemanda::Dict{Int, Float64}
@@ -169,7 +169,7 @@ end
 
 struct UHEConfigData
     nome::String
-    downstream::String #Jusante
+    jusante::String #Jusante
     gmin::Float64
     gmax::Float64
     turbmax::Float64
@@ -178,6 +178,7 @@ struct UHEConfigData
     v0::Float64
     barra::BarraConfig
     codigo::Int32
+    prodt::Float64
 end
 
 struct Forward

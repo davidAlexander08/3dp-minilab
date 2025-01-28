@@ -1,0 +1,207 @@
+module Main
+
+    using JuMP, GLPK, Plots, Measures
+    #using ..DefStructs
+    include("DefStructs.jl")
+    #CASOS DE ESTUDO NAO CONTEMPLANDO MUDANCAS NA CONFIGURACAO DAS USINAS AO LONGO DO HORIZONTE
+    global caso = CaseData(5,3,2,1) #ITERACOES, ESTAGIOS, N_TERMICAS, N_UHES
+
+    gtmin_1 = repeat([0],caso.n_est)
+    gtmax_1 = repeat([15],caso.n_est)
+    custo_1 = repeat([10],caso.n_est)
+    lista_ute1 = []
+    for est in 1:caso.n_est
+        ute = UTEConfigData(gtmin_1[est],gtmax_1[est],custo_1[est])
+        push!(lista_ute1, ute)
+    end
+
+    gtmin_2 = repeat([0],caso.n_est)
+    gtmax_2 = repeat([10],caso.n_est)
+    custo_2 = repeat([25],caso.n_est)
+    lista_ute2 = []
+    for est in 1:caso.n_est
+        ute = UTEConfigData(gtmin_2[est],gtmax_2[est],custo_2[est])
+        push!(lista_ute2, ute)
+    end
+
+    uhe = UHEConfigData("UHE1", "0", 0, 100, 0, 100, 65)
+
+    #global limites_termicas = [15  10;  
+    #                    15  10;
+    #                    15  10]
+    #global custo_termicas = [10  25;  
+    #                  10  25;
+    #                  10  25]
+
+
+    global demanda = [50, 50, 50]
+    global c_def = 500
+    global custo_deficit = [c_def c_def c_def]
+
+
+    global afluencia = [20;
+                20;
+                15]
+
+    global Turb_max = [60;
+                60;
+                60]
+
+    global Vi = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+
+    for it in 1:caso.n_iter
+        Vi[1,1,it] = 65
+    end
+    FCF_coef = zeros(caso.n_est*caso.n_iter,caso.n_uhes, caso.n_iter)
+    FCF_indep = zeros(caso.n_est*caso.n_iter,1, caso.n_iter)
+
+    #BACKLOG FORWARD
+    ger_hidr_fw = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    vf_hidr_fw = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    vi_hidr_fw = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    turb_hidr_fw = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    vert_hidr_fw = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    ger_term_fw = zeros(caso.n_est,caso.n_term, caso.n_iter)
+    ger_def_fw = zeros(caso.n_est,1, caso.n_iter)
+
+    #BACKLOG BACKWARD
+    ger_hidr_bk = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    vf_hidr_bk = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    vi_hidr_bk = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    turb_hidr_bk = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    vert_hidr_bk = zeros(caso.n_est,caso.n_uhes, caso.n_iter)
+    ger_term_bk = zeros(caso.n_est,caso.n_term, caso.n_iter)
+    ger_def_bk = zeros(caso.n_est,1, caso.n_iter)
+
+
+    zinf = zeros(caso.n_iter)
+    zsup = zeros(caso.n_iter)
+
+
+    arq_00 = open("relatorio.txt","w")
+
+
+    function retornaModelo()
+        global m = Model(GLPK.Optimizer)
+        @variable(m, 0 <= gt[1:caso.n_term])
+        @variable(m, 0 <= gh[1:caso.n_uhes])
+        @variable(m, 0 <= Turb[1:caso.n_uhes])
+        @variable(m, 0 <= Vert[1:caso.n_uhes])
+        @variable(m, 0 <= Vf[1:caso.n_uhes])
+        @variable(m, 0 <= deficit )
+        @variable(m, 0 <= alpha )
+        @constraint(m, [i = 1:caso.n_uhes], Turb[i] <= Turb_max[i]) #linha, coluna
+        @constraint(m, [i = 1:caso.n_uhes], gh[i] == Turb[i]) #linha, coluna
+
+        return m
+    end
+
+    function printaOperacao(m)
+        print("OPER")
+        [print(" gt",i, ": ",JuMP.value(m[:gt][i])) for i in 1:caso.n_term]
+        [print(" gh",i, ": ",JuMP.value(m[:gh][i])) for i in 1:caso.n_uhes]
+        print(" deficit = ", JuMP.value(m[:deficit]))
+        println(" alpha: ",JuMP.value(m[:alpha]))
+        println("")
+        [print(" Turb",i, ": ",JuMP.value(m[:Turb][i])) for i in 1:caso.n_uhes]
+        [print(" Vert",i, ": ",JuMP.value(m[:Vert][i])) for i in 1:caso.n_uhes]
+        [print(" Vf",i, ": ",JuMP.value(m[:Vf][i])) for i in 1:caso.n_uhes]
+    end
+
+    function salva_forward(m, est, it)
+        println("FORWARD Sol Otima estagio ", est)
+        printaOperacao(m)
+        [ger_hidr_fw[est,i, it] = JuMP.value(m[:gh][i]) for i in 1:caso.n_uhes]
+        [vf_hidr_fw[est,i, it] = JuMP.value(m[:Vf][i]) for i in 1:caso.n_uhes]
+        [vi_hidr_fw[est,i, it] = Vi[est,i,it] for i in 1:caso.n_uhes]
+        [turb_hidr_fw[est,i, it] = JuMP.value(m[:Turb][i]) for i in 1:caso.n_uhes]
+        [vert_hidr_fw[est,i, it] = JuMP.value(m[:Vert][i]) for i in 1:caso.n_uhes]
+        [ger_term_fw[est,i, it] = JuMP.value(m[:gt][i]) for i in 1:caso.n_term]
+        ger_def_fw[est,1, it] = JuMP.value(m[:deficit])
+    end
+
+    function salva_backward(m, est, it)
+        println("BACKWARD Sol Otima estagio ", est)
+        printaOperacao(m)
+        [ger_hidr_bk[est,i, it] = JuMP.value(m[:gh][i]) for i in 1:caso.n_uhes]
+        [vf_hidr_bk[est,i, it] = JuMP.value(m[:Vf][i]) for i in 1:caso.n_uhes]
+        [vi_hidr_bk[est,i, it] = Vi[est,i,it] for i in 1:caso.n_uhes]
+        [turb_hidr_bk[est,i, it] = JuMP.value(m[:Turb][i]) for i in 1:caso.n_uhes]
+        [vert_hidr_bk[est,i, it] = JuMP.value(m[:Vert][i]) for i in 1:caso.n_uhes]
+        [ger_term_bk[est,i, it] = JuMP.value(m[:gt][i]) for i in 1:caso.n_term]
+        ger_def_bk[est,1, it] = JuMP.value(m[:deficit])
+    end
+
+
+    m = retornaModelo()
+
+    for it in 1:caso.n_iter
+        #ETAPA FORWARD
+        for est in 1:caso.n_est
+            m = retornaModelo()
+            if est < caso.n_est
+                @constraint(m, [iter = 1:caso.n_iter], m[:alpha] -m[:Vf][1]*FCF_coef[est+1,1,iter] >= FCF_indep[est+1,1,iter] ) #linha, coluna
+            end
+            @constraint(m, balanco, sum(m[:gh][i] for i in 1:caso.n_uhes) + sum(m[:gt][i] for i in 1:caso.n_term) + m[:deficit] == demanda[est])
+            @constraint(m, [i = 1:caso.n_term], m[:gt][i] <= limites_termicas[est,i]) #linha, coluna
+            @constraint(m, [i = 1:caso.n_uhes], m[:Vf][i] + m[:Turb][i] + m[:Vert][i] == Vi[est,i, it] + afluencia[est, i]) #linha, colun
+            @objective(m, Min, sum(m[:Vert][i]*0.01 for i in 1:caso.n_uhes) + sum(custo_termicas[est, i]*m[:gt][i] for i in 1:caso.n_term) + custo_deficit[est]*m[:deficit] + m[:alpha])
+
+            JuMP.optimize!(m)         
+            if est < caso.n_est ; [Vi[est+1,i, it] = JuMP.value(m[:Vf][i]) for i in 1:caso.n_uhes] end
+
+            custo_presente = 0
+            [custo_presente = custo_presente + JuMP.value(m[:gt][i])*custo_termicas[est,i] for i in 1:caso.n_term]
+            custo_presente = custo_presente + JuMP.value(m[:deficit])*custo_deficit[est]
+            custo_presente_futuro = custo_presente + JuMP.value(m[:alpha])
+
+            zsup[it] = zsup[it] + custo_presente
+            if est == 1 zinf[it] = custo_presente_futuro end
+
+
+            salva_forward(m,est, it)
+            [print(" Vi",i, ": ",Vi[est,i,it], " ") for i in 1:caso.n_uhes]
+            println("CI: ", custo_presente, " CF: ", JuMP.value(m[:alpha]), " CICF: ", custo_presente_futuro)
+            println("################################################################")
+        end 
+        println("zinf: ", zinf, " zsup: ", zsup)
+
+        # ETAPA BACKWARD
+        if it != caso.n_iter
+            for est in caso.n_est:-1:1            
+                m = retornaModelo()
+                if est < caso.n_est && est > 1
+                    @constraint(m, [iter = 1:caso.n_iter], m[:alpha] -m[:Vf][1]*FCF_coef[est+1,1,iter] >= FCF_indep[est+1,1,iter] ) #linha, coluna
+                end
+                @constraint(m, balanco, sum(m[:gh][i] for i in 1:caso.n_uhes) + sum(m[:gt][i] for i in 1:caso.n_term) + m[:deficit] == demanda[est])
+                @constraint(m, [i = 1:caso.n_term], m[:gt][i] <= limites_termicas[est,i]) #linha, coluna
+                @constraint(m, c_hidr[i in 1:caso.n_uhes], m[:Vf][i] + m[:Turb][i] + m[:Vert][i] == Vi[est,i, it] + afluencia[est, i]) #linha, coluna
+                @objective(m, Min, sum(m[:Vert][i]*0.01 for i in 1:caso.n_uhes) + sum(custo_termicas[est, i]*m[:gt][i] for i in 1:caso.n_term) + custo_deficit[est]*m[:deficit] + m[:alpha])
+                
+                JuMP.optimize!(m)     
+                custo_presente = 0
+                [custo_presente = custo_presente + JuMP.value(m[:gt][i])*custo_termicas[est,i] for i in 1:caso.n_term]
+                custo_presente = custo_presente + JuMP.value(m[:deficit])*custo_deficit[est]
+                custo_presente_futuro = custo_presente +  JuMP.value(m[:alpha])
+
+                for i in 1:caso.n_uhes
+                    constrain = c_hidr[i]
+                    FCF_coef[est,i, it]  = JuMP.shadow_price(constrain)
+                end
+
+                rhs = custo_presente_futuro
+                [rhs = rhs - FCF_coef[est,i, it]*Vi[est,i, it] for i in 1:caso.n_uhes]
+                FCF_indep[est,1, it] = rhs
+
+                salva_backward(m, est, it)
+                println("CI: ", custo_presente, " CF: ", JuMP.value(m[:alpha]), " CICF: ", custo_presente_futuro)
+                println("################################################################")
+            end 
+        end
+    end
+
+    fig = plot(1:caso.n_iter, [zinf,zsup],size=(800,400), margin=10mm)
+    savefig(fig, "myplot.png")
+    close(arq_00)
+
+end

@@ -87,10 +87,7 @@ PATH_PROBABILIDADES = "caso_decomp_deterministico_6Barras_2UTEs_1UHE_2EST/probab
 PATH_HORAS = "caso_decomp_deterministico_6Barras_2UTEs_1UHE_2EST/horas.csv"
 
 
-CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UTEs_3EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
+
 
 
 CONFIG_PATH = "caso_decomp_pente_testeCen/dadosEntrada.json"
@@ -103,15 +100,75 @@ PATH_VAZOES = "caso_decomp_deterministico_24Barras_2EST/vazao.csv"
 PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_2EST/probabilidades.csv"
 PATH_HORAS = "caso_decomp_deterministico_24Barras_2EST/horas.csv"
 
+
+
+CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UTEs_3EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
+
+
+
+CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UHEs_3EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UHEs_3EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UHEs_3EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_3Barras_2UHEs_3EST/horas.csv"
+
+
 CONFIG_PATH = "caso_decomp_deterministico_5est_2UHE_2UTE/dadosEntrada.json"
 PATH_VAZOES = "caso_decomp_deterministico_5est_2UHE_2UTE/vazao.csv"
 PATH_PROBABILIDADES = "caso_decomp_deterministico_5est_2UHE_2UTE/probabilidades.csv"
 PATH_HORAS = "caso_decomp_deterministico_5est_2UHE_2UTE/horas.csv"
 
-CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE/dadosEntrada.json"
-PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE/vazao.csv"
-PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE/probabilidades.csv"
-PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE/horas.csv"
+
+
+
+CONFIG_PATH = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/horas.csv"
+
+
+CONFIG_PATH = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/dadosEntrada.json"
+PATH_VAZOES = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/vazao.csv"
+PATH_PROBABILIDADES = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/probabilidades.csv"
+PATH_HORAS = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/horas.csv"
+
+
+
+CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/dadosEntrada.json"
+PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/vazao.csv"
+PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/probabilidades.csv"
+PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/horas.csv"
+#
+CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/dadosEntrada.json"
+PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/vazao.csv"
+PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/probabilidades.csv"
+PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/horas.csv"
+
+
+
+CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/dadosEntrada.json"
+PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/vazao.csv"
+PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/probabilidades.csv"
+PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/horas.csv"
+
+
+str_caso = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST"
+
+str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE"
+str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN"
+str_caso = "caso_decomp_deterministico_24Barras_3EST"
+
+str_caso = "marcato/caso_marcato_deterministico"
+str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_2ABR"
+str_caso = "caso_decomp_deterministico_5est_2UHE_2UTE"
+
+CONFIG_PATH = str_caso*"/dadosEntrada.json"
+PATH_VAZOES = str_caso*"/vazao.csv"
+PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
+PATH_HORAS = str_caso*"/horas.csv"
+
 
 
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
@@ -222,7 +279,7 @@ lista_uhes = []
 mapa_nome_UHE = OrderedDict()
 
 for usi in usinas
-    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"])
+    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"], usi["PRODT"])
     push!(lista_uhes,usina)
     mapa_nome_UHE[usi["NOME"]] = usina
     mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
@@ -233,3 +290,15 @@ end
 caso.n_term =size(lista_utes)[1]
 caso.n_uhes =size(lista_uhes)[1]
 
+mapa_montantesUsina = Dict{String, Array{String, 1}}()
+for uhe in lista_uhes
+    if !haskey(mapa_montantesUsina, uhe.nome)
+        mapa_montantesUsina[uhe.nome] = String[]  # Initialize an empty array if it doesn't exist
+    end
+    for candidata_montante in lista_uhes
+        if uhe.nome == candidata_montante.jusante
+            push!(mapa_montantesUsina[uhe.nome], candidata_montante.nome)
+        end
+    end
+end
+println(mapa_montantesUsina)
