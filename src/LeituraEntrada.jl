@@ -163,7 +163,11 @@ str_caso = "caso_decomp_deterministico_24Barras_3EST"
 str_caso = "marcato/caso_marcato_deterministico"
 str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_2ABR"
 str_caso = "caso_decomp_deterministico_5est_2UHE_2UTE"
-
+str_caso = "Teste_Fluxo_IEEE_14_Barras"
+str_caso = "Teste_Fluxo_IEEE_30_Barras"
+str_caso = "Teste_Fluxo_IEEE_57_Barras"
+str_caso = "Teste_Fluxo_IEEE_118_Barras"
+#str_caso = "Teste_Fluxo_IEEE_5_Barras"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_VAZOES = str_caso*"/vazao.csv"
 PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
@@ -192,7 +196,7 @@ caso.n_iter = dict["MAX_ITERACOES"]
 caso.n_est = dict["ESTAGIOS"]
 rede_eletrica = dict["REDE"]
 caso.estrutura_arvore = dict["ARVORE"]
-
+include("arvore.jl")
 
 #SISTEMA
 sist = dict["SISTEMA"]
@@ -212,8 +216,12 @@ mapaCodigoBarra = OrderedDict()
 for barra in barras
     objeto = BarraConfig()
     objeto.codigo = barra["CODIGO"]
-    #objeto.potenciaGerada = barra["GERACAO"]
-    #objeto.potenciaLiquida = barra["GERACAO"]
+    for it in range(1, caso.n_iter)
+        for no in lista_total_de_nos
+            objeto.potenciaGerada[it, no.codigo] = barra["GERACAO"][1]
+            objeto.potenciaLiquida[it, no.codigo] = barra["GERACAO"][1]
+        end
+    end
     objeto.carga = barra["CARGA"]
     objeto.area = barra["AREA"]
     lista_estado_operacao = barra["ESTADODEOPERACAO"]
@@ -230,10 +238,6 @@ for barra in barras
     end
     mapaCodigoBarra[objeto.codigo] = objeto
 end
-#println(lista_barras)
-#for barra in lista_barras
-#    println("BARRA: ", barra.codigo)
-#end
 
 # BARRAS
 linhas = dict["LINHAS"]

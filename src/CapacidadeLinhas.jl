@@ -140,6 +140,8 @@ function atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_gera
     end
 end
 
+
+
 flagConsideraOutrasLinhas = 1
 
 mapa_valores_minimos_geracoes = OrderedDict()
@@ -149,7 +151,13 @@ end
 for term in lista_utes
     mapa_valores_minimos_geracoes[term.nome] = term.gmin
 end
-for ilha in lista_ilhas_eletricas    
+
+
+
+for ilha in lista_ilhas_eletricas   
+    calculaFluxosIlhaMetodoSensibilidadeDC(ilha, 1, 1, lista_total_de_nos[1])
+    #calculaFluxosIlhaMetodoDeltaDC(ilha, 1, 1, lista_total_de_nos[1])
+    exit(1) 
     for est in 1:caso.n_est
         calculaParametrosDaIlha(ilha,est)
         atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)

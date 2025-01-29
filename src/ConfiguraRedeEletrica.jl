@@ -90,8 +90,10 @@ function calculaParametrosDaIlha(ilha,est)
             #linhaMatrizSensibilidade = lsqr(matrizSusceptancia, Array(matrizB[contador, :]))
             #println("Determinante Matriz Suscep: ", det(matrizSusceptancia))
         end
+
         linha.linhaMatrizSensibilidade[est] = round.(linhaMatrizSensibilidade, digits=4)
         contador = contador + 1
+        
     end
 
     vetorPotenciaCarga = []
@@ -100,6 +102,7 @@ function calculaParametrosDaIlha(ilha,est)
             push!(vetorPotenciaCarga,  barra.carga[est]) ## PEGANDO O PRIMEIRO VALOR DA CARGA, MAS NA VERDADE É TEMPORAL
         end
     end
+
     #println("INverso: ", inv(Matrix(matrizSusceptancia)))
     for linha in ilha.linhasAtivas[est]
         RHS = linha.Capacidade[est] +transpose(linha.linhaMatrizSensibilidade[est])*vetorPotenciaCarga

@@ -2,7 +2,7 @@ module Main
 
     using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames
     include("CapacidadeLinhas.jl")
-    include("arvore.jl")
+
 
     #Inicializando variaveis da barra
     for ilha in lista_ilhas_eletricas

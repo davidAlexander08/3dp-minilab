@@ -4,7 +4,10 @@ module Main
 
 
     include("CapacidadeLinhas.jl")
-    include("arvore.jl")
+
+
+
+
     #Inicializando variaveis da barra
     for ilha in lista_ilhas_eletricas
         for est in 1:caso.n_est
