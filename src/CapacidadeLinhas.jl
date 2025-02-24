@@ -157,7 +157,7 @@ end
 for ilha in lista_ilhas_eletricas   
     calculaFluxosIlhaMetodoSensibilidadeDC(ilha, 1, 1, lista_total_de_nos[1])
     #calculaFluxosIlhaMetodoDeltaDC(ilha, 1, 1, lista_total_de_nos[1])
-    exit(1) 
+    #exit(1) 
     for est in 1:caso.n_est
         calculaParametrosDaIlha(ilha,est)
         atualizaValorMinimoCapacidadeLinhas(ilha,est, mapa_valores_minimos_geracoes, flagConsideraOutrasLinhas)

@@ -167,6 +167,25 @@ str_caso = "Teste_Fluxo_IEEE_14_Barras"
 str_caso = "Teste_Fluxo_IEEE_30_Barras"
 str_caso = "Teste_Fluxo_IEEE_57_Barras"
 str_caso = "Teste_Fluxo_IEEE_118_Barras"
+str_caso = "red_arv_nested_decomposition/3aberturas"
+str_caso = "red_arv_decomposition/2aberturas_ARI"
+str_caso = "red_arv_decomposition/2aberturas_ARO"
+
+str_caso = "red_arv_fast_and_forward/2aberturas_ini"
+str_caso = "red_arv_fast_and_forward/2aberturas_ffs"
+str_caso = "red_arv_fast_and_forward/2aberturas_op1"
+str_caso = "red_arv_fast_and_forward/2aberturas_op2"
+str_caso = "red_arv_fast_and_forward/2aberturas_op3"
+
+
+str_caso = "red_arv_backReduction/2aberturas_ini"
+str_caso = "red_arv_backReduction/2aberturas_ini_Cen1"
+#str_caso = "red_arv_backReduction/2aberturas_ini_Cen3"
+#str_caso = "red_arv_backReduction/2aberturas_ini_Cen4"
+str_caso = "red_arv_backReduction/2aberturas_ini_Cen5"
+#str_caso = "red_arv_backReduction/2aberturas_ini_Cen2_BK"
+
+
 #str_caso = "Teste_Fluxo_IEEE_5_Barras"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_VAZOES = str_caso*"/vazao.csv"
