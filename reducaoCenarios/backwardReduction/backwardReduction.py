@@ -150,7 +150,7 @@ for est in reversed(estagios_estocasticos):
             print("filho: ", filho, " prob: ", prob, " prob_total_filhos: ", prob_total_filhos)
             
         for filho in total_filhos:
-            df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = prob_temporaria_no[filho]/prob_total_filhos
+            df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(prob_temporaria_no[filho]/prob_total_filhos, 4)
 
 
         print("no_excluido filhos: ", filhos)
@@ -161,7 +161,8 @@ for est in reversed(estagios_estocasticos):
 
         
         caminho_no_mais_proximo = retorna_lista_caminho(no_mais_proximo, df_arvore)[:-1]
-        df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"] = dicionarioDeProbabilidades[no_mais_proximo] + dicionarioDeProbabilidades[no_excluido]
+
+        df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"] = round((dicionarioDeProbabilidades[no_mais_proximo] + dicionarioDeProbabilidades[no_excluido]), 4)
         print("no_excluido: ", no_excluido, " proximidade: ", no_mais_proximo)
         print("caminho mais proximo: ", caminho_no_mais_proximo)
 
