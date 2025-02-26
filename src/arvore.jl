@@ -47,9 +47,9 @@ push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, Abertura = no1.index, NO_P
 printa_nos(no1)
 
 #println(df_arvore)
-CSV.write("CenariosSemanais/arvore_julia.csv", df_arvore)
+CSV.write("cenarios/CenariosSemanais/arvore_julia.csv", df_arvore)
 
-
+CSV.write(str_caso*"/arvore_julia.csv", df_arvore)
 
 function buscaPai(no)
     pai =  (df_arvore[(df_arvore.NO .== no), "NO_PAI"][1])

@@ -1,0 +1,50 @@
+{
+    "MAX_ITERACOES": 10,
+    "ESTAGIOS": 1,
+    "ARVORE":[1, 1],
+    "REDE":1,
+    "UHEs": [
+    ],
+    "UTEs":[
+        {
+            "NOME":"TERM1",
+            "GTMIN": 0.0,
+            "GTMAX": 100.0,
+            "CUSTO_GERACAO": 5.0,
+            "BARRA":1,
+            "CODIGO":1
+        },
+        {
+            "NOME":"TERM2",
+            "GTMIN": 0.0,
+            "GTMAX": 100.0,
+            "CUSTO_GERACAO": 10.0,
+            "BARRA":2,
+            "CODIGO":2
+        },
+        {
+            "NOME":"TERM3",
+            "GTMIN": 0.0,
+            "GTMAX": 100.0,
+            "CUSTO_GERACAO": 15.0,
+            "BARRA":3,
+            "CODIGO":3
+        }
+    ],
+    "SISTEMA": {
+        "CUSTO_DEFICIT": 100.0,
+        "DEMANDA": [150.0, 150.0, 150.0]
+    },
+    "BARRAS":[{"NOME":"BARRA01", "CODIGO":1, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":2, "CARGA":[0,0,0], "AREA":1},
+              {"NOME":"BARRA02", "CODIGO":2, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0], "AREA":1},
+              {"NOME":"BARRA03", "CODIGO":3, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0], "AREA":1},
+              {"NOME":"BARRA04", "CODIGO":4, "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[150,50,50], "AREA":1}
+            ],
+
+    "LINHAS":[{"DE":1, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[100 ,100 ,100 ,10 ,10]},
+              {"DE":1, "PARA":4, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[100 ,100 ,100 ,10 ,10]},
+              {"DE":2, "PARA":3, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[100,100,100,500,500]},
+              {"DE":2, "PARA":4, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[30,100,100,500,500]},
+              {"DE":3, "PARA":4, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[100,100,100,500,500]}
+            ]
+}

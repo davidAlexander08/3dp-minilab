@@ -185,7 +185,8 @@ str_caso = "red_arv_backReduction/2aberturas_ini_Cen1"
 str_caso = "red_arv_backReduction/2aberturas_ini_Cen5"
 #str_caso = "red_arv_backReduction/2aberturas_ini_Cen2_BK"
 
-
+str_caso = "Mestrado/2aberturas_ini"
+str_caso = "Mestrado/caso_construcaoArvore"
 #str_caso = "Teste_Fluxo_IEEE_5_Barras"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_VAZOES = str_caso*"/vazao.csv"
