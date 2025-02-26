@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+import networkx as nx
+import matplotlib.pyplot as plt
+from anytree import Node, RenderTree
 
 caso = "..\\..\\Mestrado\\caso_1D"
 caso = "..\\..\\Mestrado\\caso_2D"
@@ -128,23 +131,71 @@ for est in reversed(estagios_estocasticos):
     # PASSO I+1, REDISTRIBUIR AS PROBABILIDADES
     mapa_distancias = {}
     for i, no_excluido in enumerate(J):
+
+
+        print(caminho)
         no_mais_proximo = retornaNoMaisProximo(no_excluido, no_excluido, dicionario_distancias, Q)
-        print("no_excluido: ", no_excluido, " proximidade: ", no_mais_proximo)
-        df_arvore.loc[df_arvore["NO"] == no_mais_proximo, "PROB"] = dicionarioDeProbabilidades[no_mais_proximo] + dicionarioDeProbabilidades[no_excluido]
-        dicionarioDeProbabilidades[no_mais_proximo] = dicionarioDeProbabilidades[no_mais_proximo] + dicionarioDeProbabilidades[no_excluido]
-        dicionarioDeProbabilidades[no_excluido] = 0
-        
+
+        prob_total_filhos = 0
+        filhos_no_proximo = getFilhos(no_mais_proximo, df_arvore)
         filhos = getFilhos(no_excluido, df_arvore)
-        print("filhos: ", filhos)
+
+        total_filhos = np.concatenate((filhos_no_proximo, filhos))
+        prob_temporaria_no = {}
+        for filho in total_filhos:
+            caminho_no_mais_proximo = retorna_lista_caminho(filho, df_arvore)[:-1][-1]
+            prob = df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo, "PROB"].iloc[0]
+            prob_temporaria_no[filho] = prob
+            prob_total_filhos += prob
+            print("filho: ", filho, " prob: ", prob, " prob_total_filhos: ", prob_total_filhos)
+            
+        for filho in total_filhos:
+            df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = prob_temporaria_no[filho]/prob_total_filhos
+
+
+        print("no_excluido filhos: ", filhos)
         for filho in filhos:
             if(df_arvore.loc[df_arvore["NO"] == filho]["PROB"].iloc[0] != 0):
                 df_arvore.loc[df_arvore["NO"] == filho,"NO_PAI"] = no_mais_proximo
         
+
+        
+        caminho_no_mais_proximo = retorna_lista_caminho(no_mais_proximo, df_arvore)[:-1]
+        df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"] = dicionarioDeProbabilidades[no_mais_proximo] + dicionarioDeProbabilidades[no_excluido]
+        print("no_excluido: ", no_excluido, " proximidade: ", no_mais_proximo)
+        print("caminho mais proximo: ", caminho_no_mais_proximo)
+
         caminho = retorna_lista_caminho(no_excluido, df_arvore)[:-1]
         for no_caminho in caminho:
             df_arvore.loc[df_arvore["NO"] == no_caminho, "PROB"] = 0
+            df_arvore = df_arvore.loc[df_arvore["NO"] != no_caminho]
             
 
-    print(dicionarioDeProbabilidades)
-    print(matrizDistancias)
+    #print(dicionarioDeProbabilidades)
+    #print(matrizDistancias)
     print(df_arvore)
+
+
+
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Add edges to the graph
+for _, row in df_arvore.iterrows():
+    G.add_edge(row['NO_PAI'], row['NO'], weight=row['PROB'])
+
+# Use pydot_layout for a hierarchical tree layout
+pos = nx.drawing.nx_pydot.pydot_layout(G, prog='dot')
+
+# Plot the graph
+plt.figure(figsize=(10, 8))
+nx.draw(G, pos, with_labels=True, node_size=2000, node_color='lightblue', font_size=10, font_weight='bold', arrows=True)
+
+# Draw edge labels (probabilities)
+edge_labels = nx.get_edge_attributes(G, 'weight')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+# Show the plot
+plt.title("Tree Visualization")
+plt.show()
