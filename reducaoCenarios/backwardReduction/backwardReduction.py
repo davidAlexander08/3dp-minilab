@@ -3,10 +3,14 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from anytree import Node, RenderTree
+import time
+
+start_time = time.time()
 
 caso = "..\\..\\Mestrado\\caso_1D"
 caso = "..\\..\\Mestrado\\caso_2D"
 caso = "..\\..\\Mestrado\\caso_construcaoArvore"
+caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 
 arquivo_vazoes = caso+"\\vazao_feixes.csv"
@@ -22,6 +26,25 @@ df_arvore["PROB"] = df_probs["PROBABILIDADE"]
 df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
 df_arvore.to_csv("arvore_estudo.csv")
+
+df_arvore_original = df_arvore.copy()
+
+
+
+def printaArvore(texto, df_arvore):
+    df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = 1
+    print(df_arvore)
+    G = nx.DiGraph()
+    for _, row in df_arvore.iterrows():
+        G.add_edge(row['NO_PAI'], row['NO'], weight=row['PROB'])
+    pos = nx.drawing.nx_pydot.pydot_layout(G, prog='dot')
+    plt.figure(figsize=(10, 8))
+    nx.draw(G, pos, with_labels=True, node_size=2000, node_color='lightblue', font_size=10, font_weight='bold', arrows=True)
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    plt.savefig(texto+".png", format="png", dpi=300, bbox_inches="tight")
+    plt.title("Tree Visualization")
+    #plt.show()
 
 
 def getFilhos(no, df_arvore):
@@ -81,6 +104,13 @@ dicionario_distancias = {}
 #MONTANDO A MATRIZ DE DISTANCIAS ENTRE OS NOS DE TERMINADO ESTAGIO
 estagios_estocasticos = df_arvore["PER"].unique()[1:]
 numeroCenariosReducao = 2
+mapa_reducao_estagio = {
+    2:2,
+    3:2,
+    4:3
+}
+printaArvore("ArvoreInicial", df_arvore_original)
+
 
 for est in reversed(estagios_estocasticos):
     nos_do_estagio = df_arvore.loc[(df_arvore["PER"] == est) & (df_arvore["PROB"] != 0.0)]["NO"].tolist()
@@ -114,7 +144,8 @@ for est in reversed(estagios_estocasticos):
     #CONSIDERANDO J = {}, avaliar o imacto de 
     J = []
     Q = nos_do_estagio
-    for iter in range(1,numeroCenariosReducao+1):
+    #for iter in range(1,numeroCenariosReducao+1):
+    for iter in range(1,mapa_reducao_estagio[est]+1):
             mapa_distancias = {}
             for i, no_foco in enumerate(Q):
                 dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades)
@@ -126,13 +157,9 @@ for est in reversed(estagios_estocasticos):
             Q.remove(key_min_value)
             print("FIM ITER: ", iter, " J: ", J, " Q: ", Q)
 
-
-
     # PASSO I+1, REDISTRIBUIR AS PROBABILIDADES
     mapa_distancias = {}
     for i, no_excluido in enumerate(J):
-
-
         print(caminho)
         no_mais_proximo = retornaNoMaisProximo(no_excluido, no_excluido, dicionario_distancias, Q)
 
@@ -162,7 +189,8 @@ for est in reversed(estagios_estocasticos):
         
         caminho_no_mais_proximo = retorna_lista_caminho(no_mais_proximo, df_arvore)[:-1]
 
-        df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"] = round((dicionarioDeProbabilidades[no_mais_proximo] + dicionarioDeProbabilidades[no_excluido]), 4)
+        probabilidade_no_mais_proximo = df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"]
+        df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"] = round((probabilidade_no_mais_proximo + dicionarioDeProbabilidades[no_excluido]), 4)
         print("no_excluido: ", no_excluido, " proximidade: ", no_mais_proximo)
         print("caminho mais proximo: ", caminho_no_mais_proximo)
 
@@ -175,28 +203,14 @@ for est in reversed(estagios_estocasticos):
     #print(dicionarioDeProbabilidades)
     #print(matrizDistancias)
     print(df_arvore)
+    printaArvore("Arvore_est_"+str(est), df_arvore)
 
 
 
 
-# Create a directed graph
-G = nx.DiGraph()
 
-# Add edges to the graph
-for _, row in df_arvore.iterrows():
-    G.add_edge(row['NO_PAI'], row['NO'], weight=row['PROB'])
 
-# Use pydot_layout for a hierarchical tree layout
-pos = nx.drawing.nx_pydot.pydot_layout(G, prog='dot')
+end_time = time.time()
+elapsed_time = end_time - start_time  # Calculate elapsed time
+print(f"Execution time: {elapsed_time:.4f} seconds")
 
-# Plot the graph
-plt.figure(figsize=(10, 8))
-nx.draw(G, pos, with_labels=True, node_size=2000, node_color='lightblue', font_size=10, font_weight='bold', arrows=True)
-
-# Draw edge labels (probabilities)
-edge_labels = nx.get_edge_attributes(G, 'weight')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-
-# Show the plot
-plt.title("Tree Visualization")
-plt.show()
