@@ -41,12 +41,12 @@ df_arvore_original = df_arvore.copy()
 
 
 ################## FLAG TOLERANCIA PARA EXCLUSAO DE CENARIOS COM BASE NO LIM SUP (MAXIMA DIFF DAS ARVORES) #################
-flag_criterio_de_parada_por_tolerancia = 0
+flag_criterio_de_parada_por_tolerancia = 1
 ########################################################################################################################
 
 ##################  ACELERADOR DE CONVERGENCIA, STEP DA EXCLUSAO DE CENARIOS ##############
-flag_acelerador_exclusao_cenarios = 1 #Exclui sempre uma % dos cenários juntos
-parametro_exclusao_cenarios = 0.01 #1% dos meores cenários para serem excluídos a cara iteração
+flag_acelerador_exclusao_cenarios = 0 #Exclui sempre uma % dos cenários juntos
+parametro_exclusao_cenarios = 0.1 #1% dos meores cenários para serem excluídos a cara iteração
 NumeroIteracoesAcelerador = 50
 ###########################################################################################
 
@@ -55,19 +55,14 @@ cores = -1
 ###################################
 numeroCenariosReducao = 2
 mapa_reducao_estagio = {
-    2:200,
-    3:300,
-    4:250
+    2:2,
+    3:2,
+    4:2
 }
-#mapa_reducao_estagio = {
-#    2:8,
-#    3:12,
-#    4:25
-#}
 mapa_tolerancia_estagio = {
     2:0.1,
     3:0.1,
-    4:0.2
+    4:0.1
 }
 
 
@@ -90,8 +85,8 @@ def printaArvore(texto, df_arvore):
         if row['NO_PAI'] != row['NO']:
             G.add_edge(row['NO_PAI'], row['NO'], weight=row['PROB'])
     pos = nx.drawing.nx_pydot.pydot_layout(G, prog='dot')
-    plt.figure(figsize=(15, 12))
-    nx.draw(G, pos, with_labels=True, node_size=1, node_color='lightblue', font_size=1, font_weight='bold', arrows=False)
+    plt.figure(figsize=(10, 8))
+    nx.draw(G, pos, with_labels=True, node_size=10, node_color='lightblue', font_size=1, font_weight='bold', arrows=True)
     
     #edge_labels = nx.get_edge_attributes(G, 'weight')
     #nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
@@ -157,33 +152,18 @@ def retornaNoMaisProximo(no_base, no_foco, dicionario_distancias, Q):
                 mais_proximo = no_analisado
     return mais_proximo
 
-#def retornaMenorValor(no_base, no_foco, dicionario_distancias, Q):
+def retornaMenorValor(no_base, no_foco, dicionario_distancias, Q):
+    return min(
+        dicionario_distancias[(no_foco, no_analisado)] 
+        for no_analisado in Q if no_analisado != no_base
+    )
 
-
-def calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades, dicionarioLinhaMatrizCrescente, dicionarioLinhaMatrizCrescenteNo):
+def calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades):
     dist_kantorovich = 0
-    Exclude_Temp = [no_foco] + J 
+    Exclude_Temp = J + [no_foco]
+    #print("CALCULANDO: ", no_foco)
     for no_excluido in Exclude_Temp:
-        indexes_to_remove = []
-        for idx, (node, distance) in enumerate(zip(dicionarioLinhaMatrizCrescenteNo[no_excluido], dicionarioLinhaMatrizCrescente[no_excluido])):
-            if node in J or node == no_excluido:
-                indexes_to_remove.append(idx)
-            if node not in Exclude_Temp:
-                lowest_valid_node = node
-                lowest_valid_distance = distance
-                break  # Stop at the first valid node
-        for idx in indexes_to_remove:
-            del dicionarioLinhaMatrizCrescenteNo[no_excluido][idx]
-            del dicionarioLinhaMatrizCrescente[no_excluido][idx]
-
-        
-        #print("no_excluido: ", no_excluido, " lowest_valid_node: ", lowest_valid_node, " lowest_valid_distance: ", lowest_valid_distance)
-        
-        #menorValor = min(dicionario_distancias[(no_excluido, no_analisado)] for no_analisado in Q if no_analisado != no_foco)
-        #print("no_excluido: ", no_excluido, " menorValor: ", menorValor)
-        #dist_kantorovich += dicionarioDeProbabilidades[no_excluido] * retornaMenorValor(no_foco, no_excluido, dicionario_distancias, Q)
-        #dist_kantorovich += dicionarioDeProbabilidades[no_excluido] * menorValor
-        dist_kantorovich += dicionarioDeProbabilidades[no_excluido] * lowest_valid_distance
+        dist_kantorovich += dicionarioDeProbabilidades[no_excluido] * retornaMenorValor(no_foco, no_excluido, dicionario_distancias, Q)
         #print(f"no_excluido: {no_excluido}, prob: {dicionarioDeProbabilidades[no_excluido]}, menorValor: {retornaMenorValor(no_foco, no_excluido, dicionario_distancias, Q)}")
     return dist_kantorovich
 
@@ -205,7 +185,7 @@ def compute_caminho_probabilidade_matriz(no, df_arvore, df_vazoes):
 
 dicionario_distancias = {}
 #MONTANDO A MATRIZ DE DISTANCIAS ENTRE OS NOS DE TERMINADO ESTAGIO
-estagios_estocasticos = sorted(df_arvore["PER"].unique()[1:])#df_arvore["PER"].unique()[1:]
+estagios_estocasticos = df_arvore["PER"].unique()[1:]
 
 #printaArvore("ArvoreInicial", df_arvore_original)
 end_time = time.time()
@@ -218,6 +198,7 @@ for est in reversed(estagios_estocasticos):
     matrizDistancias = np.zeros((len(nos_do_estagio), len(nos_do_estagio)))
     dicionarioDeProbabilidades = {}
     #PASSO 1 -> MONTAR MATRIZ DE DISTANCIAS ENTRE OS CENARIOS
+
     results = Parallel(n_jobs=cores)(
     delayed(compute_caminho_probabilidade_matriz)(no, df_arvore, df_vazoes)
     for no in nos_do_estagio)
@@ -254,16 +235,6 @@ for est in reversed(estagios_estocasticos):
         matrizDistancias[j, i] = frobenius_norm
         dicionario_distancias[(nos_do_estagio[i], nos_do_estagio[j])] = frobenius_norm
         dicionario_distancias[(nos_do_estagio[j], nos_do_estagio[i])] = frobenius_norm
-    
-    dicionarioLinhaMatrizCrescente = {}
-    dicionarioLinhaMatrizCrescenteNo = {}
-    for no in nos_do_estagio:
-        node_distance_pairs = list(zip(nos_indices.keys(), matrizDistancias[nos_indices[no],:]))
-        sorted_pairs = sorted(node_distance_pairs, key=lambda x: x[1])
-        sorted_nodes = [node for node, _ in sorted_pairs]
-        sorted_distances = [dist for _, dist in sorted_pairs]
-        dicionarioLinhaMatrizCrescente[no] = sorted_distances
-        dicionarioLinhaMatrizCrescenteNo[no] = sorted_nodes
 
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
@@ -296,18 +267,18 @@ for est in reversed(estagios_estocasticos):
         iteracao = 1
         while (erro < mapa_tolerancia_estagio[est]):
             mapa_distancias = {}
-            #for i, no_foco in enumerate(Q):
-            #    dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades, dicionarioLinhaMatrizCrescente, dicionarioLinhaMatrizCrescenteNo)
-            #    mapa_distancias[no_foco] = dist_kantorovich
-            #    #print(f"NO: {no_foco}, Kantorovich: {dist_kantorovich} Degradacação: {dist_kantorovich/limSup}")
+            for i, no_foco in enumerate(Q):
+                dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades)
+                mapa_distancias[no_foco] = dist_kantorovich
+                #print(f"NO: {no_foco}, Kantorovich: {dist_kantorovich} Degradacação: {dist_kantorovich/limSup}")
 
             ##Thread computation
-            with parallel_backend("threading"):  # Uses threads instead of processes
-                results = Parallel(n_jobs=cores)(
-                    delayed(calcular_dist_kantorovich)(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades, dicionarioLinhaMatrizCrescente, dicionarioLinhaMatrizCrescenteNo)
-                    for no_foco in Q
-                )
-            mapa_distancias.update(zip(Q, results))
+            #with parallel_backend("threading"):  # Uses threads instead of processes
+            #    results = Parallel(n_jobs=cores)(
+            #        delayed(calcular_dist_kantorovich)(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades)
+            #        for no_foco in Q
+            #    )
+            #mapa_distancias.update(zip(Q, results))
 
 
             if(flag_acelerador_exclusao_cenarios and iteracao < NumeroIteracoesAcelerador):
@@ -321,16 +292,16 @@ for est in reversed(estagios_estocasticos):
                 Q = [q for q in Q if q not in lowest_10_keys]  # If Q is a list
                 erro = max(lowest_10_values)/limSup
                 print("EST: ", est , " FIM ITER: ", iteracao, " erro: ", erro)
-                print(" Tamanho J: ", len(J))
-                print(" Tamanho Q: ", len(Q))
+                print(" J: ", J)
+                print(" Q: ", Q)
             else:
                 key_min_value = min(mapa_distancias, key=mapa_distancias.get)
                 min_value = mapa_distancias[key_min_value]
                 J.append(key_min_value)
                 Q.remove(key_min_value)
                 erro = min_value/limSup
-                print("Tamanho J: ", len(J), " EST: ", est , " ITER: ", iteracao, " erro: ", erro)
-                #print("J: ", J)
+                print("EST: ", est , " FIM ITER: ", iteracao, " erro: ", erro)
+                print(" J: ", J)
             #print("EST: ", est , " FIM ITER: ", iteracao, " J: ", J, " Q: ", Q, " erro: ", erro)                
             end_time = time.time()
             elapsed_time = end_time - start_time  # Calculate elapsed time
@@ -341,16 +312,17 @@ for est in reversed(estagios_estocasticos):
         for iter in range(1,mapa_reducao_estagio[est]+1):
                 mapa_distancias = {}
                 for i, no_foco in enumerate(Q):
-                    dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades, dicionarioLinhaMatrizCrescente, dicionarioLinhaMatrizCrescenteNo)
+                    dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades)
                     mapa_distancias[no_foco] = dist_kantorovich
-                print("Tamanho J: ", len(J), " EST: ", est , " FIM ITER: ", iter)
+                    print(f"NO: {no_foco}, Kantorovich: {dist_kantorovich} Degracação: {dist_kantorovich/limSup}")
                 key_min_value = min(mapa_distancias, key=mapa_distancias.get)
                 min_value = mapa_distancias[key_min_value]
                 J.append(key_min_value)
                 Q.remove(key_min_value)
-                #print("FIM ITER: ", iter, " J: ", J, " Q: ", Q)
+                print("FIM ITER: ", iter, " J: ", J, " Q: ", Q)
 
     # PASSO I+1, REDISTRIBUIR AS PROBABILIDADES
+
     mapa_distancias = {}
     for i, no_excluido in enumerate(J):
         #print(caminho)
@@ -417,12 +389,8 @@ elapsed_time = tempo_final - tempo_Total  # Calculate elapsed time
 print(f"Tempo Total: {elapsed_time:.4f} seconds")
 
 df_arvore.to_csv("df_arvore_reduzida.csv")
-
 ##Estatisticas
-for est in sorted(df_arvore["PER"].unique()):
+for est in df_arvore["PER"].unique():
     nos = df_arvore.loc[df_arvore["PER"] == est]["NO"].unique()
     nos_original = df_arvore_original.loc[df_arvore_original["PER"] == est]["NO"].unique()
     print("NOS ESTAGIO: ", est, " DE: ", len(nos_original), " PARA: ", len(nos))
-
-printaArvore("Arvore_reduzida", df_arvore)
-print(df_arvore)
