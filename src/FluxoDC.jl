@@ -11,7 +11,7 @@ using DataStructures
 function calculaVetorPotenciaLiquidaDaIlha(ilha,iter,est, i_no)
     ## CALCULO DA POTENCIA LIQUIDA
     
-    print(ilha.barrasAtivas[est])
+    #print(ilha.barrasAtivas[est])
     for barra in ilha.barrasAtivas[est]
         barra.potenciaLiquida[iter,i_no.codigo] = get(barra.potenciaGerada,(iter,i_no.codigo),0) - barra.carga[est] + get(barra.deficitBarra,(iter, i_no.codigo), 0)
         println("Codigo Barra: ", barra.codigo, " GER: ", barra.potenciaGerada[(iter,i_no.codigo)], " DEM: ", barra.carga[est], " DEF: ", get(barra.deficitBarra,(iter, i_no.codigo), 0), " PLIQ: ", barra.potenciaLiquida[iter,i_no.codigo])

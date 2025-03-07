@@ -178,18 +178,20 @@ str_caso = "red_arv_fast_and_forward/2aberturas_op2"
 str_caso = "red_arv_fast_and_forward/2aberturas_op3"
 
 
-str_caso = "red_arv_backReduction/2aberturas_ini"
-str_caso = "red_arv_backReduction/2aberturas_ini_Cen1"
+#str_caso = "red_arv_backReduction/2aberturas_ini"
+#str_caso = "red_arv_backReduction/2aberturas_ini_Cen1"
 #str_caso = "red_arv_backReduction/2aberturas_ini_Cen3"
 #str_caso = "red_arv_backReduction/2aberturas_ini_Cen4"
-str_caso = "red_arv_backReduction/2aberturas_ini_Cen5"
+#str_caso = "red_arv_backReduction/2aberturas_ini_Cen5"
 #str_caso = "red_arv_backReduction/2aberturas_ini_Cen2_BK"
 
-str_caso = "Mestrado/2aberturas_ini"
-str_caso = "Mestrado/caso_construcaoArvore"
-str_caso = "Mestrado/caso_construcaoArvore_SIN_50cen"
-str_caso = "Mestrado/caso_construcaoArvore_SIN_2000cen"
-str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen"
+#str_caso = "Mestrado/2aberturas_ini"
+#str_caso = "Mestrado/caso_construcaoArvore"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_50cen"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_2000cen"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen"
+str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen_testeOtim"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN"
 #str_caso = "Teste_Fluxo_IEEE_5_Barras"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_VAZOES = str_caso*"/vazao.csv"
@@ -328,4 +330,4 @@ for uhe in lista_uhes
         end
     end
 end
-println(mapa_montantesUsina)
+#println(mapa_montantesUsina)

@@ -77,7 +77,7 @@ for no in lista_total_de_nos
         mapaProbCondicionalNo[no.codigo] *= (dat_prob[(dat_prob.NO .== no_caminho), "PROBABILIDADE"][1])
     end
 end
-println(mapaProbCondicionalNo)
+#println(mapaProbCondicionalNo)
 
 
 

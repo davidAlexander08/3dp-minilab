@@ -1,6 +1,6 @@
 module Main
 
-    using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames
+    using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames, Dates
     include("CapacidadeLinhas.jl")
 
 
@@ -115,7 +115,7 @@ module Main
             @constraint(m, turb_vars[(no.codigo, uhe.nome, etapa)] <= uhe.turbmax) #linha, coluna
             @constraint(m, vf_vars[(no.codigo, uhe.nome, etapa)] <=  uhe.vmax) #linha, coluna
             @constraint(m, vf_vars[(no.codigo, uhe.nome, etapa)] >=  uhe.vmin) #linha, coluna
-
+                        
             constraint_dict[(no.codigo, uhe.nome, etapa)] = @constraint(m, 
             vf_vars[(no.codigo, uhe.nome, etapa)]
             + turb_vars[(no.codigo, uhe.nome, etapa)]
@@ -159,7 +159,7 @@ module Main
     end
 
     function imprimePolitica(etapa, est, it, miniIter, no)
-        println("ETAPA: ", etapa, " est: ", est, " it: ", it, " miniIter: ", miniIter, " no: ", no.codigo)
+        #println("ETAPA: ", etapa, " est: ", est, " it: ", it, " miniIter: ", miniIter, " no: ", no.codigo)
         #converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         probabilidadeNo = (dat_prob[(dat_prob.NO .== no.codigo), "PROBABILIDADE"][1])
         GeracaoHidreletricaTotal = 0
@@ -208,7 +208,7 @@ module Main
                     push!(df_linhas,  (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, ilha = ilha.codigo, codigoBarraDE = linha.de.codigo, codigoBarraPARA = linha.para.codigo, capacidade = linha.Capacidade[est], fluxo = round(get(linha.fluxoDePara,(it, est, no.codigo),0), digits = 1) ,  folga = valor_folga_rede))
                 end
                 push!(df_balanco_energetico,  (etapa = etapa, iter = it, miniIter = miniIter ,est = est, node = no.codigo, prob = probabilidadeNo, ilha = ilha.codigo, Demanda = carga_estagio_ilha, GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(alpha_vars[(no.codigo, etapa)])))
-                print(df_balanco_energetico)
+                #print(df_balanco_energetico)
                 #if etapa == "BK" && it == 5
                 #    exit(1)
                 #end
@@ -325,7 +325,9 @@ module Main
     @time begin
         for it in 1:caso.n_iter
             for est in 1:caso.n_est
-                for i_no in mapa_periodos[est].nos    
+                start_time = time()
+                for i_no in mapa_periodos[est].nos  
+                    #println("no ", i_no.codigo)  
                     etapa = "FW"     
                     numerosViolacoes = Dict{Tuple{Int, Int, Int}, Int}()
                     #for miniIt in 1:caso.n_iter
@@ -391,9 +393,15 @@ module Main
                     CustoI[(it, i_no.codigo,etapa)] = retornaCustoPresente(est, i_no, etapa)
                     CustoF[(it, i_no.codigo,etapa)] = JuMP.value(alpha_vars[(i_no.codigo,etapa)])
                 end
+
+                end_time = time()
+                elapsed_time = end_time - start_time
+                minutes = floor(Int, elapsed_time / 60)
+                seconds = floor(Int, elapsed_time % 60)
+                println("FW - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
             end 
             
-            println(CustoF)
+            #println(CustoF)
             zinf = CustoI[(it, mapa_periodos[1].nos[1].codigo,"FW")] + CustoF[(it, mapa_periodos[1].nos[1].codigo,"FW")]
             nos_ultimo_estagio = mapa_periodos[caso.n_est].nos
 
@@ -427,7 +435,7 @@ module Main
             println(" lista_zsup: ", lista_zsup )
             println(" lista_gap: ", lista_gap )
             push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = zsup))
-            if gap < 0.001
+            if gap < 0.000001
                 println("CONVERGIU")
                 break
             end
@@ -435,7 +443,8 @@ module Main
             # ETAPA BACKWARD
             if it != caso.n_iter
                 for est in caso.n_est:-1:1 
-                    println("est: ", est)
+                    start_time = time()
+                    #println("est: ", est)
                     for i_no in mapa_periodos[est].nos 
                         etapa = "BK" 
                         m = retornaModelo(est, i_no, etapa)
@@ -483,14 +492,20 @@ module Main
                             dual_balanco_hidrico = JuMP.shadow_price( constraint_dict[(i_no.codigo, uhe.nome, etapa)])
                             FCF_coef[it, i_no.codigo, uhe.codigo]  = FCF_coef[it, i_no.codigo, uhe.codigo] + dual_balanco_hidrico#*probabilidade_no
                             FCF_indep[it, i_no.codigo] = FCF_indep[it, i_no.codigo] - dual_balanco_hidrico*Vi[(i_no.codigo,uhe.codigo, etapa)]#*probabilidade_no
-                            println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", uhe.codigo, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[(i_no.codigo,uhe.codigo, etapa)], " FCF_coef: ", FCF_coef[it, i_no.codigo, uhe.codigo], " FCF_indep: ", FCF_indep[it, i_no.codigo])
+                            #println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", uhe.codigo, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[(i_no.codigo,uhe.codigo, etapa)], " FCF_coef: ", FCF_coef[it, i_no.codigo, uhe.codigo], " FCF_indep: ", FCF_indep[it, i_no.codigo])
                         end
                         imprimePolitica("BK", est, it, 0, i_no)
                         for usi in lista_uhes
                             push!(df_cortes, (est = est, no = i_no.codigo, iter = it, usina = usi.codigo, Indep = FCF_indep[it, i_no.codigo], Coef = FCF_coef[it, i_no.codigo, usi.codigo]))
                         end
                     end
+                    end_time = time()
+                    elapsed_time = end_time - start_time
+                    minutes = floor(Int, elapsed_time / 60)
+                    seconds = floor(Int, elapsed_time % 60)
+                    println("BK - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
                 end 
+
             end
         end
     end
