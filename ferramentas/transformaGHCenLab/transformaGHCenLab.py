@@ -4,9 +4,9 @@ df = pd.read_csv("previsaoM_inc_semTV_2020_01.csv", sep=";")
 print(df)
 postos = df["postos"].unique()
 print(postos)
-numeroCenarios = 1000
+numeroCenarios = 50
 df = df.loc[df["cenario"] <= numeroCenarios]
-columns_to_keep = ["cenario", "postos", "1/2020", "2/2020", "3/2020"]
+columns_to_keep = ["cenario", "postos", "1/2020", "2/2020", "3/2020","4/2020"]
 df = df[columns_to_keep]
 print(df)
 
@@ -16,8 +16,10 @@ lista_df = []
 for posto in postos:
     df_posto = df.loc[df["postos"] == posto  ].reset_index(drop = True)
     print(df_posto)
+    mean_value = round(df_posto["1/2020"].mean(),0)
+    df_posto  = df_posto.drop(columns = ["1/2020"])
+    lista_df.append(pd.DataFrame({"NOME_UHE":[posto], "NO":[1], "VAZAO":[mean_value]}))
     contador_no = 2
-    lista_df.append(pd.DataFrame({"NOME_UHE":[posto], "NO":[1], "VAZAO":[0]}))
     for i, row in df_posto.iterrows():
         for col in df_posto.columns:
             if col not in ["cenario", "postos"]:  # Ignore these columns

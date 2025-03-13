@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
 import networkx as nx
+import pydot
 import matplotlib.pyplot as plt
 from anytree import Node, RenderTree
 import time
 from joblib import Parallel, delayed, parallel_backend
-from numba import jit
+import os
+os.environ["PATH"] += os.pathsep + r"C:\\Program Files (x86)\\Graphviz\\bin"
+#from numba import jit
 from itertools import combinations  # Efficiently generate unique (i, j) pairs
 from scipy.stats import skew
 
@@ -18,11 +21,14 @@ caso = "..\\..\\Mestrado\\caso_2D"
 caso = "..\\..\\Mestrado\\caso_construcaoArvore"
 caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_2000cen"
-caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_1000cen"
+#caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_1000cen"
+caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen"
+caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen_ENASIN"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 
 arquivo_vazoes = caso+"\\vazao_feixes.csv"
+arquivo_vazoes = caso+"\\ena_feixes.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
 df_vazoes.to_csv("saidas\\vazoes_estudo.csv", index=False)
@@ -46,7 +52,7 @@ flag_criterio_de_parada_por_tolerancia = 0
 ########################################################################################################################
 
 ##################  ACELERADOR DE CONVERGENCIA, STEP DA EXCLUSAO DE CENARIOS ##############
-flag_acelerador_exclusao_cenarios = 1 #Exclui sempre uma % dos cenários juntos
+flag_acelerador_exclusao_cenarios = 0 #Exclui sempre uma % dos cenários juntos
 parametro_exclusao_cenarios = 0.01 #1% dos meores cenários para serem excluídos a cara iteração
 NumeroIteracoesAcelerador = 50
 ###########################################################################################
@@ -55,16 +61,56 @@ NumeroIteracoesAcelerador = 50
 cores = -1
 ###################################
 numeroCenariosReducao = 2
+
+
+#ARVORE 8
 mapa_reducao_estagio = {
-    2:200,
-    3:300,
-    4:250
+    2:125,
+    3:250,
+    4:0
 }
-#mapa_reducao_estagio = {
-#    2:8,
-#    3:12,
-#    4:25
-#}
+#ARVORE 7
+mapa_reducao_estagio = {
+    2:100,
+    3:200,
+    4:100
+}
+#ARVORE 6
+mapa_reducao_estagio = {
+    2:75,
+    3:150,
+    4:200
+}
+#ARVORE 5
+mapa_reducao_estagio = {
+    2:50,
+    3:100,
+    4:300
+}
+#ARVORE 4
+mapa_reducao_estagio = {
+    2:25,
+    3:50,
+    4:400
+}
+#ARVORE 3
+mapa_reducao_estagio = {
+    2:13,
+    3:25,
+    4:450
+}
+#ARVORE 2
+mapa_reducao_estagio = {
+    2:8,
+    3:13,
+    4:475
+}
+#ARVORE 1
+mapa_reducao_estagio = {
+    2:3,
+    3:5,
+    4:490
+}
 mapa_tolerancia_estagio = {
     2:0.1,
     3:0.1,
@@ -173,9 +219,9 @@ def calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDe
                 lowest_valid_node = node
                 lowest_valid_distance = distance
                 break  # Stop at the first valid node
-        for idx in indexes_to_remove:
-            del dicionarioLinhaMatrizCrescenteNo[no_excluido][idx]
-            del dicionarioLinhaMatrizCrescente[no_excluido][idx]
+        #for idx in indexes_to_remove:
+        #    del dicionarioLinhaMatrizCrescenteNo[no_excluido][idx]
+        #    del dicionarioLinhaMatrizCrescente[no_excluido][idx]
 
         
         #print("no_excluido: ", no_excluido, " lowest_valid_node: ", lowest_valid_node, " lowest_valid_distance: ", lowest_valid_distance)
@@ -193,6 +239,10 @@ def compute_distance(i, j, matrizFoco, matrizAnalise):
     # Compute Frobenius norm efficiently
     #print("calculnado: ", i, " ", j)
     frobenius_norm = np.linalg.norm(matrizFoco - matrizAnalise, ord='fro')
+    #print("matrizFoco: ", matrizFoco)
+    #print("matrizAnalise: ", matrizAnalise)
+    #print("frobenius_norm: ", frobenius_norm)
+    #exit(1)
     return i, j, frobenius_norm
 
 def compute_caminho_probabilidade_matriz(no, df_arvore, df_vazoes):
@@ -273,6 +323,7 @@ for est in reversed(estagios_estocasticos):
     
     #print(dicionarioDeProbabilidades)
     #print(matrizDistancias)
+    #exit(1)
     #np.savetxt("matrizDistancias.csv", matrizDistancias, delimiter=",", fmt="%.6f")  # "%.6f" ensures 6 decimal places
 
     # PASSO 1.2 -> Verificar a máxima distância obtida entre as árvores testando todos elementos excluídos menos 1
@@ -425,8 +476,6 @@ for est in sorted(df_arvore["PER"].unique()):
     nos_original = df_arvore_original.loc[df_arvore_original["PER"] == est]["NO"].unique()
     print("NOS ESTAGIO: ", est, " DE: ", len(nos_original), " PARA: ", len(nos))
 
-printaArvore("Arvore_reduzida", df_arvore)
-print(df_arvore)
 
 
 
@@ -465,3 +514,8 @@ for est in sorted(df_arvore["PER"].unique())[1:]:
 
 df_result = pd.concat(lista_df).reset_index(drop = True)
 df_result.to_csv("saidas\\estatisticas_Arv_red.csv", index=False)
+
+
+
+printaArvore("saidas\\Arvore_reduzida", df_arvore)
+print(df_arvore)

@@ -123,6 +123,7 @@ module Main
             - sum(turb_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])
             - sum(vert_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])
             == Vi[no.codigo,uhe.codigo, etapa] + (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])) #linha, colun * converte_m3s_hm3
+            #println(constraint_dict)
         end
 
         for term in lista_utes
@@ -131,13 +132,14 @@ module Main
         end
         @constraint(  m, deficit_vars[(no.codigo, etapa)] >= 0 ) 
 
-        @objective(m, Min, sum(term.custo_geracao * gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
-        + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
-        + sistema.deficit_cost*deficit_vars[(no.codigo, etapa)] 
-        +sum(sistema.deficit_cost*deficit_barra[(no.codigo, barra.codigo, etapa)] for barra in lista_barras)
-        + alpha_vars[(no.codigo, etapa)])
+
         
         if rede_eletrica == 1
+            @objective(m, Min, sum(term.custo_geracao * gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
+            + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
+            + sistema.deficit_cost*deficit_vars[(no.codigo, etapa)] 
+            +sum(sistema.deficit_cost*deficit_barra[(no.codigo, barra.codigo, etapa)] for barra in lista_barras)
+            + alpha_vars[(no.codigo, etapa)])
             carga_estagio_ilha = 0
             for ilha in lista_ilhas_eletricas ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
                 for barra in ilha.barrasAtivas[est]
@@ -149,6 +151,11 @@ module Main
                 + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) == carga_estagio_ilha   )
             end
         else
+            @objective(m, Min, sum(term.custo_geracao * gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
+            + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
+            + sistema.deficit_cost*deficit_vars[(no.codigo, etapa)] 
+            + alpha_vars[(no.codigo, etapa)])
+
             @constraint(  m, balanco,
             sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes) 
             + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
@@ -361,6 +368,7 @@ module Main
                         end
                     end
 
+                    #print(m)
                     #for ilha in lista_ilhas_eletricas
                     #    add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
                     #end
@@ -435,7 +443,7 @@ module Main
             println(" lista_zsup: ", lista_zsup )
             println(" lista_gap: ", lista_gap )
             push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = zsup))
-            if gap < 0.000001
+            if gap < 0.00001
                 println("CONVERGIU")
                 break
             end
@@ -476,6 +484,8 @@ module Main
                         #    add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
                         #end
                         JuMP.optimize!(m) 
+                        #println("Solver status: ", termination_status(m))
+
                         if est < caso.n_est
                             for filho in i_no.filhos
                                 for uhe in lista_uhes
@@ -489,6 +499,7 @@ module Main
                         custo_futuro = JuMP.value(alpha_vars[(i_no.codigo, etapa)])
                         FCF_indep[it, i_no.codigo] = FCF_indep[it, i_no.codigo] + (custo_presente + custo_futuro)#*probabilidade_no
                         for uhe in lista_uhes
+                            #println("i_no.codigo: ", i_no.codigo, " uhe: ", uhe.nome, " etapa: ", etapa)
                             dual_balanco_hidrico = JuMP.shadow_price( constraint_dict[(i_no.codigo, uhe.nome, etapa)])
                             FCF_coef[it, i_no.codigo, uhe.codigo]  = FCF_coef[it, i_no.codigo, uhe.codigo] + dual_balanco_hidrico#*probabilidade_no
                             FCF_indep[it, i_no.codigo] = FCF_indep[it, i_no.codigo] - dual_balanco_hidrico*Vi[(i_no.codigo,uhe.codigo, etapa)]#*probabilidade_no
@@ -535,19 +546,22 @@ module Main
     df_linhas_sf = df_linhas[(df_linhas.etapa .== "FW") .&& (df_linhas.iter .== max_iter), :]
 
 
-    
+
     df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[], miniIter = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     for est_value in unique(df_balanco_energetico.est)
+        println("est: ", est_value)
         subset = df_balanco_energetico_sf[df_balanco_energetico_sf.est .== est_value, :]
         for iteracao in unique(subset.iter)
             maximaMiniIteracao = maximum(subset[subset.iter .== iteracao, :miniIter]) 
             subsubset = subset[(subset.iter .== iteracao) .& (subset.miniIter .== maximaMiniIteracao), :]
+            println("subsubset: ", subsubset)
             ProbGT = 0
             ProbGH = 0
             ProbDeficit = 0
             ProbCustoPresente = 0
             ProbCustoFuturo = 0
             Demanda = 0
+            println("mapaProbCondicionalNo: ", mapaProbCondicionalNo)
             for no in unique(subsubset.node)
                 ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
                 ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
@@ -555,14 +569,16 @@ module Main
                 ProbCustoPresente += (subsubset[(subsubset.node .== no), "CustoPresente"][1])*(mapaProbCondicionalNo[no])
                 ProbCustoFuturo += (subsubset[(subsubset.node .== no), "CustoFuturo"][1])*(mapaProbCondicionalNo[no])
                 Demanda += (subsubset[(subsubset.node .== no), "Demanda"][1])*(mapaProbCondicionalNo[no])
+                println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
             end
+            
             dem = (subset[(subset.est .== est_value), "Demanda"][1])
-            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, miniIter = maximaMiniIteracao, est = est_value, Demanda = dem, GT = ProbGT, GH = ProbGH, Deficit = ProbDeficit, CustoPresente = ProbCustoPresente , CustoFuturo = ProbCustoFuturo))
+            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, miniIter = maximaMiniIteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
         end
     end
     df_per_balanco_energetico = sort(df_per_balanco_energetico, :iter)
-    println(df_per_balanco_energetico)
-
+    #println(df_per_balanco_energetico)
+    show(IOContext(stdout, :compact => false), df_per_balanco_energetico)
     CSV.write("saidas/PDD/balanco_energetico_fw.csv", df_balanco_energetico_fw)
     CSV.write("saidas/PDD/balanco_energetico_bk.csv", df_balanco_energetico_bk)
     CSV.write("saidas/PDD/balanco_energetico_sf.csv", df_balanco_energetico_sf)
