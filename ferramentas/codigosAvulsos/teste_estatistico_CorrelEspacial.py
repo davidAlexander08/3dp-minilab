@@ -9,6 +9,7 @@ from scipy.stats import mannwhitneyu
 from statsmodels.stats.weightstats import DescrStatsW
 import plotly.graph_objects as go
 from scipy.stats import linregress
+from sklearn.metrics import r2_score
 from plotly.subplots import make_subplots
 
 df_arvore_original = pd.read_csv("arvore_estudo.csv")
@@ -140,7 +141,18 @@ for caso in casos:
         
         # Compute R^2 using linear regression
         slope, intercept, r_value, p_value, std_err = linregress(lista_correl_orig, lista_correl_red)
+        print(slope)
+        print(intercept)
+        print(r_value)
+        print(r_value**2)
+        print(p_value)
+        print(std_err)
         r_squared = r_value**2
+
+        r_squared = r2_score(lista_correl_orig, lista_correl_red)
+        print("R-squared:", r_squared)
+
+
 
         fig.add_trace(go.Scatter(
             x=lista_correl_orig, 

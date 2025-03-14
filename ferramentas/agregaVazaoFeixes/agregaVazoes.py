@@ -74,7 +74,16 @@ for uhe in df_vazoes["NOME_UHE"].unique():
         lista_df_ena.append(df_ena)
         print("uhe: ", uhe, " fprodt_acum_65: ", fprodt_acum_65)
 
+
 df_ena_result = pd.concat(lista_df_ena)
+df_mean = df_ena_result.groupby("NOME_UHE")["VAZAO"].mean().reset_index()
+
+top_uhe = df_mean.sort_values(by=["VAZAO"], ascending=[False])
+top_uhe["VAZAO"] = top_uhe["VAZAO"].round(0)
+print(top_uhe)
+
+top_uhe.to_csv("top_ena.csv")
+exit(1)
 df_ena_result.to_csv("ena_feixes_incr.csv")
 
 
