@@ -26,10 +26,6 @@ df_hidr = Hidr.read("..\\transformaNewaveLab\\deck_newave_2020_01\\HIDR.dat").ca
 df_hidr = df_hidr.reset_index()
 postos_considerados = df_vazoes["NOME_UHE"].unique()
 
-#print(df_hidr)
-#print(df_confhd)
-#print(postos_considerados)
-
 def calcula_prodt_65(codigo_usi, df_hidr):
     df_hidr_uhe = df_hidr.loc[(df_hidr["codigo_usina"] == codigo_usi)]
     vol_65 = (df_hidr_uhe["volume_maximo"].iloc[0] - df_hidr_uhe["volume_minimo"].iloc[0])*0.65 + df_hidr_uhe["volume_minimo"].iloc[0]
