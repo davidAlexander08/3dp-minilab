@@ -331,6 +331,7 @@ module Main
 
     @time begin
         for it in 1:caso.n_iter
+            start_time_iter = time()
             for est in 1:caso.n_est
                 #println("Relizando FW - Iter ", it, " Est ", est)
                 start_time = time()
@@ -408,7 +409,7 @@ module Main
                 elapsed_time = end_time - start_time
                 minutes = floor(Int, elapsed_time / 60)
                 seconds = floor(Int, elapsed_time % 60)
-                println("FW - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
+                #println("FW - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
             end 
             
             #println(CustoF)
@@ -454,9 +455,15 @@ module Main
             lista_zinf[it] = zinf
             lista_zsup[it] = valor_zsup            
             lista_gap[it] = gap
-            println(" lista_zinf: ", lista_zinf )
-            println(" lista_zsup: ", lista_zsup )
-            println(" lista_gap: ", lista_gap )
+            #println(" lista_zinf: ", lista_zinf )
+            #println(" lista_zsup: ", lista_zsup )
+            #println(" lista_gap: ", lista_gap )
+            end_time_iter = time()
+            elapsed_time = end_time_iter - start_time_iter
+            minutes = floor(Int, elapsed_time / 60)
+            seconds = floor(Int, elapsed_time % 60)
+            #println("BK - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
+            println("Iteração: ", it, " ZINF: ", zinf, " ZSUP: ", valor_zsup, " GAP: ", gap, " Tempo: ", minutes, " min ", seconds, "secs")
             push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup))
             if gap < 0.00001
                 println("CONVERGIU")
@@ -534,7 +541,7 @@ module Main
                     elapsed_time = end_time - start_time
                     minutes = floor(Int, elapsed_time / 60)
                     seconds = floor(Int, elapsed_time % 60)
-                    println("BK - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
+                    #println("BK - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
                 end 
 
             end

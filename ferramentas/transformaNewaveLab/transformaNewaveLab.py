@@ -71,9 +71,14 @@ def calculaEngolimentoMaximo(codigo_usi, df_hidr):
     turb_max = vaz_nom_1*conj_maq_1 + vaz_nom_2*conj_maq_2 + vaz_nom_3*conj_maq_3 + vaz_nom_4*conj_maq_4 + vaz_nom_5*conj_maq_5
     return int(turb_max)
 
-    
-df_confhd = Confhd.read("deck_newave_2020_01\\CONFHD.dat").usinas
-df_hidr = Hidr.read("deck_newave_2020_01\\HIDR.dat").cadastro
+caso = "deck_newave_2020_01_reduzido"
+caso = "deck_newave_2020_01_mini"
+caso = "deck_newave_2020_01_mini_mini"
+caso = "deck_newave_2020_01_mini_mini_min"
+caso = "deck_newave_2020_01_mini_mini_min_mini"
+caso = "deck_newave_2020_01_reduzido_180325"
+df_confhd = Confhd.read(caso+"\\CONFHD.dat").usinas
+df_hidr = Hidr.read(caso+"\\HIDR.dat").cadastro
 df_hidr = df_hidr.reset_index()
 df_postos_considerados = pd.read_csv("vazao_feixes.csv")
 postos_considerados = df_postos_considerados["NOME_UHE"].unique()
@@ -90,15 +95,16 @@ for idx, row in df_confhd.iterrows():
     #usina.nome =     str(row.codigo_usina)
     usina.nome =     str(row.posto)
     #usina.jusante =  str(row.codigo_usina_jusante) if row.codigo_usina_jusante != 0 else ""
+    print(usina.nome)
     usina.jusante =  str(usi_jusante["posto"].iloc[0]) if row.codigo_usina_jusante != 0 else ""
     usina.posto =    row.posto
     usina.GHMIN =    0
     usina.GHMAX =    100000
     usina.TURBMAX =  round(turb_max,2)
-    usina.VOLMIN =   int(hidr_usi["volume_minimo"].iloc[0])
-    usina.VOLMAX =   int(hidr_usi["volume_maximo"].iloc[0])
+    usina.VOLMIN =   int(hidr_usi["volume_minimo"].iloc[0]) - int(hidr_usi["volume_minimo"].iloc[0])
+    usina.VOLMAX =   int(hidr_usi["volume_maximo"].iloc[0]) - int(hidr_usi["volume_minimo"].iloc[0])
     usina.PRODT =    round(prodt,2)
-    usina.VOLINI =   int((hidr_usi["volume_maximo"].iloc[0]-hidr_usi["volume_minimo"].iloc[0]) * (row.volume_inicial_percentual/100) + hidr_usi["volume_minimo"].iloc[0])
+    usina.VOLINI =   int((hidr_usi["volume_maximo"].iloc[0]-hidr_usi["volume_minimo"].iloc[0]) * (row.volume_inicial_percentual/100) + hidr_usi["volume_minimo"].iloc[0]) - int(hidr_usi["volume_minimo"].iloc[0])
     usina.BARRA =    1
     #usina.CODIGO =   row.codigo_usina
     usina.CODIGO =   row.posto
