@@ -196,6 +196,7 @@ str_caso = "casos/marcato/caso_marcato_deterministico"
 str_caso = "Mestrado/caso_construcaoArvore_SIN"
 str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido"
 str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido"
+str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_arvore_Externa"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido_2cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen_2est"
@@ -218,13 +219,21 @@ caso.n_iter = dict["MAX_ITERACOES"]
 caso.n_est = dict["ESTAGIOS"]
 rede_eletrica = dict["REDE"]
 arvore_externa = dict["ARVORE_EXTERNA"]
+caminho_arvore_externa = dict["CAMINHO_ARVORE_EXTERNA"]
 caso.estrutura_arvore = dict["ARVORE"]
 
-
-
-
+#caminho_vazao_externa = dict["CAMINHO_VAZAO_EXTERNA"]
+#caminho_probabilidade_externa = dict["CAMINHO_PROBABILIDADE_EXTERNA"]
+#if arvore_externa == 1
+#    PATH_VAZOES = caminho_vazao_externa
+#    PATH_PROBABILIDADES = caminho_probabilidade_externa
+#else
+#    PATH_VAZOES = str_caso*"/vazao.csv"
+#    PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
+#end
 PATH_VAZOES = str_caso*"/vazao.csv"
 PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
+
 
 
 @info "Lendo arquivo de vazoes $(PATH_VAZOES)"
