@@ -10,7 +10,7 @@
     "UHEs": [
         {
             "NOME": "6",
-            "JUSANTE": "7",
+            "JUSANTE": "8",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 1692,
@@ -22,21 +22,8 @@
             "CODIGO": 6
         },
         {
-            "NOME": "7",
-            "JUSANTE": "8",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 1328,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 2500,
-            "PRODT": 0.37,
-            "VOLUME_INICIAL": 906,
-            "BARRA": 1,
-            "CODIGO": 7
-        },
-        {
             "NOME": "8",
-            "JUSANTE": "9",
+            "JUSANTE": "11",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 2028,
@@ -46,19 +33,6 @@
             "VOLUME_INICIAL": 0,
             "BARRA": 1,
             "CODIGO": 8
-        },
-        {
-            "NOME": "9",
-            "JUSANTE": "11",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 1076,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 0,
-            "PRODT": 0.39,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 9
         },
         {
             "NOME": "11",
@@ -126,32 +100,6 @@
             "CODIGO": 34
         },
         {
-            "NOME": "22",
-            "JUSANTE": "251",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 154,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 1351,
-            "PRODT": 0.35,
-            "VOLUME_INICIAL": 272,
-            "BARRA": 1,
-            "CODIGO": 22
-        },
-        {
-            "NOME": "251",
-            "JUSANTE": "24",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 324,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 3447,
-            "PRODT": 0.64,
-            "VOLUME_INICIAL": 603,
-            "BARRA": 1,
-            "CODIGO": 251
-        },
-        {
             "NOME": "66",
             "JUSANTE": "",
             "GHMIN": 0,
@@ -179,7 +127,7 @@
         },
         {
             "NOME": "227",
-            "JUSANTE": "228",
+            "JUSANTE": "229",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 1600,
@@ -191,21 +139,8 @@
             "CODIGO": 227
         },
         {
-            "NOME": "228",
-            "JUSANTE": "229",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 1551,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 0,
-            "PRODT": 0.2,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 228
-        },
-        {
             "NOME": "229",
-            "JUSANTE": "230",
+            "JUSANTE": "",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 3860,
@@ -215,19 +150,6 @@
             "VOLUME_INICIAL": 0,
             "BARRA": 1,
             "CODIGO": 229
-        },
-        {
-            "NOME": "230",
-            "JUSANTE": "",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 3788,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 0,
-            "PRODT": 0.22,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 230
         },
         {
             "NOME": "270",
@@ -322,7 +244,7 @@
         },
         {
             "NOME": "25",
-            "JUSANTE": "206",
+            "JUSANTE": "31",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 576,
@@ -332,19 +254,6 @@
             "VOLUME_INICIAL": 1740,
             "BARRA": 1,
             "CODIGO": 25
-        },
-        {
-            "NOME": "206",
-            "JUSANTE": "31",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 675,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 146,
-            "PRODT": 0.62,
-            "VOLUME_INICIAL": 140,
-            "BARRA": 1,
-            "CODIGO": 206
         },
         {
             "NOME": "31",
@@ -555,19 +464,6 @@
             "CODIGO": 74
         },
         {
-            "NOME": "81",
-            "JUSANTE": "",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 2520,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 33,
-            "PRODT": 0.14,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 81
-        },
-        {
             "NOME": "215",
             "JUSANTE": "217",
             "GHMIN": 0,
@@ -579,32 +475,6 @@
             "VOLUME_INICIAL": 423,
             "BARRA": 1,
             "CODIGO": 215
-        },
-        {
-            "NOME": "89",
-            "JUSANTE": "216",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 501,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 64,
-            "PRODT": 0.39,
-            "VOLUME_INICIAL": 34,
-            "BARRA": 1,
-            "CODIGO": 89
-        },
-        {
-            "NOME": "216",
-            "JUSANTE": "217",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 558,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 157,
-            "PRODT": 1.61,
-            "VOLUME_INICIAL": 79,
-            "BARRA": 1,
-            "CODIGO": 216
         },
         {
             "NOME": "217",
@@ -634,7 +504,7 @@
         },
         {
             "NOME": "93",
-            "JUSANTE": "220",
+            "JUSANTE": "94",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 102,
@@ -644,19 +514,6 @@
             "VOLUME_INICIAL": 416,
             "BARRA": 1,
             "CODIGO": 93
-        },
-        {
-            "NOME": "220",
-            "JUSANTE": "94",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 134,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 0,
-            "PRODT": 0.56,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 220
         },
         {
             "NOME": "94",
@@ -699,7 +556,7 @@
         },
         {
             "NOME": "77",
-            "JUSANTE": "78",
+            "JUSANTE": "222",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 1500,
@@ -711,21 +568,8 @@
             "CODIGO": 77
         },
         {
-            "NOME": "78",
-            "JUSANTE": "222",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 1784,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 0,
-            "PRODT": 0.61,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 78
-        },
-        {
             "NOME": "222",
-            "JUSANTE": "81",
+            "JUSANTE": "",
             "GHMIN": 0,
             "GHMAX": 100000,
             "TURBMAX": 2100,
@@ -787,32 +631,6 @@
             "VOLUME_INICIAL": 8711,
             "BARRA": 1,
             "CODIGO": 156
-        },
-        {
-            "NOME": "188",
-            "JUSANTE": "",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 660,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 0,
-            "PRODT": 0.72,
-            "VOLUME_INICIAL": 0,
-            "BARRA": 1,
-            "CODIGO": 188
-        },
-        {
-            "NOME": "255",
-            "JUSANTE": "188",
-            "GHMIN": 0,
-            "GHMAX": 100000,
-            "TURBMAX": 0,
-            "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 3696,
-            "PRODT": 0.0,
-            "VOLUME_INICIAL": 849,
-            "BARRA": 1,
-            "CODIGO": 255
         },
         {
             "NOME": "271",
@@ -1022,7 +840,7 @@
               {"NOME":"BARRA02", "CODIGO":2, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
               {"NOME":"BARRA03", "CODIGO":3, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
               {"NOME":"BARRA04", "CODIGO":4, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
-              {"NOME":"BARRA05", "CODIGO":5, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[30000,50000,40000,55000,0], "AREA":1}],
+              {"NOME":"BARRA05", "CODIGO":5, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[500000,600000,500000,650000,0], "AREA":1}],
 
     "LINHAS":[{"DE":1, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,100 ,100 ,10 ,10 ]},
               {"DE":3, "PARA":1, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,50,50,500,500]},

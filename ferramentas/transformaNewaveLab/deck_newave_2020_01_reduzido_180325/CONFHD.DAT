@@ -1,0 +1,59 @@
+ NUM  NOME         POSTO JUS   REE V.INIC U.EXIS MODIF INIC.HIST FIM HIST
+ XXXX XXXXXXXXXXXX XXXX  XXXX XXXX XXX.XX XXXX   XXXX     XXXX     
+    6 FURNAS          6     8   10  13.25   EX      1     1931     2018
+    8 ESTREITO        8    11   10   0.00   EX      1     1931     2018
+   11 VOLTA GRANDE   11    12   10   0.00   EX      1     1931     2018
+   12 P. COLOMBIA    12    17   10   0.00   EX      1     1931     2018
+   17 MARIMBONDO     17    18   10  23.12   EX      1     1931     2018
+   18 A. VERMELHA    18    34   10  23.70   EX      1     1931     2018
+   34 I. SOLTEIRA    34    45   10  68.14   EX      1     1931     2018
+   66 ITAIPU         66     0    5   0.00   EX      0     1931     2018
+  156 TRES MARIAS   156     0    1  57.02   EX      1     1931     2018
+  227 SINOP         227   229    7  49.95   EX      1     1931     2018
+  229 TELES PIRES   229     0    7   0.00   EX      1     1931     2018
+  251 SERRA MESA    270   257    1   9.41   EX      1     1931     2018
+  257 PEIXE ANGIC   257   261    1  18.25   EX      1     1931     2018
+  261 LAJEADO       273     0    1   0.00   EX      1     1931     2018
+  285 JIRAU         285   287    6   0.00   EX      1     1931     2018
+  287 STO ANTONIO   287     0    6   0.00   EX      1     1931     2018
+  279 SAMUEL        279     0    6  18.93   EX      0     1931     2018
+   24 EMBORCACAO     24    31   10  12.80   EX      1     1931     2018
+   25 NOVA PONTE     25    31   10  16.77   EX      1     1931     2018
+   31 ITUMBIARA      31    32   10  16.31   EX      1     1931     2018
+   32 CACH.DOURADA   32    33   10   0.00   EX      1     1931     2018
+   33 SAO SIMAO      33    34   10  33.41   EX      1     1931     2018
+   37 BARRA BONITA   37    40   10  53.70   EX      1     1931     2018
+   40 PROMISSAO      40    42   10  42.90   EX      1     1931     2018
+   42 NAVANHANDAVA   42    43   10   0.00   EX      0     1931     2018
+   43 TRES IRMAOS    43    45   10  65.85   EX      1     1931     2018
+   45 JUPIA          45    46   10   0.00   EX      1     1931     2018
+   46 P. PRIMAVERA   46    66   10   0.00   EX      1     1931     2018
+   47 A.A. LAYDNER   47    49   12  28.79   EX      1     1931     2018
+   49 CHAVANTES      49    50   12  22.38   EX      1     1931     2018
+   50 L.N. GARCEZ    50    61   12   0.00   EX      1     1931     2018
+   61 CAPIVARA       61    62   12  35.48   EX      1     1931     2018
+   62 TAQUARUCU      62    63   12   0.00   EX      1     1931     2018
+   63 ROSANA         63    66   12   0.00   EX      1     1931     2018
+   74 G.B. MUNHOZ    74    76   11  20.80   EX      0     1931     2018
+   86 BARRA GRANDE  215    91    2  19.27   EX      1     1931     2018
+   91 MACHADINHO    217    92    2  17.78   EX      1     1931     2018
+   92 ITA            92   103    2   0.00   EX      1     1931     2018
+   93 PASSO FUNDO    93   103    2  29.65   EX      0     1931     2018
+  103 FOZ CHAPECO    94     0    2   0.00   EX      0     1931     2018
+  115 G.P. SOUZA    115     0    2  23.80   EX      0     1931     2018
+   76 SEGREDO        75    77   11  35.40   EX      0     1931     2018
+   77 SLT.SANTIAGO   77    82   11  18.96   EX      1     1931     2018
+   82 SALTO CAXIAS  222     0   11   0.00   EX      1     1931     2018
+  169 SOBRADINHO    169   172    3  28.81   EX      1     1931     2018
+  172 ITAPARICA     172   178    3  37.45   EX      1     1931     2018
+  178 XINGO         178     0    3   0.00   EX      1     1931     2018
+  295 FICT.TRES MA  156   169    3  57.02   EX      1     1931     2018
+  267 ESTREITO TOC  271   275    4   0.00   EX      1     1931     2018
+  275 TUCURUI       275     0    4  17.26   EX      1     1931     2018
+  291 FICT.SERRA M  270   292    4  17.11   EX      1     1931     2018
+  292 FICT.CANA BR  191   306    4   0.00   EX      1     1931     2018
+  302 FICT.LAJEADO  273   267    4   0.00   EX      1     1931     2018
+  303 FICT.PEIXE A  257   302    4  18.25   EX      1     1931     2018
+  306 FICT.SAO SAL  253   303    4   0.00   EX      1     1931     2018
+  314 PIMENTAL      302     0    8   0.00   EX      0     1931     2018
+  288 BELO MONTE    292     0    8   0.00   EX      1     1931     2018

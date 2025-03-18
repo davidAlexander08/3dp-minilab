@@ -1,0 +1,132 @@
+{
+    "MAX_ITERACOES": 5,
+    "ESTAGIOS": 2,
+    "ARVORE":[2],
+    "REDE":1,
+    "UHEs": [
+        {
+            "NOME": "6",
+            "JUSANTE": "34",
+            "GHMIN": 0,
+            "GHMAX": 100000,
+            "TURBMAX": 1700,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 17217,
+            "PRODT": 0.81,
+            "VOLUME_INICIAL": 2000,
+            "BARRA": 1,
+            "CODIGO": 6
+        },
+        {
+            "NOME": "34",
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 100000,
+            "TURBMAX": 9000,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 12828,
+            "PRODT": 0.37,
+            "VOLUME_INICIAL": 9000,
+            "BARRA": 1,
+            "CODIGO": 34
+        }
+    ],
+    "UTEs":[
+        {
+            "NOME":"ANGRA1",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 10.0,
+            "BARRA":2,
+            "CODIGO":1
+        },
+        {
+            "NOME":"ANGRA2",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 20.0,
+            "BARRA":2,
+            "CODIGO":2
+        },
+        {
+            "NOME":"ANGRA3",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 30.0,
+            "BARRA":2,
+            "CODIGO":3
+        },
+        {
+            "NOME":"ANGRA4",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 40.0,
+            "BARRA":2,
+            "CODIGO":4
+        },
+        {
+            "NOME":"ANGRA5",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 50.0,
+            "BARRA":2,
+            "CODIGO":5
+        },
+        {
+            "NOME":"ANGRA6",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 60.0,
+            "BARRA":2,
+            "CODIGO":6
+        },
+        {
+            "NOME":"ANGRA7",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 70.0,
+            "BARRA":2,
+            "CODIGO":7
+        },
+        {
+            "NOME":"ANGRA8",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 80.0,
+            "BARRA":2,
+            "CODIGO":8
+        },
+        {
+            "NOME":"ANGRA9",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 90.0,
+            "BARRA":2,
+            "CODIGO":9
+        },
+        {
+            "NOME":"ANGRA10",
+            "GTMIN": 0.0,
+            "GTMAX": 5000.0,
+            "CUSTO_GERACAO": 100.0,
+            "BARRA":2,
+            "CODIGO":10
+        }
+    ],
+    "SISTEMA": {
+        "CUSTO_DEFICIT": 5000.0,
+        "DEMANDA": [150.0, 150.0, 150.0]
+    },
+    "BARRAS":[{"NOME":"BARRA01", "CODIGO":1, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":2, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA02", "CODIGO":2, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA03", "CODIGO":3, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA04", "CODIGO":4, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA05", "CODIGO":5, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[50000,70000,70000,95000,0], "AREA":1}],
+
+    "LINHAS":[{"DE":1, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,100 ,100 ,10 ,10 ]},
+              {"DE":3, "PARA":1, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,50,50,500,500]},
+              {"DE":3, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]},
+              {"DE":3, "PARA":4, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]},
+              {"DE":3, "PARA":5, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]}
+            ]
+}
