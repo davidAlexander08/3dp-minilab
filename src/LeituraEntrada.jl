@@ -191,40 +191,56 @@ str_caso = "casos/marcato/caso_marcato_deterministico"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_2000cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen_testeOtim"
-str_caso = "Mestrado/caso_construcaoArvore_SIN_500cen"
-str_caso = "Mestrado/caso_construcaoArvore_SIN_50cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_500cen"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_50cen"
+str_caso = "Mestrado/caso_construcaoArvore_SIN"
+str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido"
+str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido_2cen"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen_2est"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_2cen_2est"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_2cen_2est"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_mini_2cen_2est"
+#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_mini_2cen_2est_det"
 #str_caso = "Teste_Fluxo_IEEE_5_Barras"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
-PATH_VAZOES = str_caso*"/vazao.csv"
-PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
 PATH_HORAS = str_caso*"/horas.csv"
-
 
 
 @info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
 
 
-@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
-dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
-
-@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
-dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
-#print(dat_vaz[(dat_vaz.NOME_UHE .== 1) .& (dat_vaz.PERIODO .== 1), :])
-#print(dat_vaz[(dat_vaz.NOME_UHE .== 1) .& (dat_vaz.PERIODO .== 1), "VAZAO"][1])
-
-@info "Lendo arquivo de horas $(PATH_HORAS)"
-dat_horas = CSV.read(PATH_HORAS, DataFrame)
-
 
 caso = CaseData()
 caso.n_iter = dict["MAX_ITERACOES"]
 caso.n_est = dict["ESTAGIOS"]
 rede_eletrica = dict["REDE"]
+arvore_externa = dict["ARVORE_EXTERNA"]
 caso.estrutura_arvore = dict["ARVORE"]
+
+
+
+
+PATH_VAZOES = str_caso*"/vazao.csv"
+PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
+
+
+@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
+dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
+@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
+dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
 include("arvore.jl")
 
+
+
+
+
+
+
+@info "Lendo arquivo de horas $(PATH_HORAS)"
+dat_horas = CSV.read(PATH_HORAS, DataFrame)
 #SISTEMA
 sist = dict["SISTEMA"]
 sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])

@@ -24,7 +24,7 @@ module Main
         for no in lista_total_de_nos
             for uhe in lista_uhes
                 if no.codigo == 1
-                    Vi[(no.codigo, uhe.codigo, etapa)] = uhe.v0
+                    Vi[(no.codigo, uhe.codigo, etapa)] = uhe.v0 
                 else
                     Vi[(no.codigo, uhe.codigo, etapa)] = 0
                 end
@@ -120,9 +120,9 @@ module Main
             vf_vars[(no.codigo, uhe.nome, etapa)]
             + turb_vars[(no.codigo, uhe.nome, etapa)]
             + vert_vars[(no.codigo, uhe.nome, etapa)]
-            - sum(turb_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])
-            - sum(vert_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])
-            == Vi[no.codigo,uhe.codigo, etapa] + (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])) #linha, colun * converte_m3s_hm3
+            == Vi[no.codigo,uhe.codigo, etapa] + (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
+            + sum(turb_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])
+            + sum(vert_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])) #linha, colun * converte_m3s_hm3
             #println(constraint_dict)
         end
 
@@ -156,8 +156,7 @@ module Main
             + sistema.deficit_cost*deficit_vars[(no.codigo, etapa)] 
             + alpha_vars[(no.codigo, etapa)])
 
-            @constraint(  m, balanco,
-            sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes) 
+            @constraint(  m, sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes) 
             + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
             + deficit_vars[(no.codigo, etapa)] == sistema.demanda[est]   )
         end
@@ -235,6 +234,11 @@ module Main
             geracao = JuMP.value(gt_vars[(no.codigo, term.nome, etapa)])
             custo_presente += geracao*term.custo_geracao
         end
+        for hydro in lista_uhes 
+            vertimento = JuMP.value(vert_vars[(no.codigo, hydro.nome, etapa)])
+            custo_presente += vertimento*0.01
+        end
+
         if rede_eletrica == 1
             for ilha in lista_ilhas_eletricas 
                 for barra in ilha.barrasAtivas[est]
@@ -274,9 +278,6 @@ module Main
             @constraint(  m, sum(fator*linha.linhaMatrizSensibilidade[est][i]*lista_variaveis[i] for i in 1:length(lista_variaveis)) + fator*folga_rede[(i_no.codigo, linha, etapa)] == fator*linha.RHS[est]   )
         end
     end
-
-
-
     function transfere_resultados_para_Barras(ilha, iter, est, i_no)
         for barra in ilha.barrasAtivas[est]
             geracao = 0
@@ -301,7 +302,6 @@ module Main
             #println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, "GerBarra: ", barra.potenciaGerada[(iter, est, i_no.codigo)], " Carga: ", barra.carga[est], " Deficit: ", get(barra.deficitBarra,(iter, est, i_no.codigo),0), " PotLiq: ", get(barra.potenciaLiquida,(iter, est, i_no.codigo),0) )
         end
     end
-
     function verificaFluxosViolados(iter, est, i_no, ilha, mapa_ilha_fluxos_violados)
         #for barra in ilha.barras
         #    println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, " GerBarra: ", get(barra.potenciaGerada,(est, i_no.codigo, barra.codigo),0), " Carga: ", barra.carga[est], " Deficit: ", get(barra.deficitBarra,(est, i_no.codigo, barra.codigo),0), " PotLiq: ", get(barra.potenciaLiquida,(est, i_no.codigo, barra.codigo),0) )
@@ -332,6 +332,7 @@ module Main
     @time begin
         for it in 1:caso.n_iter
             for est in 1:caso.n_est
+                #println("Relizando FW - Iter ", it, " Est ", est)
                 start_time = time()
                 for i_no in mapa_periodos[est].nos  
                     #println("no ", i_no.codigo)  
@@ -374,7 +375,8 @@ module Main
                     #end
                     JuMP.optimize!(m) 
                     #println(m) 
-                    #for ilha in lista_ilhas_eletricas
+                    #exit(1)
+                    ##for ilha in lista_ilhas_eletricas
                     #    transfere_resultados_para_Barras(ilha, it, est, i_no)
                     #    numerosViolacoes[miniIt, i_no.codigo, ilha.codigo] = verificaFluxosViolados(it, est, i_no, ilha, mapa_ilha_fluxos_violados)
                     #end
@@ -425,24 +427,37 @@ module Main
                     end
                     #println(lista_probs_caminho)
                     CI_no = CustoI[(it, no.codigo, "FW")]
+                    CI_no = round(CI_no, digits = 2)
                     #println("no: ", no.codigo, " custo: ", CI_no)
+                    prob_resultante = 1
                     for prob in lista_probs_caminho
                         CI_no = CI_no*prob
+                        prob_resultante = prob_resultante*prob
                     end
+                    #println("est: ", est, " no: ", no.codigo, " est ", est, " CI: ", CI_no, " prob: ", prob_resultante)
                     #println("no: ", no.codigo, " custo: ", CI_no)
                     zsup += CI_no
                 end
                 #print("est: ", est, " zsup: ", zsup)
             end
             
-            gap = ((zsup-zinf)/zsup) 
+            zsup = round(zsup, digits=2)
+            zinf = round(zinf, digits=2)
+            valor_zsup = 0
+            if it > 1
+                valor_zsup = min(lista_zsup[it-1], zsup)
+            else
+                valor_zsup = zsup
+            end
+            gap = ((valor_zsup-zinf)/valor_zsup) 
+            gap = round(gap, digits=7)
             lista_zinf[it] = zinf
-            lista_zsup[it] = zsup
+            lista_zsup[it] = valor_zsup            
             lista_gap[it] = gap
             println(" lista_zinf: ", lista_zinf )
             println(" lista_zsup: ", lista_zsup )
             println(" lista_gap: ", lista_gap )
-            push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = zsup))
+            push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup))
             if gap < 0.00001
                 println("CONVERGIU")
                 break
@@ -451,9 +466,11 @@ module Main
             # ETAPA BACKWARD
             if it != caso.n_iter
                 for est in caso.n_est:-1:1 
+                    #println("Relizando BK - Iter ", it, " Est ", est)
                     start_time = time()
                     #println("est: ", est)
                     for i_no in mapa_periodos[est].nos 
+                        #println("no: ", i_no.codigo)
                         etapa = "BK" 
                         m = retornaModelo(est, i_no, etapa)
                         if est < caso.n_est 
@@ -484,6 +501,7 @@ module Main
                         #    add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
                         #end
                         JuMP.optimize!(m) 
+                        #println("Backward: ", m)
                         #println("Solver status: ", termination_status(m))
 
                         if est < caso.n_est
@@ -501,6 +519,7 @@ module Main
                         for uhe in lista_uhes
                             #println("i_no.codigo: ", i_no.codigo, " uhe: ", uhe.nome, " etapa: ", etapa)
                             dual_balanco_hidrico = JuMP.shadow_price( constraint_dict[(i_no.codigo, uhe.nome, etapa)])
+                            #println("UHE: ", uhe.nome, " dual: ", dual_balanco_hidrico)
                             FCF_coef[it, i_no.codigo, uhe.codigo]  = FCF_coef[it, i_no.codigo, uhe.codigo] + dual_balanco_hidrico#*probabilidade_no
                             FCF_indep[it, i_no.codigo] = FCF_indep[it, i_no.codigo] - dual_balanco_hidrico*Vi[(i_no.codigo,uhe.codigo, etapa)]#*probabilidade_no
                             #println("est: ", est, " iter: ", it, " no: ", i_no.codigo," usi: ", uhe.codigo, " dual bal: ", dual_balanco_hidrico, " c_pres: ", custo_presente, " c_fut: ", custo_futuro, " Vi[i_no.codigo,i]: ", Vi[(i_no.codigo,uhe.codigo, etapa)], " FCF_coef: ", FCF_coef[it, i_no.codigo, uhe.codigo], " FCF_indep: ", FCF_indep[it, i_no.codigo])
@@ -510,6 +529,7 @@ module Main
                             push!(df_cortes, (est = est, no = i_no.codigo, iter = it, usina = usi.codigo, Indep = FCF_indep[it, i_no.codigo], Coef = FCF_coef[it, i_no.codigo, usi.codigo]))
                         end
                     end
+                    #exit(1)
                     end_time = time()
                     elapsed_time = end_time - start_time
                     minutes = floor(Int, elapsed_time / 60)
@@ -533,6 +553,10 @@ module Main
     df_termicas_bk = df_termicas[(df_termicas.etapa .== "BK"), :]
     df_termicas_sf = df_termicas[(df_termicas.etapa .== "FW") .&& (df_termicas.iter .== max_iter), :]
 
+    #print(df_hidreletricas)
+    #exit(1)
+
+
     df_hidreletricas_fw = df_hidreletricas[(df_hidreletricas.etapa .== "FW"), :]
     df_hidreletricas_bk = df_hidreletricas[(df_hidreletricas.etapa .== "BK"), :]
     df_hidreletricas_sf = df_hidreletricas[(df_hidreletricas.etapa .== "FW") .&& (df_hidreletricas.iter .== max_iter), :]
@@ -549,19 +573,19 @@ module Main
 
     df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[], miniIter = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     for est_value in unique(df_balanco_energetico.est)
-        println("est: ", est_value)
+        #println("est: ", est_value)
         subset = df_balanco_energetico_sf[df_balanco_energetico_sf.est .== est_value, :]
         for iteracao in unique(subset.iter)
             maximaMiniIteracao = maximum(subset[subset.iter .== iteracao, :miniIter]) 
             subsubset = subset[(subset.iter .== iteracao) .& (subset.miniIter .== maximaMiniIteracao), :]
-            println("subsubset: ", subsubset)
+            #println("subsubset: ", subsubset)
             ProbGT = 0
             ProbGH = 0
             ProbDeficit = 0
             ProbCustoPresente = 0
             ProbCustoFuturo = 0
             Demanda = 0
-            println("mapaProbCondicionalNo: ", mapaProbCondicionalNo)
+            #println("mapaProbCondicionalNo: ", mapaProbCondicionalNo)
             for no in unique(subsubset.node)
                 ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
                 ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
@@ -569,7 +593,7 @@ module Main
                 ProbCustoPresente += (subsubset[(subsubset.node .== no), "CustoPresente"][1])*(mapaProbCondicionalNo[no])
                 ProbCustoFuturo += (subsubset[(subsubset.node .== no), "CustoFuturo"][1])*(mapaProbCondicionalNo[no])
                 Demanda += (subsubset[(subsubset.node .== no), "Demanda"][1])*(mapaProbCondicionalNo[no])
-                println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
+                #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
             end
             
             dem = (subset[(subset.est .== est_value), "Demanda"][1])
