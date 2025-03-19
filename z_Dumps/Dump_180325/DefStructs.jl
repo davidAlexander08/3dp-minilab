@@ -118,12 +118,7 @@ mutable struct IlhaConfig
     end
 end
 
-struct SubmercadoConfigData
-    nome::String
-    codigo::Int32
-    deficit_cost::Float64
-    demanda::Vector{Float64}
-end
+
 
 
 

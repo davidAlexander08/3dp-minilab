@@ -3,20 +3,6 @@ module Main
     using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames, Dates
     include("CapacidadeLinhas.jl")
 
-
-    #Inicializando variaveis da barra
-    for ilha in lista_ilhas_eletricas
-        for est in 1:caso.n_est
-            for i_no in mapa_periodos[est].nos
-                for barra in ilha.barras
-                    barra.potenciaGerada[(i_no.codigo, barra.codigo) ] = 0
-                    barra.potenciaLiquida[(i_no.codigo, barra.codigo) ] = 0
-                    barra.deficitBarra[(i_no.codigo, barra.codigo) ] = 0
-                end
-            end
-        end
-    end
-
     #conversao_m3_hm3 = (60*60)/1000000
     etapas = ["FW", "BK"]
     Vi = Dict{Tuple{Int,Int, String}, Float64}()
@@ -62,13 +48,11 @@ module Main
         CustoF[(it,no.codigo, etapa)] = 0.0
     end
 
-    df_balanco_energetico = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [], ilha = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
-    df_termicas           = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [],nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
-    df_hidreletricas      = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [],nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
+    df_balanco_energetico = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [], ilha = Int[], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    df_termicas           = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [],Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
+    df_hidreletricas      = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [],Submercado = Int[], nome = String[] ,usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_convergencia    = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[])
     df_cortes          = DataFrame(iter = Int[], est = Int[], no = Int[],  usina = Int[], Indep = Float64[], Coef = Float64[])
-    df_barras             = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [],ilha = Int[], codigoBarra = Int[], generation = Float64[], demanda = Float64[], potenciaLiquida = Float64[], deficit = Float64[])
-    df_linhas             = DataFrame(etapa = String[], iter = Int[], miniIter = [], est = Int[], node = Int[], prob = [],ilha = Int[], codigoBarraDE = Int[], codigoBarraPARA = Int[], capacidade = Float64[], fluxo = Float64[], folga = Float64[])
 
     ger_vars = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
     gt_vars = Dict{Tuple{Int, String, String}, JuMP.VariableRef}()
@@ -77,10 +61,8 @@ module Main
     vert_vars = Dict{Tuple{Int, String, String}, JuMP.VariableRef}()
     vf_vars = Dict{Tuple{Int, String, String}, JuMP.VariableRef}()
     alpha_vars = Dict{Tuple{Int, String}, JuMP.VariableRef}()
-    deficit_vars = Dict{Tuple{Int, String}, JuMP.VariableRef}()
-    folga_rede = Dict{Tuple{Int, LinhaConfig, String}, JuMP.VariableRef}()
-    deficit_barra = Dict{Tuple{Int, Int, String}, JuMP.VariableRef}()
-    folga_rede = Dict{Tuple{Int, LinhaConfig, String}, JuMP.VariableRef}()
+    deficit_vars = Dict{Tuple{Int, String, String}, JuMP.VariableRef}()
+    intercambio_vars = Dict{Tuple{Int, String, String, String}, JuMP.VariableRef}()
     constraint_dict = Dict{Tuple{Int, String, String}, JuMP.ConstraintRef}()
 
     function retornaModelo(est, no, etapa)
@@ -95,10 +77,13 @@ module Main
             vert_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="vert_$(no.codigo)_$(uhe.codigo)_$(etapa)")
             vf_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="vf_$(no.codigo)_$(uhe.codigo)_$(etapa)")
         end
-        deficit_vars[(no.codigo, etapa)] = @variable(m, base_name="def_$(no.codigo)_$(etapa)")
-        for ilha in lista_ilhas_eletricas ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
-            for barra in ilha.barrasAtivas[est]
-                deficit_barra[(no.codigo, barra.codigo, etapa)] = @variable(m, base_name="deficitBarra_$(no.codigo)_$(barra.codigo)_$(etapa)")
+        for sbm in lista_submercados
+            deficit_vars[(no.codigo, sbm.nome, etapa)] = @variable(m, base_name="def_$(no.codigo)_$(sbm.codigo)_$(etapa)")
+            for sbm_2 in lista_submercados
+                if sbm.codigo != sbm_2.codigo
+                    intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)] = @variable(m, base_name="def_$(no.codigo)_$(sbm.codigo)_$(sbm_2.codigo)_$(etapa)")
+                    @constraint(m, intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)] >= 0 )
+                end
             end
         end
 
@@ -130,37 +115,25 @@ module Main
             @constraint(m, gt_vars[(no.codigo, term.nome, etapa)] >= 0)
             @constraint(m, gt_vars[(no.codigo, term.nome, etapa)] <= term.gmax) #linha, coluna
         end
-        @constraint(  m, deficit_vars[(no.codigo, etapa)] >= 0 ) 
-
-
-        
-        if rede_eletrica == 1
-            @objective(m, Min, sum(term.custo_geracao * gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
-            + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
-            + sistema.deficit_cost*deficit_vars[(no.codigo, etapa)] 
-            +sum(sistema.deficit_cost*deficit_barra[(no.codigo, barra.codigo, etapa)] for barra in lista_barras)
-            + alpha_vars[(no.codigo, etapa)])
-            carga_estagio_ilha = 0
-            for ilha in lista_ilhas_eletricas ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
-                for barra in ilha.barrasAtivas[est]
-                    carga_estagio_ilha += barra.carga[est]
-                    @constraint(  m, deficit_barra[(no.codigo, barra.codigo, etapa)] >= 0 ) 
-                end
-                @constraint(  m, sum(deficit_barra[(no.codigo, barra.codigo, etapa)] for barra in ilha.barrasAtivas[est]) 
-                + sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes) 
-                + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) == carga_estagio_ilha   )
-            end
-        else
-            @objective(m, Min, sum(term.custo_geracao * gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
-            + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
-            + sistema.deficit_cost*deficit_vars[(no.codigo, etapa)] 
-            + alpha_vars[(no.codigo, etapa)])
-
-            @constraint(  m, sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes) 
-            + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
-            + deficit_vars[(no.codigo, etapa)] == sistema.demanda[est]   )
+        for sbm in lista_submercados
+            @constraint(  m, deficit_vars[(no.codigo, sbm.nome, etapa)] >= 0 ) 
         end
 
+        
+        @objective(m, Min, sum(term.custo_geracao * gt_vars[(no.codigo, term.nome, etapa)] for term in lista_utes) 
+        + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
+        + sum(0.01 * intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)] for sbm in lista_submercados, sbm_2 in lista_submercados if sbm != sbm_2)
+        + sum(sbm.deficit_cost * deficit_vars[(no.codigo, sbm.nome, etapa)] for sbm in lista_submercados)
+        + alpha_vars[(no.codigo, etapa)])
+        
+        for sbm in lista_submercados
+            @constraint(  m, sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in cadastroUsinasHidreletricasSubmercado[sbm.codigo]) 
+            + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in cadastroUsinasTermicasSubmercado[sbm.codigo]) 
+            + sum(intercambio_vars[(no.codigo, sbm_2.nome, sbm.nome, etapa)] for sbm_2 in lista_submercados if sbm != sbm_2)
+            - sum(intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)] for sbm_2 in lista_submercados if sbm != sbm_2)
+            + deficit_vars[(no.codigo, sbm.nome, etapa)] 
+            == sbm.demanda[est]   )
+        end
         return m
     end
 
@@ -168,63 +141,46 @@ module Main
         #println("ETAPA: ", etapa, " est: ", est, " it: ", it, " miniIter: ", miniIter, " no: ", no.codigo)
         #converte_m3s_hm3 = (conversao_m3_hm3*dat_horas[(dat_horas.PERIODO .== no.periodo), "HORAS"][1])
         probabilidadeNo = (dat_prob[(dat_prob.NO .== no.codigo), "PROBABILIDADE"][1])
-        GeracaoHidreletricaTotal = 0
-        GeracaoTermicaTotal = 0
-        for term in lista_utes
-            geracao = JuMP.value(gt_vars[(no.codigo, term.nome, etapa)])
-            push!(df_termicas, (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 1) , custo = term.custo_geracao, custoTotal = round(geracao, digits = 1)*term.custo_geracao))
-            GeracaoTermicaTotal += geracao
-        end
-        for uhe in lista_uhes
-            geracao = JuMP.value(gh_vars[(no.codigo, uhe.nome, etapa)])
-            turbinamento = JuMP.value(turb_vars[(no.codigo, uhe.nome, etapa)]) 
-            vertimento = JuMP.value(vert_vars[(no.codigo, uhe.nome, etapa)]) 
-            volumeFinal = JuMP.value(vf_vars[(no.codigo, uhe.nome, etapa)]) 
-            push!(df_hidreletricas, (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
-                            VI = Vi[(no.codigo,uhe.codigo, etapa)], AFL = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
-                            TURB = turbinamento, 
-                            VERT = vertimento, 
-                            VF = volumeFinal))
-            GeracaoHidreletricaTotal += geracao
-        end
-        custo_presente = 0
-        for term in lista_utes
-            custo_presente += JuMP.value.(gt_vars[(no.codigo, term.nome, etapa)])*term.custo_geracao
-        end
-        
-        def = 0
-
-        if rede_eletrica == 1
-            carga_estagio_ilha = 0
-            for ilha in lista_ilhas_eletricas ##QUESTAO AQUI, ESTA DECLARANDO TODOS OS GERADORES NA RESTRICAO DA ILHA, CONSIDERANDO QUE SO EXISTE UMA ILHA. CASO EXISTA MAIS DE UMA, E NECESSARIO CADASTRAR APENAS OS GERADORES DAQUELA ILHA NA RESTRICAO DE DEMANDA
-                for barra in ilha.barrasAtivas[est]
-                    carga_estagio_ilha += barra.carga[est]
-                    valor_deficit = JuMP.value(deficit_barra[(no.codigo, barra.codigo, etapa)])
-                    custo_presente += valor_deficit*sistema.deficit_cost
-                    def += valor_deficit
-                    push!(df_barras,  (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, ilha = ilha.codigo, codigoBarra = barra.codigo, generation = round(get(barra.potenciaGerada, (it, est, no.codigo), 0), digits = 1), demanda = barra.carga[est], potenciaLiquida = round(get(barra.potenciaLiquida, (it, est, no.codigo), 0), digits = 1), deficit= round(valor_deficit, digits = 1)))
-                end
-                for linha in ilha.linhasAtivas[est]
-                    folga_da_rede = get(folga_rede , (no.codigo, linha, etapa), 0)
-                    if folga_da_rede != 0 
-                        valor_folga_rede = JuMP.value(folga_da_rede)
-                    else
-                        valor_folga_rede = -9999
-                    end
-                    push!(df_linhas,  (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, ilha = ilha.codigo, codigoBarraDE = linha.de.codigo, codigoBarraPARA = linha.para.codigo, capacidade = linha.Capacidade[est], fluxo = round(get(linha.fluxoDePara,(it, est, no.codigo),0), digits = 1) ,  folga = valor_folga_rede))
-                end
-                push!(df_balanco_energetico,  (etapa = etapa, iter = it, miniIter = miniIter ,est = est, node = no.codigo, prob = probabilidadeNo, ilha = ilha.codigo, Demanda = carga_estagio_ilha, GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(alpha_vars[(no.codigo, etapa)])))
-                #print(df_balanco_energetico)
-                #if etapa == "BK" && it == 5
-                #    exit(1)
-                #end
+        GeracaoHidreletricaSIN = 0
+        GeracaoTermicaSIN = 0
+        DemandaTotalSIN = 0
+        DeficitSIN = 0
+        CustoPresenteSIN = 0
+        for sbm in lista_submercados
+            GeracaoHidreletricaTotal = 0
+            GeracaoTermicaTotal = 0
+            for term in cadastroUsinasTermicasSubmercado[sbm.codigo]
+                geracao = JuMP.value(gt_vars[(no.codigo, term.nome, etapa)])
+                push!(df_termicas, (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 1) , custo = term.custo_geracao, custoTotal = round(geracao, digits = 1)*term.custo_geracao))
+                GeracaoTermicaTotal += geracao
+                GeracaoTermicaSIN += geracao
             end
-        else
-            def = JuMP.value(deficit_vars[(no.codigo, etapa)])
-            custo_presente += def*sistema.deficit_cost
-            push!(df_balanco_energetico,  (etapa = etapa, iter = it, miniIter = miniIter ,est = est, node = no.codigo, prob = probabilidadeNo, ilha = 0, Demanda = sistema.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
+            for uhe in cadastroUsinasHidreletricasSubmercado[sbm.codigo]
+                geracao = JuMP.value(gh_vars[(no.codigo, uhe.nome, etapa)])
+                turbinamento = JuMP.value(turb_vars[(no.codigo, uhe.nome, etapa)]) 
+                vertimento = JuMP.value(vert_vars[(no.codigo, uhe.nome, etapa)]) 
+                volumeFinal = JuMP.value(vf_vars[(no.codigo, uhe.nome, etapa)]) 
+                push!(df_hidreletricas, (etapa = etapa, iter = it, miniIter = miniIter , est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
+                                VI = Vi[(no.codigo,uhe.codigo, etapa)], AFL = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.codigo) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
+                                TURB = turbinamento, 
+                                VERT = vertimento, 
+                                VF = volumeFinal))
+                GeracaoHidreletricaTotal += geracao
+                GeracaoHidreletricaSIN += geracao
+            end
+            custo_presente = 0
+            for term in cadastroUsinasTermicasSubmercado[sbm.codigo]
+                custo_presente += JuMP.value.(gt_vars[(no.codigo, term.nome, etapa)])*term.custo_geracao
+            end
+            def = 0
+            def = JuMP.value(deficit_vars[(no.codigo, sbm.nome, etapa)])
+            custo_presente += def*sbm.deficit_cost
+            DemandaTotalSIN += sbm.demanda[est]
+            DeficitSIN += def
+            CustoPresenteSIN += custo_presente
+            push!(df_balanco_energetico,  (etapa = etapa, iter = it, miniIter = miniIter ,est = est, node = no.codigo, prob = probabilidadeNo, ilha = 0, Submercado = sbm.codigo, Demanda = sbm.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = def, CustoPresente = custo_presente, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
         end
-        #push!(df_balanco_energetico,  (etapa = text, iter = it, est = est, node = no.codigo, ilha = 0, Demanda = sistema.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, Deficit = Deficit, CustoPresente = retornaCustoPresente(m, est, no), CustoFuturo = JuMP.value(m[:alpha])))
+        push!(df_balanco_energetico,  (etapa = etapa, iter = it, miniIter = miniIter ,est = est, node = no.codigo, prob = probabilidadeNo, ilha = 0, Submercado = 0, Demanda = DemandaTotalSIN, GT = GeracaoTermicaSIN, GH = GeracaoHidreletricaSIN, Deficit = DeficitSIN, CustoPresente = CustoPresenteSIN, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
     end
 
 
@@ -239,95 +195,11 @@ module Main
             custo_presente += vertimento*0.01
         end
 
-        if rede_eletrica == 1
-            for ilha in lista_ilhas_eletricas 
-                for barra in ilha.barrasAtivas[est]
-                    valor_deficit = JuMP.value(deficit_barra[(no.codigo, barra.codigo, etapa)])
-                    custo_presente += valor_deficit*sistema.deficit_cost
-                end
-            end
-        else
-            custo_presente += JuMP.value(deficit_vars[(no.codigo, etapa)])*sistema.deficit_cost
+        for sbm in lista_submercados
+            custo_presente += JuMP.value(deficit_vars[(no.codigo, sbm.nome, etapa)])*sbm.deficit_cost
         end
         return custo_presente
     end
-
-
-    function add_fluxo_constrains(m, etapa, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
-        for linha in mapa_ilha_fluxos_violados[i_no.codigo, ilha.codigo]
-            lista_variaveis = []
-            for barra in ilha.barrasAtivas[est]
-                if barra.codigo != ilha.slack.codigo
-                    usi = get(mapa_codigoBARRA_nomeUSINA,barra.codigo,0)
-                    #println("Barra: ", barra.codigo, " NOME_USI: ", usi)
-                    UHE = get(mapa_nome_UHE,usi,0)
-                    UTE = get(mapa_nome_UTE,usi,0)
-                    if UHE != 0 push!(lista_variaveis, gh_vars[(i_no.codigo, UHE.nome, etapa)]) end
-                    if UTE != 0   push!(lista_variaveis, gt_vars[(i_no.codigo, UTE.nome, etapa)]) end
-                    
-                    if UHE == 0 && UTE == 0 
-                        variavel = deficit_barra[(i_no.codigo, barra.codigo, etapa)]
-                        push!(lista_variaveis,variavel)
-                    end
-                end
-            end
-            fator = ifelse(linha.RHS[est] <= 0, -1 , 1)
-            folga_rede[(i_no.codigo, linha, etapa)] = @variable(m, base_name="sFluxo_$(i_no.codigo)_$(linha.de.codigo)_$(linha.para.codigo)_$(etapa)")
-            @constraint(m, folga_rede[(i_no.codigo, linha, etapa)] >= 0)
-            @constraint(m, folga_rede[(i_no.codigo, linha, etapa)] <= 2*linha.Capacidade[est])
-            @constraint(  m, sum(fator*linha.linhaMatrizSensibilidade[est][i]*lista_variaveis[i] for i in 1:length(lista_variaveis)) + fator*folga_rede[(i_no.codigo, linha, etapa)] == fator*linha.RHS[est]   )
-        end
-    end
-    function transfere_resultados_para_Barras(ilha, iter, est, i_no)
-        for barra in ilha.barrasAtivas[est]
-            geracao = 0
-            nome_usi = get(mapa_codigoBARRA_nomeUSINA, barra.codigo, 0) 
-            variavel_gh = get(gh_vars, (i_no.codigo, nome_usi, etapa), 0)
-            variavel_gt = get(gt_vars, (i_no.codigo, nome_usi, etapa), 0)
-            if nome_usi != 0
-                if variavel_gh != 0 
-                    geracao = JuMP.value(variavel_gh) 
-                elseif variavel_gt != 0
-                    geracao = JuMP.value(variavel_gt)
-                else
-                    geracao = 0
-                end
-            else
-                geracao = 0
-            end
-
-            barra.potenciaGerada[iter, i_no.codigo] = geracao
-            def = JuMP.value(deficit_barra[(i_no.codigo, barra.codigo, etapa)])
-            barra.deficitBarra[(iter, i_no.codigo)] = def
-            #println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, "GerBarra: ", barra.potenciaGerada[(iter, est, i_no.codigo)], " Carga: ", barra.carga[est], " Deficit: ", get(barra.deficitBarra,(iter, est, i_no.codigo),0), " PotLiq: ", get(barra.potenciaLiquida,(iter, est, i_no.codigo),0) )
-        end
-    end
-    function verificaFluxosViolados(iter, est, i_no, ilha, mapa_ilha_fluxos_violados)
-        #for barra in ilha.barras
-        #    println("Ilha: " , ilha.codigo, " Barra: ", barra.codigo, " GerBarra: ", get(barra.potenciaGerada,(est, i_no.codigo, barra.codigo),0), " Carga: ", barra.carga[est], " Deficit: ", get(barra.deficitBarra,(est, i_no.codigo, barra.codigo),0), " PotLiq: ", get(barra.potenciaLiquida,(est, i_no.codigo, barra.codigo),0) )
-        #end
-        calculaFluxosIlhaMetodoSensibilidadeDC(ilha,iter, est, i_no)
-        #println("EXECUTANDO FLUXO DC PARA O ITERACAO $iter ESTAGIO  $est Node: $(i_no.codigo)")
-        contador_violacao = 0
-        for linha in ilha.linhasAtivas[est]
-            #println("De: ", linha.de.codigo, " Para: ", linha.para.codigo, " Fluxo: ", linha.fluxoDePara[iter,est,i_no.codigo], " Capacidade: ", linha.Capacidade[est], " Linha: ", linha.linhaMatrizSensibilidade[est], " RHS: ", linha.RHS[est])
-            #if abs(round(linha.fluxoDePara[iter,est,i_no.codigo], digits=1)) > linha.Capacidade[est] 
-            if linha in mapa_ilha_fluxos_violados[i_no.codigo, ilha.codigo]
-                #print("Violacao Já existe da linha de ", linha.de.codigo , " para ", linha.para.codigo)
-            else
-                #println("VIOLADO: De: ", linha.de.codigo, " Para: ", linha.para.codigo, " Fluxo: ", round(linha.fluxoDePara[iter,est,i_no.codigo], digits=1), " Capacidade: ", linha.Capacidade[est], " Linha: ", linha.linhaMatrizSensibilidade[est], " RHS: ", linha.RHS[est])
-                push!(mapa_ilha_fluxos_violados[i_no.codigo, ilha.codigo], linha)    
-                contador_violacao = contador_violacao + 1
-            end
-            #end
-        end
-        return contador_violacao
-    end
-
-    #println(df_arvore)
-
-    mapa_ilha_fluxos_violados = OrderedDict{Tuple{Int, Int}, Set{LinhaConfig}}()
-    for i_no in lista_total_de_nos, ilha in lista_ilhas_eletricas mapa_ilha_fluxos_violados[i_no.codigo, ilha.codigo] = Set() end
 
     @time begin
         for it in 1:caso.n_iter
@@ -338,8 +210,6 @@ module Main
                 for i_no in mapa_periodos[est].nos  
                     #println("no ", i_no.codigo)  
                     etapa = "FW"     
-                    numerosViolacoes = Dict{Tuple{Int, Int, Int}, Int}()
-                    #for miniIt in 1:caso.n_iter
                     m = retornaModelo(est,i_no, etapa)
                     if est < caso.n_est && it > 1
                         #for iter in 1:caso.n_iter
@@ -370,28 +240,9 @@ module Main
                         end
                     end
 
-                    #print(m)
-                    #for ilha in lista_ilhas_eletricas
-                    #    add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
-                    #end
                     JuMP.optimize!(m) 
-                    #println(m) 
-                    #exit(1)
-                    ##for ilha in lista_ilhas_eletricas
-                    #    transfere_resultados_para_Barras(ilha, it, est, i_no)
-                    #    numerosViolacoes[miniIt, i_no.codigo, ilha.codigo] = verificaFluxosViolados(it, est, i_no, ilha, mapa_ilha_fluxos_violados)
-                    #end
-                    #println("est: ", est, " it: ", it, " miniIt: ", miniIt, " i_no: ", i_no.codigo)
+                    println(m) 
                     imprimePolitica(etapa, est, it, 0, i_no)
-                    #iter_sum = sum(v for (k, v) in numerosViolacoes if k[1] == miniIt)
-                    #if iter_sum == 0
-                    #    #println("Mini-Iteração $miniIt: TERMINOU SEM MAIS VIOLAÇÕES DE FLUXO")
-                    #    break
-                    #else
-                    #    #println("Mini-Iteração $miniIt: Continuando, ainda existem $iter_sum violações")
-                    #end
-                    #end
-                    #########################
 
                     if est < caso.n_est
                         for filho in i_no.filhos
@@ -504,9 +355,6 @@ module Main
                             end
                         end
 
-                        #for ilha in lista_ilhas_eletricas
-                        #    add_fluxo_constrains(m, est, i_no, ilha, mapa_ilha_fluxos_violados, folga_rede)
-                        #end
                         JuMP.optimize!(m) 
                         #println("Backward: ", m)
                         #println("Solver status: ", termination_status(m))
@@ -568,15 +416,6 @@ module Main
     df_hidreletricas_bk = df_hidreletricas[(df_hidreletricas.etapa .== "BK"), :]
     df_hidreletricas_sf = df_hidreletricas[(df_hidreletricas.etapa .== "FW") .&& (df_hidreletricas.iter .== max_iter), :]
 
-    df_barras_fw = df_barras[(df_barras.etapa .== "FW"), :]
-    df_barras_bk = df_barras[(df_barras.etapa .== "BK"), :]
-    df_barras_sf = df_barras[(df_barras.etapa .== "FW") .&& (df_barras.iter .== max_iter), :]
-
-    df_linhas_fw = df_linhas[(df_linhas.etapa .== "FW"), :]
-    df_linhas_bk = df_linhas[(df_linhas.etapa .== "BK"), :]
-    df_linhas_sf = df_linhas[(df_linhas.etapa .== "FW") .&& (df_linhas.iter .== max_iter), :]
-
-
 
     df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[], miniIter = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     for est_value in unique(df_balanco_energetico.est)
@@ -621,12 +460,6 @@ module Main
     CSV.write("saidas/PDD/hidreletricas_sf.csv", df_hidreletricas_sf)
     CSV.write("saidas/PDD/convergencia.csv", df_convergencia)
     CSV.write("saidas/PDD/df_cortes.csv", df_cortes)
-    CSV.write("saidas/PDD/barras_fw.csv", df_barras_fw)
-    CSV.write("saidas/PDD/barras_bk.csv", df_barras_bk)
-    CSV.write("saidas/PDD/barras_sf.csv", df_barras_sf)
-    CSV.write("saidas/PDD/linhas_fw.csv", df_linhas_fw)
-    CSV.write("saidas/PDD/linhas_bk.csv", df_linhas_bk)
-    CSV.write("saidas/PDD/linhas_sf.csv", df_linhas_sf)
     CSV.write("saidas/PDD/eco/dat_prob.csv", dat_prob)
     CSV.write("saidas/PDD/eco/dat_vaz.csv", dat_vaz)
     CSV.write("saidas/PDD/eco/df_arvore.csv", df_arvore)

@@ -199,8 +199,6 @@ str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido"
 str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_arvore_Externa"
 str_caso = "casos/Mestrado/caso_construcaoArvore_SIN"
 str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior"
-str_caso = "Dissertacao/caso_teste_submercados"
-str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior_TesteConversor"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido_2cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen_2est"
@@ -254,26 +252,9 @@ include("arvore.jl")
 
 @info "Lendo arquivo de horas $(PATH_HORAS)"
 dat_horas = CSV.read(PATH_HORAS, DataFrame)
-
-#caso_teste_submercados
-submercados = dict["SUBMERCADOs"]
-lista_submercados = []
-mapa_nome_SBM = OrderedDict()
-mapa_codigo_SBM = OrderedDict()
-cadastroUsinasHidreletricasSubmercado = OrderedDict()
-cadastroUsinasTermicasSubmercado = OrderedDict()
-for sbm in submercados
-    submercado = SubmercadoConfigData(sbm["NOME"],sbm["CODIGO"], sbm["CUSTO_DEFICIT"], sbm["DEMANDA"])
-    push!(lista_submercados,submercado)
-    mapa_nome_SBM[sbm["NOME"]] = submercado
-    mapa_codigo_SBM[sbm["CODIGO"]] = submercado
-    cadastroUsinasHidreletricasSubmercado[sbm["CODIGO"]] = []
-    cadastroUsinasTermicasSubmercado[sbm["CODIGO"]] = []
-end
-
 #SISTEMA
-#sist = dict["SISTEMA"]
-#sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
+sist = dict["SISTEMA"]
+sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
 #println(sistema)
 
 
@@ -346,7 +327,6 @@ for usi in usinas
     mapa_nome_UTE[usi["NOME"]] = usina
     mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
     mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
-    push!(cadastroUsinasTermicasSubmercado[usi["SUBMERCADO"]],usina)
 end
 #println(lista_utes)
 
@@ -362,7 +342,6 @@ for usi in usinas
     mapa_nome_UHE[usi["NOME"]] = usina
     mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
     mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
-    push!(cadastroUsinasHidreletricasSubmercado[usi["SUBMERCADO"]], usina)
 end
 #println(lista_uhes)
 
