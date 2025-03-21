@@ -223,8 +223,43 @@ caso.n_iter = dict["MAX_ITERACOES"]
 caso.n_est = dict["ESTAGIOS"]
 rede_eletrica = dict["REDE"]
 arvore_externa = dict["ARVORE_EXTERNA"]
+limites_intercambio = dict["LIMITES_INTERCAMBIO"]
+vazao_minima = dict["VAZAO_MINIMA"]
+penalidVazMin = dict["PENALIDADE_VAZAO_MINIMA"]
+volume_minimo = dict["VOLUME_MINIMO"]
+volume_espera = dict["VOLUME_ESPERA"]
 caminho_arvore_externa = dict["CAMINHO_ARVORE_EXTERNA"]
 caso.estrutura_arvore = dict["ARVORE"]
+
+if(limites_intercambio == 1)
+    PATH_RESTR_INTERCAMBIOS = str_caso*"/restr_limite_Intercambio.csv"
+    @info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+    dat_interc = CSV.read(PATH_RESTR_INTERCAMBIOS, DataFrame)
+    #print(dat_interc)
+end
+
+if(volume_minimo == 1)
+    PATH_RESTR_VOLUME_MINIMO = str_caso*"/restr_vol_min.csv"
+    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    dat_volmin = CSV.read(PATH_RESTR_VOLUME_MINIMO, DataFrame)
+    #print(dat_volmin)
+end
+
+if(volume_espera == 1)
+    PATH_RESTR_VOLUME_ESPERA = str_caso*"/restr_vol_max.csv"
+    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_ESPERA)"
+    dat_volmax = CSV.read(PATH_RESTR_VOLUME_ESPERA, DataFrame)
+    #print(dat_volmax)
+end
+
+
+if(vazao_minima == 1)
+    PATH_RESTR_VAZAO_MINIMA = str_caso*"/restr_vazao_minima.csv"
+    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VAZAO_MINIMA)"
+    dat_vazmin = CSV.read(PATH_RESTR_VAZAO_MINIMA, DataFrame)
+    #print(dat_vazmin)
+end
+
 
 #caminho_vazao_externa = dict["CAMINHO_VAZAO_EXTERNA"]
 #caminho_probabilidade_externa = dict["CAMINHO_PROBABILIDADE_EXTERNA"]
@@ -357,7 +392,7 @@ lista_uhes = []
 mapa_nome_UHE = OrderedDict()
 
 for usi in usinas
-    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"], usi["PRODT"])
+    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"], usi["PRODT"], usi["POSTO"])
     push!(lista_uhes,usina)
     mapa_nome_UHE[usi["NOME"]] = usina
     mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]

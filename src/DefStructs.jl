@@ -184,6 +184,7 @@ struct UHEConfigData
     barra::BarraConfig
     codigo::Int32
     prodt::Float64
+    posto::Int32
 end
 
 struct Forward
