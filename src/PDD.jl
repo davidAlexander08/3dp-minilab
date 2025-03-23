@@ -1,8 +1,8 @@
 module Main
 
     using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames, Dates
-    include("CapacidadeLinhas.jl")
-
+    #include("CapacidadeLinhas.jl")
+    include("LeituraEntrada.jl")
     #conversao_m3_hm3 = (60*60)/1000000
     etapas = ["FW", "BK"]
     Vi = Dict{Tuple{Int,Int, String}, Float64}()
@@ -73,7 +73,6 @@ module Main
         CustoI[(it, no.codigo, etapa)] = 0.0
         CustoF[(it,no.codigo, etapa)] = 0.0
     end
-
     df_intercambio            = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], SubmercadoDE = Int[], SubmercadoPARA = Int[], Valor = Float64[])
     df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
@@ -198,7 +197,7 @@ module Main
                 end
             end
 
-            #DEFINE RESTRICOES DE VOLUME ESPERA
+            #DEFINE RESTRICOES DE   VOLUME ESPERA
             if(volume_espera == 1)
                 dat_volmax.USI = string.(dat_volmax.USI)
                 matching_rows = dat_volmax[dat_volmax.USI .== uhe.nome, :vmax]

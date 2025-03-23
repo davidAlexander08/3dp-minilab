@@ -416,3 +416,77 @@ for uhe in lista_uhes
     end
 end
 #println(mapa_montantesUsina)
+
+df_eco_hidro  = DataFrame(codigo = Int[], nome = String[], posto = Int[], Jusante = String[], Submercado = Int[], PotInst = Int[], 
+EngolMax = Int[], VolMin = Int[], VolMax = Int[], Prodt = Float64[], VolIni = Int[])
+df_eco_termo  = DataFrame(codigo = Int[], nome = String[], Submercado = Int[], Gmin = Float64[], Gmax = Float64[])
+df_eco_submercado = DataFrame(codigo = Int[], nome = String[], custoDeficit = Int[], Est = [], Demanda = [])
+
+def_restr_RHQ = DataFrame(codigo = Int[], Vazmin = Int[] , PercVolmin = Float64[] , PercVolmax = Float64[])
+
+
+for sbm in lista_submercados
+
+    for est in 1:caso.n_est
+        push!(df_eco_submercado, (codigo = sbm.codigo, nome = sbm.nome, 
+        custoDeficit = sbm.deficit_cost, Est = est, Demanda = sbm.demanda[est]))
+    end
+
+    for uhe in cadastroUsinasHidreletricasSubmercado[sbm.codigo]
+        usi_jusante = isempty(uhe.jusante) ? "-" : uhe.jusante
+        push!(df_eco_hidro, (codigo = uhe.codigo, nome = uhe.nome, posto = uhe.posto, Jusante = usi_jusante, Submercado = sbm.codigo, 
+        PotInst = uhe.gmax, EngolMax = uhe.turbmax, VolMin = uhe.vmin, VolMax = uhe.vmax, Prodt = uhe.prodt, VolIni = uhe.v0))
+    
+        vazao_minima_uhe = 0
+        if(vazao_minima == 1)
+            dat_vazmin.USI = string.(dat_vazmin.USI)
+            matching_rows = dat_vazmin[dat_vazmin.USI .== uhe.nome, :vazmin]
+            vazao_minima_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
+            if !isnan(vazao_minima_uhe)
+                vazao_minima_uhe = vazao_minima_uhe
+            else
+                vazao_minima_uhe = 0
+            end
+        else
+            vazao_minima_uhe = 0
+        end
+        vol_min_uhe = 0
+        if(volume_minimo == 1)
+            dat_volmin.USI = string.(dat_volmin.USI)
+            matching_rows = dat_volmin[dat_volmin.USI .== uhe.nome, :vmin]
+            vol_min_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
+            vol_min_uhe = vol_min_uhe/100
+            if !isnan(vol_min_uhe)
+                vol_min_uhe = vol_min_uhe
+            else
+                vol_min_uhe = 0
+            end
+        else
+            vol_min_uhe = 0
+        end
+
+        vol_max_uhe = 0
+        if(volume_espera == 1)
+            dat_volmax.USI = string.(dat_volmax.USI)
+            matching_rows = dat_volmax[dat_volmax.USI .== uhe.nome, :vmax]
+            vol_max_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
+            vol_max_uhe = vol_max_uhe/100
+            if !isnan(vol_max_uhe)
+                vol_max_uhe = vol_max_uhe
+            else
+                vol_max_uhe = 0
+            end
+        end
+        push!(def_restr_RHQ, (codigo = uhe.codigo , Vazmin = vazao_minima_uhe,
+        PercVolmin = vol_min_uhe, PercVolmax = vol_max_uhe))
+    end
+
+    for ute in cadastroUsinasTermicasSubmercado[sbm.codigo]
+        push!(df_eco_termo, (codigo = ute.codigo, nome = ute.nome, Submercado = sbm.codigo, Gmin = ute.gmin, Gmax = ute.gmax))
+    end
+end
+CSV.write("saidas/PDD/eco/df_uhes.csv", df_eco_hidro)
+CSV.write("saidas/PDD/eco/df_utes.csv", df_eco_termo)
+CSV.write("saidas/PDD/eco/df_submercados.csv", df_eco_submercado)
+CSV.write("saidas/PDD/eco/df_RHQ.csv", def_restr_RHQ)
+
