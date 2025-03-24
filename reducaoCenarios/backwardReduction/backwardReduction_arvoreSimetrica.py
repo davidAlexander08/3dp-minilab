@@ -22,9 +22,9 @@ caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_2000cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_1000cen"
-#caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen"
+#caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_500cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen_ENASIN"
-#caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_50cen"
+caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 
 arquivo_vazoes = caso+"\\vazao_feixes.csv"
@@ -71,6 +71,12 @@ mapa_aberturas_estagio = {
     4:2
 }
 
+mapa_aberturas_estagio = {
+    2:3,
+    3:3,
+    4:3
+}
+
 
 #mapa_reducao_estagio = {
 #    2:2,
@@ -80,6 +86,7 @@ mapa_aberturas_estagio = {
 
 
 mapa_reducao_estagio = {}
+mapaCenariosRemanescentes = {}
 cenariosRemanescentesEstagio = 1
 for key in mapa_aberturas_estagio:
     cenariosRemanescentesEstagio = cenariosRemanescentesEstagio*mapa_aberturas_estagio[key]
@@ -87,15 +94,19 @@ for key in mapa_aberturas_estagio:
 
 numeroTotalCenariosUltimoEstagio = len(df_arvore.loc[(df_arvore["PER"] == max(estagios))]["NO"].unique())
 mapa_reducao_estagio[int(max(estagios))] = numeroTotalCenariosUltimoEstagio - cenariosRemanescentesEstagio
+mapaCenariosRemanescentes[int(max(estagios))] = cenariosRemanescentesEstagio
 estagios = sorted(estagios, reverse=True)
 estagios = estagios[1:-1]
 
-for est in estagios:
-    print("est: ", est)
-    cenariosRemanescentesEstagio = cenariosRemanescentesEstagio/mapa_aberturas_estagio[est]
-    mapa_reducao_estagio[int(est)] = cenariosRemanescentesEstagio
 
-print("mapa_reducao_estagio: ", mapa_reducao_estagio)
+for est in estagios:
+    cenariosRemanescentesEstagio = cenariosRemanescentesEstagio/mapa_aberturas_estagio[est]
+    print("est: ", est, "cenariosRemanescentesEstagio: ", cenariosRemanescentesEstagio)
+    mapaCenariosRemanescentes[int(est)] = cenariosRemanescentesEstagio
+    mapa_reducao_estagio[int(est)] = mapaCenariosRemanescentes[int(est+1)] - cenariosRemanescentesEstagio
+
+#print("mapa_reducao_estagio: ", mapa_reducao_estagio)
+#exit(1)
 def printaArvore(texto, df_arvore):
     df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = 1
     #df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = -1  # You can use any value that is not part of the graph
