@@ -43,7 +43,7 @@ print(df_arvore)
 df_arvore.to_csv("saidas\\arvore_estudo.csv", index=False)
 
 df_arvore_original = df_arvore.copy()
-
+estagios = df_arvore["PER"].unique()
 
 
 
@@ -62,81 +62,40 @@ cores = -1
 ###################################
 numeroCenariosReducao = 2
 
-
-#ARVORE 8
-mapa_reducao_estagio = {
-    2:125,
-    3:250,
-    4:0
-}
-#ARVORE 7
-mapa_reducao_estagio = {
-    2:100,
-    3:200,
-    4:100
-}
-#ARVORE 6
-mapa_reducao_estagio = {
-    2:75,
-    3:150,
-    4:200
-}
-#ARVORE 5
-mapa_reducao_estagio = {
-    2:50,
-    3:100,
-    4:300
-}
-#ARVORE 4
-mapa_reducao_estagio = {
-    2:25,
-    3:50,
-    4:400
-}
-#ARVORE 3
-mapa_reducao_estagio = {
-    2:13,
-    3:25,
-    4:450
-}
-#ARVORE 2
-mapa_reducao_estagio = {
-    2:8,
-    3:13,
-    4:475
-}
-#ARVORE 1
-mapa_reducao_estagio = {
-    2:3,
-    3:5,
-    4:490
-}
-
-#ARVORE 1
-mapa_reducao_estagio = {
+#A CONFIGURACAO DEPENDE DO NUMERO DE ABERTURAS DESEJADAS PARA CADA ESTAGIO. COM BASE NO NUMERO DE ABERTURAS, O ALGORITMO ELIMINA DO ÚLTIMO ESTAGIO
+#CENARIOS QUE ESTEJAM A MAIS, TORNANDO O NUMERO AO FINAL DE CENÁRIOS CORRETO. ASSIM, É REDUZIDA A ARVORE PELO VALOR QUE DEVE CORRESPONDER AS ABERTURAS
+# DE CADA ESTAGIO. O ALGORITMO ASSIM COMPLETA O MAPA DE REDUCAO PARA CADA ESTAGIO QUE É QUANTOS CENARIOS SERAO ELIMINADOS PARA CADA ESTAGIO
+mapa_aberturas_estagio = {
     2:2,
-    3:4,
+    3:2,
     4:2
 }
 
-mapa_tolerancia_estagio = {
-    2:0.1,
-    3:0.1,
-    4:0.2
-}
+
+#mapa_reducao_estagio = {
+#    2:2,
+#    3:4,
+#    4:2
+#}
 
 
+mapa_reducao_estagio = {}
+cenariosRemanescentesEstagio = 1
+for key in mapa_aberturas_estagio:
+    cenariosRemanescentesEstagio = cenariosRemanescentesEstagio*mapa_aberturas_estagio[key]
+    print("cenariosUltimoEstagio: ", cenariosRemanescentesEstagio, " mapa_aberturas_estagio[key]: ", mapa_aberturas_estagio[key])
 
+numeroTotalCenariosUltimoEstagio = len(df_arvore.loc[(df_arvore["PER"] == max(estagios))]["NO"].unique())
+mapa_reducao_estagio[int(max(estagios))] = numeroTotalCenariosUltimoEstagio - cenariosRemanescentesEstagio
+estagios = sorted(estagios, reverse=True)
+estagios = estagios[1:-1]
 
+for est in estagios:
+    print("est: ", est)
+    cenariosRemanescentesEstagio = cenariosRemanescentesEstagio/mapa_aberturas_estagio[est]
+    mapa_reducao_estagio[int(est)] = cenariosRemanescentesEstagio
 
-
-
-
-
-
-
-
-
+print("mapa_reducao_estagio: ", mapa_reducao_estagio)
 def printaArvore(texto, df_arvore):
     df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = 1
     #df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = -1  # You can use any value that is not part of the graph
@@ -201,11 +160,11 @@ def retornaMenorValorLimiteSuperior(no_base, no_foco, dicionario_distancias, Q):
     return min(dicionario_distancias[(no_foco, no_analisado)] for no_analisado in Q)
 
     
-def retornaNoMaisProximo(no_base, no_foco, dicionario_distancias, Q):
+def retornaNoMaisProximo(no_base, no_foco, dicionario_distancias, Q, df_arvore, aberturas_estagio):
     menor_valor = float('inf')
     mais_proximo = None
     for no_analisado in Q:
-        if no_analisado != no_base:
+        if no_analisado != no_base and len(getFilhos(no_analisado, df_arvore)) < aberturas_estagio :
             dist = dicionario_distancias.get((no_foco, no_analisado), float('inf'))
             if dist < menor_valor:
                 menor_valor = dist
@@ -398,7 +357,7 @@ for est in reversed(estagios_estocasticos):
             start_time = time.time()
             iteracao += 1
     else:
-        for iter in range(1,mapa_reducao_estagio[est]+1):
+        for iter in range(1,int(mapa_reducao_estagio[est]+1)):
                 mapa_distancias = {}
                 for i, no_foco in enumerate(Q):
                     dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades, dicionarioLinhaMatrizCrescente, dicionarioLinhaMatrizCrescenteNo)
@@ -413,9 +372,9 @@ for est in reversed(estagios_estocasticos):
 
     # PASSO I+1, REDISTRIBUIR AS PROBABILIDADES
     mapa_distancias = {}
+    aberturas_estagio = mapa_aberturas_estagio[est]
     for i, no_excluido in enumerate(J):
-        #print(caminho)
-        no_mais_proximo = retornaNoMaisProximo(no_excluido, no_excluido, dicionario_distancias, Q)
+        no_mais_proximo = retornaNoMaisProximo(no_excluido, no_excluido, dicionario_distancias, Q, df_arvore, aberturas_estagio)
 
         prob_total_filhos = 0
         filhos_no_proximo = getFilhos(no_mais_proximo, df_arvore)
@@ -477,7 +436,7 @@ tempo_final = time.time()
 elapsed_time = tempo_final - tempo_Total  # Calculate elapsed time
 print(f"Tempo Total: {elapsed_time:.4f} seconds")
 
-df_arvore.to_csv("saidas\\df_arvore_reduzida.csv", index=False)
+df_arvore.to_csv("saidas\\arvoreSimetrica\\df_arvore_reduzida.csv", index=False)
 
 ##Estatisticas
 for est in sorted(df_arvore["PER"].unique()):
@@ -522,9 +481,9 @@ for est in sorted(df_arvore["PER"].unique())[1:]:
         lista_df.append(df)
 
 df_result = pd.concat(lista_df).reset_index(drop = True)
-df_result.to_csv("saidas\\estatisticas_Arv_red.csv", index=False)
+df_result.to_csv("saidas\\arvoreSimetrica\\estatisticas_Arv_red.csv", index=False)
 
 
 
-printaArvore("saidas\\Arvore_reduzida", df_arvore)
+printaArvore("saidas\\arvoreSimetrica\\Arvore_reduzida", df_arvore)
 print(df_arvore)
