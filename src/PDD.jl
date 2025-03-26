@@ -269,16 +269,18 @@ module Main
                 turbinamento = JuMP.value(turb_vars[(no.codigo, uhe.nome, etapa)]) 
                 vertimento = JuMP.value(vert_vars[(no.codigo, uhe.nome, etapa)]) 
                 volumeFinal = JuMP.value(vf_vars[(no.codigo, uhe.nome, etapa)]) 
+                if(vazao_minima == 1)
 
-                matching_rows = dat_vazmin[dat_vazmin.USI .== uhe.nome, :vazmin]
-                vazao_minima_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
-                if !isnan(vazao_minima_uhe)
-                    folga_positiva_vazmin = JuMP.value(folga_positiva_vazmin_vars[(no.codigo, uhe.nome, etapa)])
-                    folga_negativa_vazmin = JuMP.value(folga_negativa_vazmin_vars[(no.codigo, uhe.nome, etapa)])
-                else
-                    vazao_minima_uhe = 0
-                    folga_positiva_vazmin = 0
-                    folga_negativa_vazmin = 0
+                    matching_rows = dat_vazmin[dat_vazmin.USI .== uhe.nome, :vazmin]
+                    vazao_minima_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
+                    if !isnan(vazao_minima_uhe)
+                        folga_positiva_vazmin = JuMP.value(folga_positiva_vazmin_vars[(no.codigo, uhe.nome, etapa)])
+                        folga_negativa_vazmin = JuMP.value(folga_negativa_vazmin_vars[(no.codigo, uhe.nome, etapa)])
+                    else
+                        vazao_minima_uhe = 0
+                        folga_positiva_vazmin = 0
+                        folga_negativa_vazmin = 0
+                    end
                 end
 
                 push!(df_hidreletricas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
@@ -286,10 +288,11 @@ module Main
                                 TURB = turbinamento, 
                                 VERT = vertimento, 
                                 VF = volumeFinal))
-
-                push!(df_folga_vazmin, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, 
-                nome = uhe.nome, usina = uhe.codigo, Vazmin = vazao_minima_uhe, Qdef = turbinamento + vertimento, 
-                FolgaPosit = folga_positiva_vazmin, FolgaNeg = folga_negativa_vazmin ))
+                if(vazao_minima == 1)
+                    push!(df_folga_vazmin, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, 
+                    nome = uhe.nome, usina = uhe.codigo, Vazmin = vazao_minima_uhe, Qdef = turbinamento + vertimento, 
+                    FolgaPosit = folga_positiva_vazmin, FolgaNeg = folga_negativa_vazmin ))
+                end
 
                 GeracaoHidreletricaTotal += geracao
                 VolumeArmazenadoTotal += volumeFinal

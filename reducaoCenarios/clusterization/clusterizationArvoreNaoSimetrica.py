@@ -24,6 +24,7 @@ caso = "..\\..\\Mestrado\\caso_1D"
 #caso = "..\\..\\casos\\Mestrado\\caso_2D"
 caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_8cen"
 caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_2000cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_1000cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen"
@@ -84,6 +85,11 @@ mapa_clusters_estagio = {
     1:2,
     2:2,
     3:2
+}
+mapa_clusters_estagio = {
+    1:5,
+    2:5,
+    3:5
 }
 
 def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio):

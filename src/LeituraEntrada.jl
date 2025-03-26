@@ -9,153 +9,7 @@ using LightGraphs
 using SparseArrays
 using DataStructures
 
-#CONFIG_PATH = "caso_deterministico/dadosEntrada.json"
-#PATH_VAZOES = "caso_deterministico/vazao.csv"
-#PATH_PROBABILIDADES = "caso_deterministico/probabilidades.csv"
-
-#CONFIG_PATH = "caso_arvore/dadosEntrada.json"
-#PATH_VAZOES = "caso_arvore/vazao.csv"
-#PATH_PROBABILIDADES = "caso_arvore/probabilidades.csv"
-
-
-
-CONFIG_PATH = "caso_decomp_pente/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_pente/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_pente/probabilidades.csv"
-PATH_HORAS = "caso_decomp_pente/horas.csv"
-
-
-
-
-CONFIG_PATH = "caso_decomp_arvore/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_arvore/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_arvore/probabilidades.csv"
-PATH_HORAS = "caso_decomp_arvore/horas.csv"
-
-
-
-
-
-
-
-
-
-#CONFIG_PATH = "caso_decomp_deterministico_4Barras_3UTEs_1EST/dadosEntrada.json"
-#PATH_VAZOES = "caso_decomp_deterministico_4Barras_3UTEs_1EST/vazao.csv"
-#PATH_PROBABILIDADES = "caso_decomp_deterministico_4Barras_3UTEs_1EST/probabilidades.csv"
-#PATH_HORAS = "caso_decomp_deterministico_4Barras_3UTEs_1EST/horas.csv"
-
-
-
-
-
-
-
-
-CONFIG_PATH = "caso_decomp_deterministico_24Barras_1EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_24Barras_1EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_1EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_24Barras_1EST/horas.csv"
-
-
-
-
-
-
-
-
-CONFIG_PATH = "caso_decomp_deterministico_6Barras_3UTEs_1EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_6Barras_3UTEs_1EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_6Barras_3UTEs_1EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_6Barras_3UTEs_1EST/horas.csv"
-
-
-CONFIG_PATH = "caso_decomp_deterministico_24Barras_1EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_24Barras_1EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_1EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_24Barras_1EST/horas.csv"
-
-
-CONFIG_PATH = "caso_decomp_pente/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_pente/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_pente/probabilidades.csv"
-PATH_HORAS = "caso_decomp_pente/horas.csv"
-
-CONFIG_PATH = "caso_decomp_deterministico_6Barras_2UTEs_1UHE_2EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_6Barras_2UTEs_1UHE_2EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_6Barras_2UTEs_1UHE_2EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_6Barras_2UTEs_1UHE_2EST/horas.csv"
-
-
-
-
-
-CONFIG_PATH = "caso_decomp_pente_testeCen/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_pente_testeCen/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_pente_testeCen/probabilidades.csv"
-PATH_HORAS = "caso_decomp_pente_testeCen/horas.csv"
-
-CONFIG_PATH = "caso_decomp_deterministico_24Barras_2EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_24Barras_2EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_24Barras_2EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_24Barras_2EST/horas.csv"
-
-
-
-CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UTEs_3EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UTEs_3EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_3Barras_2UTEs_3EST/horas.csv"
-
-
-
-CONFIG_PATH = "caso_decomp_deterministico_3Barras_2UHEs_3EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_3Barras_2UHEs_3EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_2UHEs_3EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_3Barras_2UHEs_3EST/horas.csv"
-
-
-CONFIG_PATH = "caso_decomp_deterministico_5est_2UHE_2UTE/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_5est_2UHE_2UTE/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_5est_2UHE_2UTE/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_5est_2UHE_2UTE/horas.csv"
-
-
-
-
-CONFIG_PATH = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST/horas.csv"
-
-
-CONFIG_PATH = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/dadosEntrada.json"
-PATH_VAZOES = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/vazao.csv"
-PATH_PROBABILIDADES = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/probabilidades.csv"
-PATH_HORAS = "caso_decomp_pente_2_Aberturas_3Barras_1UTE_1UHE_3EST/horas.csv"
-
-
-
-CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/dadosEntrada.json"
-PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/vazao.csv"
-PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/probabilidades.csv"
-PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN/horas.csv"
-#
-CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/dadosEntrada.json"
-PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/vazao.csv"
-PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/probabilidades.csv"
-PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_100_CEN/horas.csv"
-
-
-
-CONFIG_PATH = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/dadosEntrada.json"
-PATH_VAZOES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/vazao.csv"
-PATH_PROBABILIDADES = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/probabilidades.csv"
-PATH_HORAS = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_3ABR/horas.csv"
-
-
 str_caso = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST"
-
 str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE"
 str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN"
 str_caso = "caso_decomp_deterministico_24Barras_3EST"
@@ -199,7 +53,7 @@ str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido"
 str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_arvore_Externa"
 str_caso = "casos/Mestrado/caso_construcaoArvore_SIN"
 str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior"
-str_caso = "Dissertacao/caso_teste_submercados"
+
 str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior_TesteConversor"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido_2cen"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen"
@@ -209,6 +63,8 @@ str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior_TesteConversor"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_mini_2cen_2est"
 #str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_mini_2cen_2est_det"
 #str_caso = "Teste_Fluxo_IEEE_5_Barras"
+str_caso = "Dissertacao/caso_teste_submercados"
+str_caso = "Dissertacao/apresentacaoCarmen/caso_mini"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
 
@@ -222,14 +78,18 @@ caso = CaseData()
 caso.n_iter = dict["MAX_ITERACOES"]
 caso.n_est = dict["ESTAGIOS"]
 rede_eletrica = dict["REDE"]
-arvore_externa = dict["ARVORE_EXTERNA"]
 limites_intercambio = dict["LIMITES_INTERCAMBIO"]
 vazao_minima = dict["VAZAO_MINIMA"]
 penalidVazMin = dict["PENALIDADE_VAZAO_MINIMA"]
 volume_minimo = dict["VOLUME_MINIMO"]
 volume_espera = dict["VOLUME_ESPERA"]
+
+arvore_externa = dict["ARVORE_EXTERNA"]
 caminho_arvore_externa = dict["CAMINHO_ARVORE_EXTERNA"]
+vazao_externa = dict["VAZAO_EXTERNA"]
+caminho_vazao_externa = dict["CAMINHO_VAZAO_EXTERNA"]
 caso.estrutura_arvore = dict["ARVORE"]
+
 
 if(limites_intercambio == 1)
     PATH_RESTR_INTERCAMBIOS = str_caso*"/restr_limite_Intercambio.csv"
@@ -273,14 +133,19 @@ end
 PATH_VAZOES = str_caso*"/vazao.csv"
 PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
 
-
-
 @info "Lendo arquivo de vazoes $(PATH_VAZOES)"
 dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
+
+if vazao_externa == 1
+    @info "Lendo arquivo de vazoes externas $(caminho_vazao_externa)"
+    dat_vaz = CSV.read(caminho_vazao_externa, DataFrame)
+end
+
+
+
 @info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
 dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
 include("arvore.jl")
-
 
 
 

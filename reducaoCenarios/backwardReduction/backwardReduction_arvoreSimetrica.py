@@ -24,8 +24,9 @@ caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_1000cen"
 #caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_500cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen_ENASIN"
-caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_50cen"
+#caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
 
 arquivo_vazoes = caso+"\\vazao_feixes.csv"
 #arquivo_vazoes = caso+"\\ena_feixes.csv"
@@ -72,10 +73,16 @@ mapa_aberturas_estagio = {
 }
 
 mapa_aberturas_estagio = {
-    2:3,
-    3:3,
-    4:3
+    2:5,
+    3:5,
+    4:5
 }
+
+#mapa_aberturas_estagio = {
+#    2:3,
+#    3:3,
+#    4:3
+#}
 
 
 #mapa_reducao_estagio = {

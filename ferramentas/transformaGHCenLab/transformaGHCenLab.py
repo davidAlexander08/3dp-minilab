@@ -4,14 +4,16 @@ df = pd.read_csv("previsaoM_inc_semTV_2020_01.csv", sep=";")
 print(df)
 postos = df["postos"].unique()
 print(postos)
-numeroCenarios = 2
+
+
+numeroCenarios = 125
 df = df.loc[df["cenario"] <= numeroCenarios]
 columns_to_keep = ["cenario", "postos", "1/2020", "2/2020", "3/2020","4/2020"]
 df = df[columns_to_keep]
 print(df)
-
 postos = [1,	211,	6,	7,	8,	9,	11,	12,	17,	18,	22,	24,	25,	31,	32,	33,	34,	45,	46,	66]
 postos = [1, 6, 17, 18, 34, 45, 46, 66]
+postos = [6]
 
 cenarios = df["cenario"].unique()
 print(cenarios)

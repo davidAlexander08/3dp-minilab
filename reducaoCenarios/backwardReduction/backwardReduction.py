@@ -26,12 +26,14 @@ caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen_ENASIN"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
+
 
 arquivo_vazoes = caso+"\\vazao_feixes.csv"
 #arquivo_vazoes = caso+"\\ena_feixes.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
-df_vazoes.to_csv("saidas\\vazoes_estudo.csv", index=False)
+df_vazoes.to_csv("saidas\\arvoreAssimetrica\\vazoes_estudo.csv", index=False)
 
 arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
 df_probs = pd.read_csv(arquivo_probabilidades)
@@ -40,7 +42,7 @@ df_arvore = pd.read_csv(arquivo_estrutura_feixes)
 df_arvore["PROB"] = df_probs["PROBABILIDADE"]
 df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
-df_arvore.to_csv("saidas\\arvore_estudo.csv", index=False)
+df_arvore.to_csv("saidas\\arvoreAssimetrica\\arvore_estudo.csv", index=False)
 
 df_arvore_original = df_arvore.copy()
 
@@ -59,6 +61,7 @@ NumeroIteracoesAcelerador = 50
 
 ################### CORES PROCESSAMENTO PARALELO ##########################
 cores = -1
+cores = 1
 ###################################
 numeroCenariosReducao = 2
 
@@ -112,11 +115,11 @@ mapa_reducao_estagio = {
     4:490
 }
 
-#ARVORE 1
+#ARVORE CARMEN EXEMPLO
 mapa_reducao_estagio = {
-    2:2,
-    3:4,
-    4:2
+    2:20,
+    3:100,
+    4:0
 }
 
 mapa_tolerancia_estagio = {
@@ -266,7 +269,8 @@ dicionario_distancias = {}
 #MONTANDO A MATRIZ DE DISTANCIAS ENTRE OS NOS DE TERMINADO ESTAGIO
 estagios_estocasticos = sorted(df_arvore["PER"].unique()[1:])#df_arvore["PER"].unique()[1:]
 
-#printaArvore("ArvoreInicial", df_arvore_original)
+printaArvore("ArvoreInicial", df_arvore_original)
+exit(1)
 end_time = time.time()
 elapsed_time = end_time - start_time  # Calculate elapsed time
 print(f"Tempo de Inicialização: {elapsed_time:.4f} seconds")
@@ -477,7 +481,7 @@ tempo_final = time.time()
 elapsed_time = tempo_final - tempo_Total  # Calculate elapsed time
 print(f"Tempo Total: {elapsed_time:.4f} seconds")
 
-df_arvore.to_csv("saidas\\df_arvore_reduzida.csv", index=False)
+df_arvore.to_csv("saidas\\arvoreAssimetrica\\df_arvore_reduzida.csv", index=False)
 
 ##Estatisticas
 for est in sorted(df_arvore["PER"].unique()):
@@ -522,9 +526,9 @@ for est in sorted(df_arvore["PER"].unique())[1:]:
         lista_df.append(df)
 
 df_result = pd.concat(lista_df).reset_index(drop = True)
-df_result.to_csv("saidas\\estatisticas_Arv_red.csv", index=False)
+df_result.to_csv("saidas\\arvoreAssimetrica\\estatisticas_Arv_red.csv", index=False)
 
 
 
-printaArvore("saidas\\Arvore_reduzida", df_arvore)
+printaArvore("saidas\\arvoreAssimetrica\\Arvore_reduzida", df_arvore)
 print(df_arvore)

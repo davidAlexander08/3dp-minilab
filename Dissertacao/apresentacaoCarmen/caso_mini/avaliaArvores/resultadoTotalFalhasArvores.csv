@@ -1,0 +1,17 @@
+CASO,FALHA,TESTE,NPOSTOS,PERC.ENA
+arvoreAssimetrica_5_25_125_Backward,Média Viol. LimSup,AO_MENOS_UMA_FALHA,0.0,0.0
+arvoreAssimetrica_5_25_125_Backward,Média Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreAssimetrica_5_25_125_Clustering,Média Viol. LimSup,AO_MENOS_UMA_FALHA,0.0,0.0
+arvoreAssimetrica_5_25_125_Clustering,Média Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreSimetrica_5_25_125_Backward,Média Viol. LimSup,AO_MENOS_UMA_FALHA,100.0,100.0
+arvoreSimetrica_5_25_125_Backward,Média Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreSimetrica_5_25_125_Clustering,Média Viol. LimSup,AO_MENOS_UMA_FALHA,0.0,0.0
+arvoreSimetrica_5_25_125_Clustering,Média Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreAssimetrica_5_25_125_Backward,Std Viol. LimSup,AO_MENOS_UMA_FALHA,0.0,0.0
+arvoreAssimetrica_5_25_125_Backward,Std Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreAssimetrica_5_25_125_Clustering,Std Viol. LimSup,AO_MENOS_UMA_FALHA,0.0,0.0
+arvoreAssimetrica_5_25_125_Clustering,Std Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreSimetrica_5_25_125_Backward,Std Viol. LimSup,AO_MENOS_UMA_FALHA,100.0,100.0
+arvoreSimetrica_5_25_125_Backward,Std Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
+arvoreSimetrica_5_25_125_Clustering,Std Viol. LimSup,AO_MENOS_UMA_FALHA,0.0,0.0
+arvoreSimetrica_5_25_125_Clustering,Std Viol. LimSup,FALHA_TODOS_EST,0.0,0.0
