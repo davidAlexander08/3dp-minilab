@@ -435,7 +435,8 @@ module Main
                     end
                     #println(lista_probs_caminho)
                     CI_no = CustoI[(it, no.codigo, "FW")]
-                    CI_no = round(CI_no, digits = 2)
+                    #CI_no = round(CI_no, digits = 2)
+                    CI_no = round(CI_no, digits = 5)
                     #println("no: ", no.codigo, " custo: ", CI_no)
                     prob_resultante = 1
                     for prob in lista_probs_caminho
@@ -509,6 +510,7 @@ module Main
                                         dict_vfvars_coef[uhe.codigo] += coef_eq
                                     end
                                 end
+                                #println("i_no: ", i_no.codigo, " etapa: ", etapa)
                                 @constraint(m, alpha_vars[(i_no.codigo,etapa)] - sum(vf_vars[(i_no.codigo, uhe.nome,etapa)]*dict_vfvars_coef[uhe.codigo] for uhe in lista_uhes)   >= indep_equivalente ) #linha, coluna
                                 #for filho in i_no.filhos
                                 #    @constraint(m, alpha_vars[(i_no.codigo,etapa)] - sum(vf_vars[(i_no.codigo, uhe.nome,etapa)]*FCF_coef[iter, filho.codigo, uhe.codigo] for uhe in lista_uhes)   >= FCF_indep[iter, filho.codigo] ) #linha, coluna
@@ -626,28 +628,29 @@ module Main
     df_per_balanco_energetico = sort(df_per_balanco_energetico, :iter)
     #println(df_per_balanco_energetico)
     show(IOContext(stdout, :compact => false), df_per_balanco_energetico)
-    CSV.write("saidas/PDD/balanco_energetico_SBM_fw.csv", df_balanco_energetico_SBM_fw)
-    CSV.write("saidas/PDD/balanco_energetico_SBM_bk.csv", df_balanco_energetico_SBM_bk)
-    CSV.write("saidas/PDD/balanco_energetico_SBM_sf.csv", df_balanco_energetico_SBM_sf)
-    CSV.write("saidas/PDD/balanco_energetico_SIN_fw.csv", df_balanco_energetico_SIN_fw)
-    CSV.write("saidas/PDD/balanco_energetico_SIN_bk.csv", df_balanco_energetico_SIN_bk)
-    CSV.write("saidas/PDD/balanco_energetico_SIN_sf.csv", df_balanco_energetico_SIN_sf)
-    CSV.write("saidas/PDD/intercambio_SIN_fw.csv", df_intercambio_SIN_fw)
-    CSV.write("saidas/PDD/intercambio_SIN_bk.csv", df_intercambio_SIN_bk)
-    CSV.write("saidas/PDD/intercambio_SIN_sf.csv", df_intercambio_SIN_sf)
-    CSV.write("saidas/PDD/termicas_fw.csv", df_termicas_fw)
-    CSV.write("saidas/PDD/termicas_bk.csv", df_termicas_bk)
-    CSV.write("saidas/PDD/termicas_sf.csv", df_termicas_sf)
-    CSV.write("saidas/PDD/hidreletricas_fw.csv", df_hidreletricas_fw)
-    CSV.write("saidas/PDD/hidreletricas_bk.csv", df_hidreletricas_bk)
-    CSV.write("saidas/PDD/hidreletricas_sf.csv", df_hidreletricas_sf)
-    CSV.write("saidas/PDD/folgaVazmin_fw.csv", df_folga_vazmin_fw)
-    CSV.write("saidas/PDD/folgaVazmin_bk.csv", df_folga_vazmin_bk)
-    CSV.write("saidas/PDD/folgaVazmin_sf.csv", df_folga_vazmin_sf)
-    CSV.write("saidas/PDD/convergencia.csv", df_convergencia)
-    CSV.write("saidas/PDD/df_cortes.csv", df_cortes)
-    CSV.write("saidas/PDD/eco/dat_prob.csv", dat_prob)
-    CSV.write("saidas/PDD/eco/dat_vaz.csv", dat_vaz)
-    CSV.write("saidas/PDD/eco/df_arvore.csv", df_arvore)
+
+    output_dir_oper = dados_saida*"/saidas/PDD/oper"
+    mkpath(output_dir_oper)
+    CSV.write(output_dir_oper*"/balanco_energetico_SBM_fw.csv", df_balanco_energetico_SBM_fw)
+    CSV.write(output_dir_oper*"/balanco_energetico_SBM_bk.csv", df_balanco_energetico_SBM_bk)
+    CSV.write(output_dir_oper*"/balanco_energetico_SBM_sf.csv", df_balanco_energetico_SBM_sf)
+    CSV.write(output_dir_oper*"/balanco_energetico_SIN_fw.csv", df_balanco_energetico_SIN_fw)
+    CSV.write(output_dir_oper*"/balanco_energetico_SIN_bk.csv", df_balanco_energetico_SIN_bk)
+    CSV.write(output_dir_oper*"/balanco_energetico_SIN_sf.csv", df_balanco_energetico_SIN_sf)
+    CSV.write(output_dir_oper*"/intercambio_SIN_fw.csv", df_intercambio_SIN_fw)
+    CSV.write(output_dir_oper*"/intercambio_SIN_bk.csv", df_intercambio_SIN_bk)
+    CSV.write(output_dir_oper*"/intercambio_SIN_sf.csv", df_intercambio_SIN_sf)
+    CSV.write(output_dir_oper*"/termicas_fw.csv", df_termicas_fw)
+    CSV.write(output_dir_oper*"/termicas_bk.csv", df_termicas_bk)
+    CSV.write(output_dir_oper*"/termicas_sf.csv", df_termicas_sf)
+    CSV.write(output_dir_oper*"/hidreletricas_fw.csv", df_hidreletricas_fw)
+    CSV.write(output_dir_oper*"/hidreletricas_bk.csv", df_hidreletricas_bk)
+    CSV.write(output_dir_oper*"/hidreletricas_sf.csv", df_hidreletricas_sf)
+    CSV.write(output_dir_oper*"/folgaVazmin_fw.csv", df_folga_vazmin_fw)
+    CSV.write(output_dir_oper*"/folgaVazmin_bk.csv", df_folga_vazmin_bk)
+    CSV.write(output_dir_oper*"/folgaVazmin_sf.csv", df_folga_vazmin_sf)
+    CSV.write(output_dir_oper*"/convergencia.csv", df_convergencia)
+    CSV.write(output_dir_oper*"/df_cortes.csv", df_cortes)
+
 
 end

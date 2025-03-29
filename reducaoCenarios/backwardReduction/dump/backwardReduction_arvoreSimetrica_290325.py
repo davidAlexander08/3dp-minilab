@@ -27,12 +27,11 @@ caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore"
 #caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente_GVZP"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\2Aberturas\\Pente_GVZP"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
-arquivo_vazoes = caso+"\\cenarios.csv"
-arquivo_estrutura_feixes = caso+"\\arvore.csv"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\2Aberturas\\Pente"
+arquivo_vazoes = caso+"\\cenarios_gevazp.csv"
+arquivo_estrutura_feixes = caso+"\\arvore_gevazp.csv"
 
 
 
@@ -98,11 +97,11 @@ mapa_aberturas_estagio = {
 }
 
 
-mapa_aberturas_estagio = {
-    2:3,
-    3:3,
-    4:3
-}
+#mapa_aberturas_estagio = {
+#    2:3,
+#    3:3,
+#    4:3
+#}
 
 
 #mapa_reducao_estagio = {
@@ -409,84 +408,46 @@ for est in reversed(estagios_estocasticos):
                 print("FIM ITER: ", iter, " J: ", J, " Q: ", Q)
 
     # PASSO I+1, REDISTRIBUIR AS PROBABILIDADES
-    #Cria listas de nos proximos para aglutinacao
-    mapa_excluidos = {}
-    for i, no_remanescente in enumerate(Q):
-        mapa_excluidos[no_remanescente] = []
+    mapa_distancias = {}
     aberturas_estagio = mapa_aberturas_estagio[est]
     for i, no_excluido in enumerate(J):
         no_mais_proximo = retornaNoMaisProximo(no_excluido, no_excluido, dicionario_distancias, Q, df_arvore, aberturas_estagio)
-        mapa_excluidos[no_mais_proximo].append(no_excluido)
-        print("no_prox: ", no_mais_proximo, " no_exl: ", no_excluido)
+
+        prob_total_filhos = 0
+        filhos_no_proximo = getFilhos(no_mais_proximo, df_arvore)
+        filhos = getFilhos(no_excluido, df_arvore)
+
+        total_filhos = np.concatenate((filhos_no_proximo, filhos))
+        prob_temporaria_no = {}
+        for filho in total_filhos:
+            caminho_no_mais_proximo = retorna_lista_caminho(filho, df_arvore)[:-1][-1]
+            prob = df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo, "PROB"].iloc[0]
+            prob_temporaria_no[filho] = prob
+            prob_total_filhos += prob
+            #print("filho: ", filho, " prob: ", prob, " prob_total_filhos: ", prob_total_filhos)
+            
+        for filho in total_filhos:
+            df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(prob_temporaria_no[filho]/prob_total_filhos, 4)
 
 
+        #print("no_excluido filhos: ", filhos)
+        for filho in filhos:
+            if(df_arvore.loc[df_arvore["NO"] == filho]["PROB"].iloc[0] != 0):
+                df_arvore.loc[df_arvore["NO"] == filho,"NO_PAI"] = no_mais_proximo
+        
 
-    if(est == max(estagios_estocasticos)):
-        #df_arvore.to_csv("debug_arvore.csv", index = False)
-        for key in mapa_excluidos:
-            if(len(mapa_excluidos[key]) > 0):
-                prob_resultante = 0
-                caminho_no_proximo = retorna_lista_caminho(key, df_arvore)[:-1]
+        
+        caminho_no_mais_proximo = retorna_lista_caminho(no_mais_proximo, df_arvore)[:-1]
 
-                prob_resultante += df_arvore.loc[(df_arvore["NO"] == min(caminho_no_proximo))]["PROB"].iloc[0]
-                for i, no_excluido in enumerate(mapa_excluidos[key]):
-                    caminho_no_excluido = retorna_lista_caminho(no_excluido, df_arvore)[:-1]
-                    prob_resultante += df_arvore.loc[(df_arvore["NO"] == min(caminho_no_excluido))]["PROB"].iloc[0]
-                    df_arvore = df_arvore[~df_arvore["NO"].isin(caminho_no_excluido)].reset_index(drop = True)
-                    #print("caminho_no_excluido: ", caminho_no_excluido, " no proximo: ", key, " min no: ", min(caminho_no_excluido))
-                #print("caminho_proximo: ", caminho_no_proximo, " min no: ", min(caminho_no_proximo))
-                df_arvore.loc[(df_arvore["NO"] == min(caminho_no_proximo)),"PROB"] = prob_resultante
-            #df_arvore.to_csv("debug_arvore2.csv", index = False)
-        print("FIM EST: ", est)
-    else:
-        print(mapa_excluidos)
-        print(df_arvore)
-        for key in mapa_excluidos:
-            if(len(mapa_excluidos[key]) > 0):
-                caminho_no_proximo = retorna_lista_caminho(key, df_arvore)[:-1]
-                print("key: ", key)
-                print("mapa_excluidos[key]: ", mapa_excluidos[key])
-                filhos = []
-                df_filhos = df_arvore.loc[df_arvore["NO_PAI"] == key, "NO"].tolist()
-                print(df_filhos)
-                assert len(df_filhos) == 1, f"More than one child found for key {key}: {df_filhos}"
-                filho = df_filhos[0]
-                filhos.append(filho)
-                for i, no_excluido in enumerate(mapa_excluidos[key]):
-                    print("no_excluido: ", no_excluido)
-                    df_filhos = df_arvore.loc[df_arvore["NO_PAI"] == no_excluido, "NO"].tolist()
-                    assert len(df_filhos) == 1, f"More than one child found for key {key}: {df_filhos}"
-                    filho = df_filhos[0]
-                    filhos.append(filho)
-                print(filhos)
-                for filho in filhos:
-                    no_pai = df_arvore.loc[(df_arvore["NO"] == filho), "NO_PAI"].iloc[0]
-                    caminho_no_pai = retorna_lista_caminho(no_pai, df_arvore)[:-1]
-                    prob_pai = df_arvore.loc[(df_arvore["NO"] == min(caminho_no_pai)), "PROB"].iloc[0]
-                    print("no_pai: ", no_pai, " prob: ", prob_pai, " filho: ", filho)
-                    df_arvore.loc[(df_arvore["NO"] == filho), "PROB"] = prob_pai
-                    df_arvore.loc[(df_arvore["NO"] == filho), "NO_PAI"] = key
+        probabilidade_no_mais_proximo = df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"]
+        df_arvore.loc[df_arvore["NO"] == caminho_no_mais_proximo[-1], "PROB"] = round((probabilidade_no_mais_proximo + dicionarioDeProbabilidades[no_excluido]), 4)
+        #print("no_excluido: ", no_excluido, " proximidade: ", no_mais_proximo)
+        #print("caminho mais proximo: ", caminho_no_mais_proximo)
 
-        for key in mapa_excluidos:
-            if(len(mapa_excluidos[key]) > 0):
-                prob_resultante = 0
-                caminho_no_proximo = retorna_lista_caminho(key, df_arvore)[:-1]
-                prob_resultante += df_arvore.loc[(df_arvore["NO"] == min(caminho_no_proximo))]["PROB"].iloc[0]
-                for i, no_excluido in enumerate(mapa_excluidos[key]):
-                    caminho_no_excluido = retorna_lista_caminho(no_excluido, df_arvore)[:-1]
-                    prob_resultante += df_arvore.loc[(df_arvore["NO"] == min(caminho_no_excluido))]["PROB"].iloc[0]
-                    df_arvore = df_arvore[~df_arvore["NO"].isin(caminho_no_excluido)].reset_index(drop = True)
-                df_arvore.loc[(df_arvore["NO"] == min(caminho_no_proximo)),"PROB"] = round(prob_resultante,4)
-                df_arvore = df_arvore[~df_arvore["NO"].isin(mapa_excluidos[key])].reset_index(drop = True)
-                print("key: ", key, " prob: ", round(prob_resultante,4))
-                
-
-                ## Arrumando probabilidade dos filhos
-                filhos = df_arvore.loc[df_arvore["NO_PAI"] == key]["NO"].tolist()
-                for filho in filhos:
-                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_resultante,4)
-                print(filhos)
-        print(df_arvore)
+        caminho = retorna_lista_caminho(no_excluido, df_arvore)[:-1]
+        for no_caminho in caminho:
+            df_arvore.loc[df_arvore["NO"] == no_caminho, "PROB"] = 0
+            df_arvore = df_arvore.loc[df_arvore["NO"] != no_caminho]
 
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time

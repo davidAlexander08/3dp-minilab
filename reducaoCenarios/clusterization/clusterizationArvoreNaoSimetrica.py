@@ -32,21 +32,29 @@ caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 
-arquivo_vazoes = caso+"\\vazao_feixes.csv"
-#arquivo_vazoes = caso+"\\ena_feixes.csv"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente_GVZP"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\2Aberturas\\Pente"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_Equiprovavel\\Pente_GVZP"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
+
+arquivo_vazoes = caso+"\\cenarios.csv"
+arquivo_estrutura_feixes = caso+"\\arvore.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
 df_vazoes.to_csv("saidas\\vazoes_estudo.csv", index=False)
-
-arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
-df_probs = pd.read_csv(arquivo_probabilidades)
-arquivo_estrutura_feixes = caso+"\\arvore_julia.csv"
+#df_probs = pd.read_csv(arquivo_probabilidades)
+#arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
 df_arvore = pd.read_csv(arquivo_estrutura_feixes)
-df_arvore["PROB"] = df_probs["PROBABILIDADE"]
-df_arvore = df_arvore.drop(columns = "VAZAO")
+#df_arvore["PROB"] = df_probs["PROBABILIDADE"]
+#df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
 df_arvore.to_csv("saidas\\arvore_estudo.csv", index=False)
 df_arvore_original = df_arvore.copy()
+
+
+
+
 
 estagios = df_arvore["PER"].unique()
 estagios = sorted(estagios, reverse=False)[:-1]#[1:]
@@ -91,6 +99,25 @@ mapa_clusters_estagio = {
     2:5,
     3:5
 }
+mapa_clusters_estagio = {
+    1:3,
+    2:3,
+    3:3
+}
+mapa_clusters_estagio = {
+    1:2,
+    2:2
+}
+mapa_clusters_estagio = {
+    1:2,
+    2:2,
+    3:2
+}
+mapa_clusters_estagio = {
+    1:3,
+    2:3,
+    3:3
+}
 
 def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio):
     filhos = getFilhos(no_analise, df_arvore)
@@ -133,11 +160,11 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print("lista_linhas_matriz: ", lista_linhas_matriz)
             
             lista_nos_cluster = [mapa_linha_no[key] for key in lista_linhas_matriz]
-            #print("lista_nos_cluster: ", lista_nos_cluster)
+            print("lista_nos_cluster: ", lista_nos_cluster)
 
             matriz_cluster = matriz_valores[lista_linhas_matriz,:]
             novas_realizacoes = np.round(matriz_cluster.mean(axis=0), 0).astype(int)
-            print("novas_realizacoes: ", novas_realizacoes)
+            #print("novas_realizacoes: ", novas_realizacoes)
             #print(f"Cluster {i} node {novo_no}: Lines assigned ->", np.where(clusters == i)[0], " Nodes: ", lista_nos_cluster)
             #print(matriz_cluster)
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
@@ -157,20 +184,34 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             df_novo_no = pd.DataFrame({"NO_PAI":[pai_novo_no], "NO":[novo_no], "Abertura":[abertura], "PER":[per_novo_no], "PROB":[prob_novo_no]})
             novos_filhos = df_arvore[(df_arvore["NO_PAI"].isin(df_nos_excluidos["NO"].tolist()))].reset_index(drop = True)
             #print(novos_filhos, "len(df_novo_no[NO].tolist()): ", len(novos_filhos["NO"].tolist()))
-
-            
+            print(novos_filhos)
+            #Repassa probabilidade para frente
+            prob_soma = 0
             for idx, row in df_nos_excluidos.iterrows():
                 no_excluido = row.NO
                 filhos = df_arvore.loc[(df_arvore["NO_PAI"] == no_excluido)].reset_index(drop = True)["NO"].tolist()
                 for filho in filhos:
+                    prob_old_pai = df_nos_excluidos.loc[df_nos_excluidos["NO"] == no_excluido]["PROB"].iloc[0]
+                    print("filho: ", filho, " Prob: ", prob_old_pai)
+                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = prob_old_pai
+                    prob_soma += prob_old_pai
+
+            for idx, row in df_nos_excluidos.iterrows():
+                no_excluido = row.NO
+                print("no_excluido: ", no_excluido)
+                filhos = df_arvore.loc[(df_arvore["NO_PAI"] == no_excluido)].reset_index(drop = True)["NO"].tolist()
+                for filho in filhos:
+                    print(df_arvore.loc[(df_arvore["NO"] == filho)])
                     df_arvore.loc[df_arvore["NO"] == filho, "NO_PAI"] = novo_no
-                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = 1/len(novos_filhos["NO"].tolist())
-                print(no_excluido, " Filhos: ", filhos)
+                    #df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(1/len(novos_filhos["NO"].tolist()),3)
+                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,3)
+            print(no_excluido, " Filhos: ", filhos)
             df_arvore = pd.concat([df_arvore, df_novo_no]).reset_index(drop = True)
             print("Arvore resultante: ")
             print(df_arvore)
     return (df_arvore, df_vazoes)
 
+print(df_arvore)
 for est in estagios:
     nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
     print("est: ", est, " nos_estagio: ", nos_estagio)
@@ -183,8 +224,8 @@ printaArvore("saidas\\Arvore_reduzida", df_arvore)
 print(df_arvore)
 print(df_vazoes)
 
-df_arvore.to_csv("saidas\\df_arvore_reduzida.csv", index=False)
-df_vazoes.to_csv("saidas\\df_vazoes_reduzida.csv", index=False)
+df_arvore.to_csv("saidas\\arvore.csv", index=False)
+df_vazoes.to_csv("saidas\\cenarios.csv", index=False)
 
 exit(1)
 ## Example: 10 nodes, each with 180 measurements

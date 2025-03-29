@@ -79,6 +79,7 @@ function retornaListaCaminho(no)
 end
 
 function montaArvore(no_pai, df_arvore, lista_total_de_nos)
+    
     periodo = df_arvore[df_arvore.NO .== no_pai.codigo, :PER][1]  # Extract first element
     codigo_interno = 1
     lista_filhos = []
