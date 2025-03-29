@@ -82,7 +82,7 @@ function montaArvore(no_pai, df_arvore, lista_total_de_nos)
     periodo = df_arvore[df_arvore.NO .== no_pai.codigo, :PER][1]  # Extract first element
     codigo_interno = 1
     lista_filhos = []
-    println("pai cod: ", no_pai.codigo)
+    #println("pai cod: ", no_pai.codigo)
     filhos = getFilhos(no_pai.codigo)
     for filho in filhos
         no_filho = no(filho, periodo + 1, codigo_interno, no_pai, [])

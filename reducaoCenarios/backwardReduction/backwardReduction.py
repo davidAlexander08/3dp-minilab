@@ -26,21 +26,23 @@ caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen_ENASIN"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente"
+arquivo_vazoes = caso+"\\cenarios_gevazp.csv"
+arquivo_estrutura_feixes = caso+"\\arvore_gevazp.csv"
 
 
-arquivo_vazoes = caso+"\\vazao_feixes.csv"
+#arquivo_vazoes = caso+"\\vazao_feixes.csv"
+#arquivo_estrutura_feixes = caso+"\\arvore_julia.csv"
+#arquivo_vazoes = caso+"\\vazao_feixes.csv"
 #arquivo_vazoes = caso+"\\ena_feixes.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
 df_vazoes.to_csv("saidas\\arvoreAssimetrica\\vazoes_estudo.csv", index=False)
-
-arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
-df_probs = pd.read_csv(arquivo_probabilidades)
-arquivo_estrutura_feixes = caso+"\\arvore_julia.csv"
+#df_probs = pd.read_csv(arquivo_probabilidades)
+#arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
 df_arvore = pd.read_csv(arquivo_estrutura_feixes)
-df_arvore["PROB"] = df_probs["PROBABILIDADE"]
-df_arvore = df_arvore.drop(columns = "VAZAO")
+#df_arvore["PROB"] = df_probs["PROBABILIDADE"]
+#df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
 df_arvore.to_csv("saidas\\arvoreAssimetrica\\arvore_estudo.csv", index=False)
 
@@ -119,6 +121,13 @@ mapa_reducao_estagio = {
 mapa_reducao_estagio = {
     2:20,
     3:100,
+    4:0
+}
+
+#ARVORE CARMEN EXEMPLO
+mapa_reducao_estagio = {
+    2:6,
+    3:18,
     4:0
 }
 
@@ -270,7 +279,7 @@ dicionario_distancias = {}
 estagios_estocasticos = sorted(df_arvore["PER"].unique()[1:])#df_arvore["PER"].unique()[1:]
 
 printaArvore("ArvoreInicial", df_arvore_original)
-exit(1)
+
 end_time = time.time()
 elapsed_time = end_time - start_time  # Calculate elapsed time
 print(f"Tempo de Inicialização: {elapsed_time:.4f} seconds")

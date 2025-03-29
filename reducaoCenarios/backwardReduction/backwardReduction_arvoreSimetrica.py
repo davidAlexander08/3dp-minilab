@@ -27,21 +27,26 @@ caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore"
 #caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN_50cen"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente"
+arquivo_vazoes = caso+"\\cenarios_gevazp.csv"
+arquivo_estrutura_feixes = caso+"\\arvore_gevazp.csv"
 
-arquivo_vazoes = caso+"\\vazao_feixes.csv"
+
+
+#arquivo_vazoes = caso+"\\vazao_feixes.csv"
+#arquivo_estrutura_feixes = caso+"\\arvore_julia.csv"
+#arquivo_vazoes = caso+"\\vazao_feixes.csv"
 #arquivo_vazoes = caso+"\\ena_feixes.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
-df_vazoes.to_csv("saidas\\vazoes_estudo.csv", index=False)
-
-arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
-df_probs = pd.read_csv(arquivo_probabilidades)
-arquivo_estrutura_feixes = caso+"\\arvore_julia.csv"
+df_vazoes.to_csv("saidas\\arvoreSimetrica\\vazoes_estudo.csv", index=False)
+#df_probs = pd.read_csv(arquivo_probabilidades)
+#arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
 df_arvore = pd.read_csv(arquivo_estrutura_feixes)
-df_arvore["PROB"] = df_probs["PROBABILIDADE"]
-df_arvore = df_arvore.drop(columns = "VAZAO")
+#df_arvore["PROB"] = df_probs["PROBABILIDADE"]
+#df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
-df_arvore.to_csv("saidas\\arvore_estudo.csv", index=False)
+df_arvore.to_csv("saidas\\arvoreSimetrica\\arvore_estudo.csv", index=False)
 
 df_arvore_original = df_arvore.copy()
 estagios = df_arvore["PER"].unique()
@@ -76,6 +81,11 @@ mapa_aberturas_estagio = {
     2:5,
     3:5,
     4:5
+}
+mapa_aberturas_estagio = {
+    2:3,
+    3:3,
+    4:3
 }
 
 #mapa_aberturas_estagio = {

@@ -65,6 +65,9 @@ str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior_TesteConversor"
 #str_caso = "Teste_Fluxo_IEEE_5_Barras"
 str_caso = "Dissertacao/caso_teste_submercados"
 str_caso = "Dissertacao/apresentacaoCarmen/caso_mini"
+#str_caso = "Dissertacao/teste_simples_3est_2A/caso_mini"
+
+str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
 
@@ -132,13 +135,14 @@ end
 #end
 PATH_VAZOES = str_caso*"/vazao.csv"
 PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
-
+dados_saida = str_caso
 @info "Lendo arquivo de vazoes $(PATH_VAZOES)"
 dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
 
 if vazao_externa == 1
     @info "Lendo arquivo de vazoes externas $(caminho_vazao_externa)"
     dat_vaz = CSV.read(caminho_vazao_externa, DataFrame)
+    dados_saida = splitdir(caminho_vazao_externa)[1]
 end
 
 
@@ -350,8 +354,14 @@ for sbm in lista_submercados
         push!(df_eco_termo, (codigo = ute.codigo, nome = ute.nome, Submercado = sbm.codigo, Gmin = ute.gmin, Gmax = ute.gmax))
     end
 end
-CSV.write("saidas/PDD/eco/df_uhes.csv", df_eco_hidro)
-CSV.write("saidas/PDD/eco/df_utes.csv", df_eco_termo)
-CSV.write("saidas/PDD/eco/df_submercados.csv", df_eco_submercado)
-CSV.write("saidas/PDD/eco/df_RHQ.csv", def_restr_RHQ)
 
+output_dir_eco = dados_saida*"/saidas/PDD/eco"
+println(output_dir_eco)
+mkpath(output_dir_eco)
+CSV.write(output_dir_eco*"/df_uhes.csv", df_eco_hidro)
+CSV.write(output_dir_eco*"/df_utes.csv", df_eco_termo)
+CSV.write(output_dir_eco*"/df_submercados.csv", df_eco_submercado)
+CSV.write(output_dir_eco*"/df_RHQ.csv", def_restr_RHQ)
+CSV.write(output_dir_eco*"/dat_prob.csv", dat_prob)
+CSV.write(output_dir_eco*"/dat_vaz.csv", dat_vaz)
+CSV.write(output_dir_eco*"/df_arvore.csv", df_arvore)
