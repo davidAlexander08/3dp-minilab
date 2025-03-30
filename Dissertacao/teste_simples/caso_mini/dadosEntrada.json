@@ -1,17 +1,17 @@
 {
     "MAX_ITERACOES": 5,
-    "ESTAGIOS": 4,
-    "ARVORE":[1,  1,  125],
+    "ESTAGIOS": 3,
+    "ARVORE":[1,  1],
     "REDE":0,
     "LIMITES_INTERCAMBIO":0,
     "VAZAO_MINIMA":0,
     "PENALIDADE_VAZAO_MINIMA":5000,
     "VOLUME_MINIMO":0,
     "VOLUME_ESPERA":0,
-    "ARVORE_EXTERNA":0,
-    "VAZAO_EXTERNA":0,
-    "CAMINHO_ARVORE_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/apresentacaoCarmen_Gevazp/caso_mini/exercicioGevazp/2Aberturas/Arvore/arvore_gevazp.csv",
-    "CAMINHO_VAZAO_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/apresentacaoCarmen_Gevazp/caso_mini/exercicioGevazp/2Aberturas/Arvore/cenarios_arvore_gevazp.csv",
+    "ARVORE_EXTERNA":1,
+    "VAZAO_EXTERNA":1,
+    "CAMINHO_ARVORE_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples/caso_mini/Pente/pente_gevazp.csv",
+    "CAMINHO_VAZAO_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples/caso_mini/Pente/cenarios_pente_gevazp.csv",
     "UHEs": [
         {
             "NOME": "6",
@@ -21,7 +21,7 @@
             "GHMAX": 100000,
             "TURBMAX": 1700,
             "VOLUME_MINIMO": 0,
-            "VOLUME_MAXIMO": 100,
+            "VOLUME_MAXIMO": 10000,
             "PRODT": 1,
             "VOLUME_INICIAL": 0,
             "BARRA": 1,
@@ -33,7 +33,7 @@
         {
             "NOME":"ANGRA1",
             "GTMIN": 0.0,
-            "GTMAX": 1000.0,
+            "GTMAX": 45.0,
             "CUSTO_GERACAO": 10.0,
             "BARRA":2,
             "SUBMERCADO":1,
@@ -44,8 +44,8 @@
         {
             "NOME":"SUDESTE",
             "CODIGO":1,
-            "CUSTO_DEFICIT": 5000.0,
-            "DEMANDA": [1000,1000,1000,1000]
+            "CUSTO_DEFICIT": 1000.0,
+            "DEMANDA": [50,50,50,50]
         }
     ],
     "BARRAS":[{"NOME":"BARRA01", "CODIGO":1, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":2, "CARGA":[0,0,0,0,0], "AREA":1},

@@ -23,8 +23,8 @@ tempo_Total = time.time()
 caso = "..\\..\\Mestrado\\caso_1D"
 #caso = "..\\..\\casos\\Mestrado\\caso_2D"
 caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_8cen"
-caso = "..\\..\\casos\\Mestrado\\caso_construcaoArvore_SIN"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
+#caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_2000cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_1000cen"
 #caso = "..\\..\\Mestrado\\caso_construcaoArvore_SIN_500cen"
@@ -33,7 +33,7 @@ caso = "..\\..\\Dissertacao\\apresentacaoCarmen\\caso_mini"
 #caso = "..\\..\\Mestrado\\teste_wellington"
 
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente_GVZP"
+caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\2Aberturas\\Pente"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_Equiprovavel\\Pente_GVZP"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
@@ -42,18 +42,15 @@ arquivo_vazoes = caso+"\\cenarios.csv"
 arquivo_estrutura_feixes = caso+"\\arvore.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
-df_vazoes.to_csv("saidas\\vazoes_estudo.csv", index=False)
+df_vazoes.to_csv("ClusterSimetrico\\vazoes_estudo.csv", index=False)
 #df_probs = pd.read_csv(arquivo_probabilidades)
 #arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
 df_arvore = pd.read_csv(arquivo_estrutura_feixes)
 #df_arvore["PROB"] = df_probs["PROBABILIDADE"]
 #df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
-df_arvore.to_csv("saidas\\arvore_estudo.csv", index=False)
+df_arvore.to_csv("ClusterSimetrico\\arvore_estudo.csv", index=False)
 df_arvore_original = df_arvore.copy()
-
-
-
 
 
 estagios = df_arvore["PER"].unique()
@@ -106,18 +103,21 @@ mapa_clusters_estagio = {
 }
 mapa_clusters_estagio = {
     1:2,
-    2:2
+    2:2,
 }
 mapa_clusters_estagio = {
     1:2,
     2:2,
     3:2
+
 }
+
 mapa_clusters_estagio = {
     1:3,
     2:3,
     3:3
 }
+
 
 def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio):
     filhos = getFilhos(no_analise, df_arvore)
@@ -134,16 +134,15 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                 mapa_linha_no[linha] = no
                 #print("no: ", no, " posto: ", posto, " Vazao: ", vazao)
         k = mapa_clusters_estagio[est]
-        print("K: ", k, " matriz: ", matriz_valores)
-        kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-        clusters = kmeans.fit_predict(matriz_valores)
+        #kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+        #clusters = kmeans.fit_predict(matriz_valores)
 
         # Perform balanced K-Means clustering
-        #size_min = len(filhos) // k  # Minimum number of points per cluster
-        #size_max = len(filhos) // k  # Maximum number of points per cluster
+        size_min = len(filhos) // k  # Minimum number of points per cluster
+        size_max = len(filhos) // k  # Maximum number of points per cluster
         # Use KMeansConstrained for balanced clustering
-        #kmeans = KMeansConstrained(n_clusters=k, size_min=size_min, size_max=size_max, random_state=42, n_init=10)
-        #clusters = kmeans.fit_predict(matriz_valores)
+        kmeans = KMeansConstrained(n_clusters=k, size_min=size_min, size_max=size_max, random_state=42, n_init=10)
+        clusters = kmeans.fit_predict(matriz_valores)
         #print("Cluster assignments:", clusters)
         #print(clusters)
         new_matrix = np.zeros((len(clusters), len(postos)))
@@ -160,11 +159,11 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print("lista_linhas_matriz: ", lista_linhas_matriz)
             
             lista_nos_cluster = [mapa_linha_no[key] for key in lista_linhas_matriz]
-            print("lista_nos_cluster: ", lista_nos_cluster)
+            #print("lista_nos_cluster: ", lista_nos_cluster)
 
             matriz_cluster = matriz_valores[lista_linhas_matriz,:]
             novas_realizacoes = np.round(matriz_cluster.mean(axis=0), 0).astype(int)
-            #print("novas_realizacoes: ", novas_realizacoes)
+            print("novas_realizacoes: ", novas_realizacoes)
             #print(f"Cluster {i} node {novo_no}: Lines assigned ->", np.where(clusters == i)[0], " Nodes: ", lista_nos_cluster)
             #print(matriz_cluster)
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
@@ -184,7 +183,8 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             df_novo_no = pd.DataFrame({"NO_PAI":[pai_novo_no], "NO":[novo_no], "Abertura":[abertura], "PER":[per_novo_no], "PROB":[prob_novo_no]})
             novos_filhos = df_arvore[(df_arvore["NO_PAI"].isin(df_nos_excluidos["NO"].tolist()))].reset_index(drop = True)
             #print(novos_filhos, "len(df_novo_no[NO].tolist()): ", len(novos_filhos["NO"].tolist()))
-            print(novos_filhos)
+
+            
             #Repassa probabilidade para frente
             prob_soma = 0
             for idx, row in df_nos_excluidos.iterrows():
@@ -204,14 +204,13 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                     print(df_arvore.loc[(df_arvore["NO"] == filho)])
                     df_arvore.loc[df_arvore["NO"] == filho, "NO_PAI"] = novo_no
                     #df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(1/len(novos_filhos["NO"].tolist()),3)
-                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,3)
+                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,4)
             print(no_excluido, " Filhos: ", filhos)
             df_arvore = pd.concat([df_arvore, df_novo_no]).reset_index(drop = True)
             print("Arvore resultante: ")
             print(df_arvore)
     return (df_arvore, df_vazoes)
 
-print(df_arvore)
 for est in estagios:
     nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
     print("est: ", est, " nos_estagio: ", nos_estagio)
@@ -220,12 +219,13 @@ for est in estagios:
     print(df_arvore)
 
 
-printaArvore("saidas\\Arvore_reduzida", df_arvore)
+printaArvore("ClusterSimetrico\\Arvore_reduzida", df_arvore)
 print(df_arvore)
 print(df_vazoes)
+df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
 
-df_arvore.to_csv("saidas\\arvore.csv", index=False)
-df_vazoes.to_csv("saidas\\cenarios.csv", index=False)
+df_arvore.to_csv("ClusterSimetrico\\arvore.csv", index=False)
+df_vazoes.to_csv("ClusterSimetrico\\cenarios.csv", index=False)
 
 exit(1)
 ## Example: 10 nodes, each with 180 measurements

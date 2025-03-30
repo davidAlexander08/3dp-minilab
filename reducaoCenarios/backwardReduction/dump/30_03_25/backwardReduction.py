@@ -43,14 +43,14 @@ arquivo_estrutura_feixes = caso+"\\arvore.csv"
 #arquivo_vazoes = caso+"\\ena_feixes.csv"
 df_vazoes = pd.read_csv(arquivo_vazoes)
 print(df_vazoes)
-df_vazoes.to_csv("saidas\\arvoreAssimetrica\\vazoes_estudo.csv", index=False)
+df_vazoes.to_csv("BKAssimetrico\\cenarios.csv", index=False)
 #df_probs = pd.read_csv(arquivo_probabilidades)
 #arquivo_probabilidades = caso+"\\probabilidades_feixes.csv"
 df_arvore = pd.read_csv(arquivo_estrutura_feixes)
 #df_arvore["PROB"] = df_probs["PROBABILIDADE"]
 #df_arvore = df_arvore.drop(columns = "VAZAO")
 print(df_arvore)
-df_arvore.to_csv("saidas\\arvoreAssimetrica\\arvore_estudo.csv", index=False)
+df_arvore.to_csv("BKAssimetrico\\arvore_estudo.csv", index=False)
 
 df_arvore_original = df_arvore.copy()
 
@@ -600,8 +600,10 @@ for est in reversed(estagios_estocasticos):
 tempo_final = time.time()
 elapsed_time = tempo_final - tempo_Total  # Calculate elapsed time
 print(f"Tempo Total: {elapsed_time:.4f} seconds")
+
+df_arvore.to_csv("BKAssimetrico\\arvore.csv", index=False)
 exit(1)
-df_arvore.to_csv("saidas\\arvoreAssimetrica\\df_arvore_reduzida.csv", index=False)
+
 
 ##Estatisticas
 for est in sorted(df_arvore["PER"].unique()):
@@ -646,9 +648,9 @@ for est in sorted(df_arvore["PER"].unique())[1:]:
         lista_df.append(df)
 
 df_result = pd.concat(lista_df).reset_index(drop = True)
-df_result.to_csv("saidas\\arvoreAssimetrica\\estatisticas_Arv_red.csv", index=False)
+df_result.to_csv("BKAssimetrico\\estatisticas_Arv_red.csv", index=False)
 
 
 
-printaArvore("saidas\\arvoreAssimetrica\\Arvore_reduzida", df_arvore)
+printaArvore("BKAssimetrico\\arvoreAssimetrica\\Arvore_reduzida", df_arvore)
 print(df_arvore)
