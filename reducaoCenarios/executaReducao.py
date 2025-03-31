@@ -291,8 +291,8 @@ def executaTestesReducaoArvoresGVZP():
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 
-#executaTestesReducaoArvoresGVZP()
-#exit(1)
+executaTestesReducaoArvoresGVZP()
+exit(1)
 
 
 

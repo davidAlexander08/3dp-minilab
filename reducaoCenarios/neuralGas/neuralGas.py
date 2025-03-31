@@ -46,8 +46,8 @@ class NeuralGas:
     def fit(self, data):
         indices = np.random.choice(len(data), self.n_units, replace=False)
         self.units = data[indices].copy()
-        print(indices)
-        print(self.units)
+        #print(indices)
+        #print(self.units)
         for iteration in range(self.max_iter):
             data = data[np.random.permutation(data.shape[0])]
             lr = self.lr0 * (self.lr_decay ** iteration)
@@ -83,15 +83,15 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
             for coluna, posto in enumerate(postos):  # FIXED: Same for column index
                 vazao = df_vazoes[(df_vazoes["NOME_UHE"] == posto) & (df_vazoes["NO"] == no)]["VAZAO"].iloc[0]
                 matriz_valores[linha, coluna] = vazao
-        print(matriz_valores)
+        #print(matriz_valores)
 
         k = mapa_clusters_estagio[est]
 
         ng = NeuralGas(n_units=k, max_iter=10000)
         representatives = ng.fit(matriz_valores)
         clusters = ng.predict(matriz_valores)
-        print("representatives: ", representatives, " len: ", len(representatives))
-        print(clusters)
+        #print("representatives: ", representatives, " len: ", len(representatives))
+        #print(clusters)
         new_matrix = np.zeros((len(representatives), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
         for i in range(k):
@@ -171,8 +171,8 @@ def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetric
         for no_cluster in nos_estagio:
             df_arvore, df_vazoes = percorreArvoreNeuralGas(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica)
     df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
-    print(df_arvore)
-    print(df_vazoes)
+    #print(df_arvore)
+    #print(df_vazoes)
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
     print(f"Tempo de Exeucao do Neural Gas: {elapsed_time:.4f} seconds")

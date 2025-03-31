@@ -96,13 +96,13 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             kmeans = KMeansConstrained(n_clusters=k, size_min=size_min, size_max=size_max, random_state=42, n_init=10)
             clusters = kmeans.fit_predict(matriz_valores)
 
-            print(clusters)
+            #print(clusters)
         else:
             #print("K: ", k, " matriz: ", matriz_valores)
             kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
             clusters = kmeans.fit_predict(matriz_valores)
-            print("qntClusters: ", k, " est: ", est)
-            print(clusters)
+            #print("qntClusters: ", k, " est: ", est)
+            #print(clusters)
         new_matrix = np.zeros((len(clusters), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
         for i in range(k):
