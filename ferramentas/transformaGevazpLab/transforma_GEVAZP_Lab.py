@@ -3,11 +3,12 @@ import pandas as pd
 import re
 # Read the file
 
-caminho = "C:\\Users\\testa\\Documents\\mestrado\\ExercicioCarmen\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\ferramentas\\transformaGevazpLab\\"
 pasta = "2Aberturas_3Est\\"
 pasta = "3Aberturas_4Est_Equiprovavel\\"
 pasta = "3_Aberturas_3Est\\"
 pasta = "2Aberturas_4Est_Assim\\"
+pasta = "3Aberturas_4Est_teste\\"
 #pasta = "2Aberturas\\"
 caminho_caso = caminho+pasta
 df_cenarios = pd.read_csv(caminho_caso+"fort.156", sep=";", skipinitialspace=True)
@@ -156,7 +157,7 @@ for i, row in df_probabilidadesArvore.iterrows():
     caminhos_arvore[i] = sorted(caminho[:-1])
     for idx, no in enumerate(sorted(caminho)):
         print("idx: ", idx, " no: ", no, " prob: ", row[colunas[idx+1]])
-        df_arvore_externa_gevazp_resultante.loc[(df_arvore_externa_gevazp_resultante["NO"] == no), ["PROB"]] = round(float(row[colunas[idx+1]].strip()),3)
+        df_arvore_externa_gevazp_resultante.loc[(df_arvore_externa_gevazp_resultante["NO"] == no), ["PROB"]] = round(float(row[colunas[idx+1]].strip()),4)
 
 
 
@@ -166,7 +167,7 @@ def calculaProbCaminho(caminho, df_arvore):
     for no in caminho:
         prob_no = df_arvore.loc[(df_arvore["NO"] == no)]["PROB"].iloc[0]
         prob = prob*float(prob_no)
-    prob = round(prob,3)
+    prob = round(prob,4)
     return prob
 print(caminhos_arvore)
 print(df_arvore_externa_gevazp_resultante)

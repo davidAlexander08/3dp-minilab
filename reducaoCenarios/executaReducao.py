@@ -100,10 +100,11 @@ caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGeva
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\2Aberturas\\Pente"
 caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_Equiprovavel\\Pente_GVZP"
 caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
-
-mapa_aberturas_estagio = {1:3,    2:3,    3:3}
+#caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
+caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
+#mapa_aberturas_estagio = {1:3,    2:3,    3:3}
 mapa_aberturas_estagio = {1:2,    2:2,    3:2}
-
+#mapa_aberturas_estagio = {1:3,    2:3}
 ##ARVORE CARMEN EXEMPLO
 #mapa_reducao_estagio = {
 #    2:6,
@@ -148,38 +149,6 @@ printaArvore("ClusterAssimetrico", path_saida, df_arvore)
 
 
 print("###########################################################################")
-### METODO -  BACKWARD REDUCTION ASSIMETRICO
-Simetrica = False
-df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica)
-path_saida = "saidas\\BKAssimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-
-texto = "Arvore Backward Reduction Assimetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("BKAssimetrico", path_saida, df_arvore)
-
-
-
-print("###########################################################################")
-### METODO -  BACKWARD REDUCTION SIMETRICO
-Simetrica = True
-df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original, df_arvore_original, Simetrica)
-path_saida = "saidas\\BKSimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-texto = "Arvore Backward Reduction Simetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeSimetriaFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("BKSimetrico", path_saida, df_arvore)
-
-
-
-print("###########################################################################")
 ## METODO CLUSTERIZACAO SIMETRICO
 if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
     print("Clusterizacao Simetrica Usual Pós Backward Reduction no Último Estágio")
@@ -211,3 +180,38 @@ realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
 testeSimetriaFilhos(df_arvore, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
 printaArvore("ClusterSimetrico", path_saida, df_arvore)
+
+
+
+
+print("###########################################################################")
+### METODO -  BACKWARD REDUCTION ASSIMETRICO
+Simetrica = False
+df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica)
+path_saida = "saidas\\BKAssimetrico"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+
+texto = "Arvore Backward Reduction Assimetrico"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("BKAssimetrico", path_saida, df_arvore)
+
+
+
+print("###########################################################################")
+### METODO -  BACKWARD REDUCTION SIMETRICO
+Simetrica = True
+df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original, df_arvore_original, Simetrica)
+path_saida = "saidas\\BKSimetrico"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+texto = "Arvore Backward Reduction Simetrico"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeSimetriaFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("BKSimetrico", path_saida, df_arvore)
+
+
