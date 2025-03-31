@@ -104,6 +104,11 @@ caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\
 caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
 mapa_aberturas_estagio = {1:2,    2:2,    3:2}
+mapa_aberturas_estagio = {1:2,    2:2,    3:3}
+mapa_aberturas_estagio = {1:3,    2:2,    3:2}
+mapa_aberturas_estagio = {1:3,    2:3,    3:2}
+mapa_aberturas_estagio = {1:3,    2:3,    3:3}
+mapa_aberturas_estagio = {1:2,    2:3,    3:3}
 #mapa_aberturas_estagio = {1:3,    2:3}
 ##ARVORE CARMEN EXEMPLO
 #mapa_reducao_estagio = {
