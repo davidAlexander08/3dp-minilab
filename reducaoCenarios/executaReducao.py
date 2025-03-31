@@ -99,7 +99,7 @@ def testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto):
 def testeEstruturaArvore(df_arvore_teste, df_arvore, texto):
     total_nos_arvore_teste = df_arvore_teste["NO"].unique()
     total_nos_arvore = df_arvore["NO"].unique()
-    assert (len(total_nos_arvore_teste) == len(total_nos_arvore)), f"Numero de Nos Totais diferentes. - {texto}"
+    assert (len(total_nos_arvore_teste) == len(total_nos_arvore)), f"Numero de Nos Totais diferentes. - {texto}. NOrig {len(total_nos_arvore_teste)}. NRed {len(total_nos_arvore)}"
     for est in df_arvore_teste["PER"].unique():
         total_nos_arvore_teste_per = df_arvore_teste.loc[(df_arvore_teste["PER"] == est)]["NO"].unique()
         total_nos_arvore_per = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].unique()
@@ -134,7 +134,7 @@ def testeEstruturaVazoes(df_vazoes_teste, df_vazoes, texto):
     for no_red in total_nos_arvore:
         vazao_red = df_vazoes.loc[(df_vazoes["NO"] == no_red)]["VAZAO"].iloc[0]
         lista_red.append(vazao_red)
-    assert (sum(lista_orig) == sum(lista_red)), f"A soma das vazoes está diferente. - {texto} - Soma Orig: {sum(lista_orig)}, Soma Red: {sum(lista_red)}"
+    assert (abs(sum(lista_orig) - sum(lista_red))) <= 0.001, f"A soma das vazoes está diferente. - {texto} - Soma Orig: {sum(lista_orig)}, Soma Red: {sum(lista_red)}"
     print(f"Teste de Estrutura dos Cenários - {texto} - OK")
 
 
@@ -142,6 +142,7 @@ def testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste
     print("###########################################################################")
     Simetrica = False
     df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    print(df_arvore)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   " Clusterizacao Assimetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  " Clusterizacao Assimetrica")
     testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, " Clusterizacao Assimetrica")
@@ -191,6 +192,7 @@ def testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste
     ### METODO NEURAL GAS
     Simetrica = False
     df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    print(df_arvore)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   " Neural Gas Assimetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  " Neural Gas Assimetrica")
     testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, " Neural Gas Assimetrica")

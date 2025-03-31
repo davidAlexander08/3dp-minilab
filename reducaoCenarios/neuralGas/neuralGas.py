@@ -78,13 +78,16 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
         matriz_valores = np.zeros((len(filhos), len(postos)))
         mapa_linha_no = {}
         for linha, no in enumerate(filhos):  # FIXED: Use enumerate() to track row index
+            mapa_linha_no[linha] = no
+            prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]
             for coluna, posto in enumerate(postos):  # FIXED: Same for column index
                 vazao = df_vazoes[(df_vazoes["NOME_UHE"] == posto) & (df_vazoes["NO"] == no)]["VAZAO"].iloc[0]
                 matriz_valores[linha, coluna] = vazao
-                mapa_linha_no[linha] = no
+        print(matriz_valores)
+
         k = mapa_clusters_estagio[est]
 
-        ng = NeuralGas(n_units=k, max_iter=6000)
+        ng = NeuralGas(n_units=k, max_iter=10000)
         representatives = ng.fit(matriz_valores)
         clusters = ng.predict(matriz_valores)
         print("representatives: ", representatives, " len: ", len(representatives))
@@ -95,16 +98,35 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
             novo_no = maior_no + i + 1
             lista_linhas_matriz = np.where(clusters == i)[0]
             lista_nos_cluster = [mapa_linha_no[key] for key in lista_linhas_matriz]
-            #matriz_cluster = matriz_valores[lista_linhas_matriz,:]
-            #novas_realizacoes = np.round(matriz_cluster.mean(axis=0), 0).astype(int)
+
+
+            
+            ########## WEIGHTED AVERAGE OF CLUSTERS
+            matriz_cluster = matriz_valores[lista_linhas_matriz,:]
+            save_lines = matriz_cluster*0
+            soma_probs = 0
+            for i, no in enumerate(lista_nos_cluster):
+                prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]
+                soma_probs += prob
+            for i, no in enumerate(lista_nos_cluster):
+                prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]/soma_probs
+                linha = matriz_cluster[i,:]
+                #print("linha: ", linha, " prob: ", prob, " mult: ", linha*prob)
+                save_lines[i,:] = linha*prob  
+            novas_realizacoes = np.sum(save_lines, axis=0)
+            ########################################
+
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
             df_arvore = df_arvore[~df_arvore["NO"].isin(lista_nos_cluster)]
+
             prob_novo_no = df_nos_excluidos["PROB"].sum()
+            media_probs = df_nos_excluidos["PROB"].mean()
             pai_novo_no = df_nos_excluidos["NO_PAI"].unique()[0]
             per_novo_no = df_nos_excluidos["PER"].unique()[0]
             abertura = i+1
             for coluna, posto in enumerate(postos):
-                df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[representatives[i][coluna]]})
+                df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[representatives[i][coluna]]}) #### CLASSIC NEURAL GAS
+                #df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[novas_realizacoes[coluna]]}) #### CLUSTER NEURAL GAS, UTILIZA A MEDIA PONDERADA DOS ELEMENTOS DO CLUSTER
                 df_vazoes = pd.concat([df_vazoes, df_vaz]).reset_index(drop = True)
             ### COMENTE ESSA LINHA PARA IMPRIMIR TAMBEM NO CADASTRO DE VAZOES OS NOS ELIMINADOS ALEM DO NO RESULTANTE
             df_vazoes = df_vazoes[~df_vazoes["NO"].isin(lista_nos_cluster)] 
@@ -128,6 +150,7 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
                     df_arvore.loc[df_arvore["NO"] == filho, "NO_PAI"] = novo_no
                     df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,4)
             df_arvore = pd.concat([df_arvore, df_novo_no]).reset_index(drop = True)
+            
     return (df_arvore, df_vazoes)
 
 
@@ -161,8 +184,8 @@ def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetric
 
 
 
-#caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente_GVZP"
-#mapa_aberturas_estagio = {1:2,    2:2}
+#caso = "..\\casosTestesUnitarios\\3Estagios\\3AberturasAssim\\Pente_GVZP"
+#mapa_aberturas_estagio = {1:3,    2:3}
 #arquivo_vazoes = caso+"\\cenarios.csv"
 #df_vazoes_original = pd.read_csv(arquivo_vazoes)
 #arquivo_estrutura_feixes = caso+"\\arvore.csv"

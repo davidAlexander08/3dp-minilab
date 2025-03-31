@@ -114,10 +114,25 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print("lista_nos_cluster: ", lista_nos_cluster)
 
             matriz_cluster = matriz_valores[lista_linhas_matriz,:]
-            novas_realizacoes = np.round(matriz_cluster.mean(axis=0), 0).astype(int)
-            #print("novas_realizacoes: ", novas_realizacoes)
-            #print(f"Cluster {i} node {novo_no}: Lines assigned ->", np.where(clusters == i)[0], " Nodes: ", lista_nos_cluster)
-            #print(matriz_cluster)
+
+            #######################################
+            #novas_realizacoes = np.round(matriz_cluster.mean(axis=0), 0).astype(int)  ####### CLUSTER NORMAL AVERAGE
+            #################
+            ########## CLUSTER WEIGHTED AVERAGE
+            save_lines = matriz_cluster*0
+            soma_probs = 0
+            for i, no in enumerate(lista_nos_cluster):
+                prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]
+                soma_probs += prob
+            for i, no in enumerate(lista_nos_cluster):
+                prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]/soma_probs
+                linha = matriz_cluster[i,:]
+                #print("linha: ", linha, " prob: ", prob, " mult: ", linha*prob)
+                save_lines[i,:] = linha*prob     
+            ########################################
+
+            novas_realizacoes = np.sum(save_lines, axis=0)
+
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
             df_arvore = df_arvore[~df_arvore["NO"].isin(lista_nos_cluster)]
             prob_novo_no = df_nos_excluidos["PROB"].sum()
