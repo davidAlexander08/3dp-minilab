@@ -32,19 +32,21 @@ for no in lista_total_de_nos
     push!(mapa_periodos[no.periodo].nos, no)
 end
 
-df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], Abertura = [] , PER = Int[], VAZAO = Float64[], PROB = Float64[])
+df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], Abertura = [] , PER = Int[], PROB = Float64[])
 
 function printa_nos(no)
     for elemento in no.filhos
         #println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
-        push!(df_arvore, (NO_PAI = elemento.pai.codigo, NO = elemento.codigo, Abertura = elemento.index, PER = elemento.periodo,  VAZAO = 0, PROB = 0))
+        probabilidade = dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"][1]
+        push!(df_arvore, (NO_PAI = elemento.pai.codigo, NO = elemento.codigo, Abertura = elemento.index, PER = elemento.periodo,  PROB = probabilidade))
         printa_nos(elemento)
     end
 end
 
 
 #println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
-push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, Abertura = no1.index, NO_PAI = no1.pai, VAZAO = 0, PROB = 0))
+probabilidade = dat_prob[(dat_prob.NO .== no1.codigo), "PROBABILIDADE"][1]
+push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, Abertura = no1.index, NO_PAI = no1.pai, PROB = probabilidade))
 printa_nos(no1)
 #println(df_arvore)
 CSV.write("cenarios/CenariosSemanais/arvore_julia.csv", df_arvore)

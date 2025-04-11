@@ -68,6 +68,9 @@ str_caso = "Dissertacao/apresentacaoCarmen/caso_mini"
 #str_caso = "Dissertacao/teste_simples_3est_2A/caso_mini"
 
 str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
+str_caso = "Dissertacao/exercicioDebora/caso_mini"
+str_caso = "Capitulo_5/caso_mini"
+#str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
 
