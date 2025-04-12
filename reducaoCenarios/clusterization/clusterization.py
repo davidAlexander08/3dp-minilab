@@ -17,6 +17,7 @@ os.environ["PATH"] += os.pathsep + r"C:\\Program Files (x86)\\Graphviz\\bin"
 #from numba import jit
 from itertools import combinations  # Efficiently generate unique (i, j) pairs
 from scipy.stats import skew
+import plotly.graph_objects as go
 
 
 #caso = "..\\..\\Mestrado\\caso_1D"
@@ -81,11 +82,13 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
     if(len(filhos) > mapa_clusters_estagio[est]):
         matriz_valores = np.zeros((len(filhos), len(postos)))
         mapa_linha_no = {}
+        mapa_linha_posto = {}
         for linha, no in enumerate(filhos):  # FIXED: Use enumerate() to track row index
             for coluna, posto in enumerate(postos):  # FIXED: Same for column index
                 vazao = df_vazoes[(df_vazoes["NOME_UHE"] == posto) & (df_vazoes["NO"] == no)]["VAZAO"].iloc[0]
                 matriz_valores[linha, coluna] = vazao
-                mapa_linha_no[linha] = no
+                mapa_linha_posto[posto] = coluna
+            mapa_linha_no[linha] = no
                 #print("no: ", no, " posto: ", posto, " Vazao: ", vazao)
         k = mapa_clusters_estagio[est]
 
@@ -95,16 +98,38 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             print("size_min: ", size_min, "size_max: ", size_max, " no_analise: ", no_analise, " est: ", est)
             kmeans = KMeansConstrained(n_clusters=k, size_min=size_min, size_max=size_max, random_state=42, n_init=10)
             clusters = kmeans.fit_predict(matriz_valores)
-
             #print(clusters)
         else:
             #print("K: ", k, " matriz: ", matriz_valores)
             kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
             clusters = kmeans.fit_predict(matriz_valores)
             #print("qntClusters: ", k, " est: ", est)
-            #print(clusters)
+            #if(no_analise == 1502):
+            #    print(clusters)
+
         new_matrix = np.zeros((len(clusters), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
+        print("matriz_valores: ", matriz_valores)
+        ##### PRINT CLUSTERS
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=matriz_valores[:, mapa_linha_posto[275]],
+            y=matriz_valores[:, mapa_linha_posto[6]],
+            marker=dict(color='blue', size=8),
+            mode="markers",
+            name="TucuruixFurnas",
+            showlegend=False  
+        ))
+        
+        fig.update_layout(
+            title='Scater Plot Centroides',
+            xaxis_title='m3/s',
+            yaxis_title='m3/s'
+        )
+        text_out = "ClusterSimetrico" if Simetrica == True else "ClusterAssimetrico"
+
+
+        print("k: ", k)
         for i in range(k):
             novo_no = maior_no + i + 1
             lista_linhas_matriz = np.where(clusters == i)[0]
@@ -121,17 +146,29 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             ########## CLUSTER WEIGHTED AVERAGE
             save_lines = matriz_cluster*0
             soma_probs = 0
-            for i, no in enumerate(lista_nos_cluster):
+            for indice, no in enumerate(lista_nos_cluster):
                 prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]
                 soma_probs += prob
-            for i, no in enumerate(lista_nos_cluster):
+            #print("no_analise: ", no_analise, " soma_probs: ", soma_probs, " total_nos: ", len(lista_nos_cluster))
+            for indice, no in enumerate(lista_nos_cluster):
                 prob = df_arvore.loc[df_arvore["NO"] == no]["PROB"].iloc[0]/soma_probs
-                linha = matriz_cluster[i,:]
-                #print("linha: ", linha, " prob: ", prob, " mult: ", linha*prob)
-                save_lines[i,:] = linha*prob     
+                linha = matriz_cluster[indice,:]
+                #if(no_analise == 1502):
+                #    print(" prob: ", prob, " mult: ", linha*prob)
+                save_lines[indice,:] = linha*prob     
             ########################################
 
             novas_realizacoes = np.sum(save_lines, axis=0)
+
+            fig.add_trace(go.Scatter(
+                x=[novas_realizacoes[mapa_linha_posto[275]]],
+                y=[novas_realizacoes[mapa_linha_posto[6]]],
+                mode="markers",
+                marker=dict(color='red', size=8),
+                name="TucuruixFurnas",
+                showlegend=False  
+            ))
+            
 
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
             df_arvore = df_arvore[~df_arvore["NO"].isin(lista_nos_cluster)]
@@ -158,10 +195,10 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                 filhos = df_arvore.loc[(df_arvore["NO_PAI"] == no_excluido)].reset_index(drop = True)["NO"].tolist()
                 for filho in filhos:
                     prob_old_pai = df_nos_excluidos.loc[df_nos_excluidos["NO"] == no_excluido]["PROB"].iloc[0]
-                    #print("filho: ", filho, " Prob: ", prob_old_pai)
+                    #if(no_analise == 1502):
+                    #    print("cluster: ", i, " filho: ", filho, " Prob: ", prob_old_pai)
                     df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = prob_old_pai
                     prob_soma += prob_old_pai
-
             for idx, row in df_nos_excluidos.iterrows():
                 no_excluido = row.NO
                 #print("no_excluido: ", no_excluido)
@@ -170,11 +207,14 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                     #print(df_arvore.loc[(df_arvore["NO"] == filho)])
                     df_arvore.loc[df_arvore["NO"] == filho, "NO_PAI"] = novo_no
                     #df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(1/len(novos_filhos["NO"].tolist()),3)
-                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,4)
+                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,7)
             #print(no_excluido, " Filhos: ", filhos)
             df_arvore = pd.concat([df_arvore, df_novo_no]).reset_index(drop = True)
             #print("Arvore resultante: ")
             #print(df_arvore)
+    #if(no_analise == 1502):
+        #exit(1)
+        fig.write_html("saidas\\"+text_out+"\\Clusterizacao_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
     return (df_arvore, df_vazoes)
 
 

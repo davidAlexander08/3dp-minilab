@@ -170,7 +170,7 @@ class NeuralGas:
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=data[:, mapa_linha_posto[275]],
-            y=data[:, mapa_linha_posto[6]],
+            y=data[:, mapa_linha_posto[288]],
             marker=dict(color='blue', size=8),
             mode="markers",
             name="Points",
@@ -189,7 +189,7 @@ class NeuralGas:
 
         fig.add_trace(go.Scatter(
             x=centros[:, mapa_linha_posto[275]],
-            y=centros[:, mapa_linha_posto[6]],
+            y=centros[:, mapa_linha_posto[288]],
             marker=dict(color='green', size=8),
             mode="markers",
             name="Initial",
@@ -214,43 +214,28 @@ class NeuralGas:
         units_antigo = self.units.copy()
         flag_teste_convergencia = False
         distancia_convergencia = 9999
-        self.lr0 = 1  ## NEIGHBOUR RANGE
+        self.lr0 = 10   ## NEIGHBOUR RANGE
         self.lrf = 0.01
-        self.epsilon0 = 0.1  ### LEARNING RATE
+        self.epsilon0 = 0.5  ### LEARNING RATE
         self.epsilonf = 0.05
         self.max_iter = 40000
-        self.rng = np.random.RandomState(42)
-        for iteration in range(0, self.max_iter):
+        [n_samples, _] = data.shape
+        self.rng = np.random.RandomState()
+        for iteration in range(1, self.max_iter):
             lr = self.lr0 * ((self.lrf/self.lr0) ** (iteration/self.max_iter))
             epsilon = self.epsilon0 * ((self.epsilonf/self.epsilon0) ** (iteration/self.max_iter))
-            sample = data[np.random.randint(0, data.shape[0]), :]
-            #print("sample: ", sample)
-            mapa_distancias = {}
-            distances = []
-
-            for idx, unit in enumerate(self.units):
-                distance = np.linalg.norm(unit - sample)
-                #("unit: ", unit, " sample: ", sample, " distance: ", distance)
-                mapa_distancias[idx] = distance
-                distances.append(distance)
-            ranked = np.argsort(distances)
-            #print(distances)
-            #print(ranked)
-            for order, idx_k in enumerate(ranked):
-                adaptation = epsilon * np.exp((-order) / lr)
-                #print("distance: ", distances[order], " adaptation: ", adaptation, " diff: ", sample  -  self.units[idx_k], " unit: ", self.units[idx_k])
-                self.units[idx_k] += adaptation*(sample  -  self.units[idx_k] )
-            #print(self.units)
-            #exit(1)
-            #mapa_centroid_dist = {}
-            #for idx_k in range(0,self.n_units):
-            #    distance = np.linalg.norm(self.units[idx_k,:] - sample)
-            #    mapa_centroid_dist[idx_k] = distance
-            #sorted_centroids = sorted(mapa_centroid_dist.items(), key=lambda item: item[1])
-            #print("ranked: ", sorted_centroids)
-            #for order, (idx_k, distance) in enumerate(sorted_centroids):
-            #    adaptation = epsilon * np.exp(-order / lr)
-            #    self.units[idx_k,:] += adaptation*(sample  -  self.units[idx_k,:] )
+            random_index = np.random.randint(0, data.shape[0])
+            sample = data[random_index, :]
+            print("sample: ", sample)
+            mapa_centroid_dist = {}
+            for idx_k in range(0,self.n_units):
+                distance = np.linalg.norm(self.units[idx_k,:] - sample)
+                mapa_centroid_dist[idx_k] = distance
+            sorted_centroids = sorted(mapa_centroid_dist.items(), key=lambda item: item[1])
+            print(sorted_centroids)
+            for order, (idx_k, distance) in enumerate(sorted_centroids):
+                adaptation = epsilon * np.exp(-order / lr)
+                self.units[idx_k,:] = self.units[idx_k,:] + adaptation*(sample  -  self.units[idx_k,:] )
 
                 ##print(" realizacoes_linha: ", realizacoes_linha, " distance: ", distance)
                 #sorted_items = sorted(mapa_linha_distancia.items(), key=lambda item: item[1])
@@ -265,13 +250,12 @@ class NeuralGas:
                     #    print("order: ", order, " key: ", key, " adap menor que 0.000001")
                     #print("rank: ", order, " key: ", key, " distance: ", distance, " self.units: ", self.units[idx_k,:])
                 #exit(1)
-            if(iteration%10000 == 0):
+            if(iteration%1 == 0):
                 print("iteration: ", iteration, " lr: ", lr, " epsilon: ", epsilon)
-                #print(self.units[:,0:10])
                 print(self.units[:,0:10])
 
-            #if(iteration == 10000):
-            #    break
+            if(iteration == 10):
+                break
                 #print(scaler.inverse_transform(self.units)[:,0:10])
             #exit(1)
             #for point in data:
@@ -288,13 +272,15 @@ class NeuralGas:
         #self.units = scaler.inverse_transform(self.units)
         fig.add_trace(go.Scatter(
             x=self.units[:, mapa_linha_posto[275]],
-            y=self.units[:, mapa_linha_posto[6]],
+            y=self.units[:, mapa_linha_posto[288]],
             marker=dict(color='red', size=8),
             mode="markers",
             name="Centroides",
             showlegend=True  
         ))
         fig.write_html("saidas\\"+text_out+"\\neuralGas_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
+        exit(1)
+
         return self.units
 
 

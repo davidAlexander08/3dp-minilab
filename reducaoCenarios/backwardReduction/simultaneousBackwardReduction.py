@@ -11,7 +11,7 @@ os.environ["PATH"] += os.pathsep + r"C:\\Program Files (x86)\\Graphviz\\bin"
 #from numba import jit
 from itertools import combinations  # Efficiently generate unique (i, j) pairs
 from scipy.stats import skew
-
+import plotly.graph_objects as go
 
 def printaArvoreFiguraGrande(texto, df_arvore):
     df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = 1
@@ -156,7 +156,31 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
     start_time = time.time()
 
     for est in reversed(estagios_estocasticos):
+        
         nos_do_estagio = df_arvore.loc[(df_arvore["PER"] == est) & (df_arvore["PROB"] != 0.0)]["NO"].tolist()
+        fig = go.Figure()
+        lista_x = []
+        lista_y = []
+        for no_plot in nos_do_estagio:
+            vazao_usi1 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 6) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+            vazao_usi2 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 275) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+            lista_x.append(vazao_usi2)
+            lista_y.append(vazao_usi1)
+        fig.add_trace(go.Scatter(
+            x=lista_x,
+            y=lista_y,
+            marker=dict(color='blue', size=8),
+            mode="markers",
+            name="TucuruixFurnas",
+            showlegend=False  
+        ))
+
+
+
+
+
+
+
         matrizDistancias = np.zeros((len(nos_do_estagio), len(nos_do_estagio)))
         dicionarioDeProbabilidades = {}
         #PASSO 1 -> MONTAR MATRIZ DE DISTANCIAS ENTRE OS CENARIOS
@@ -381,11 +405,42 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
                     for filho in filhos:
                         df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_resultante,4)
                     #print(filhos)
+
+
+        
             #print(df_arvore)
         end_time = time.time()
         elapsed_time = end_time - start_time  # Calculate elapsed time
         #print(f"Tempo Calculos Estagio: {est} Tempo: {elapsed_time:.4f} seconds")
         start_time = time.time()
+
+        lista_x = []
+        lista_y = []
+        for no_plot in Q:
+            vazao_usi1 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 6) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+            vazao_usi2 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 275) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+            lista_x.append(vazao_usi2)
+            lista_y.append(vazao_usi1)
+        fig.add_trace(go.Scatter(
+            x=lista_x,
+            y=lista_y,
+            marker=dict(color='red', size=8),
+            mode="markers",
+            name="TucuruixFurnas",
+            showlegend=False  
+        ))
+
+        fig.update_layout(
+            title='Scater Plot Centroides',
+            xaxis_title='m3/s',
+            yaxis_title='m3/s'
+        )
+        text_out = "BKSimetrico" if Simetrico == True else "BKAssimetrico"
+        fig.write_html("saidas\\"+text_out+"\\BackwardRed_"+str(est)+'.html', auto_open=False)
+
+
+
+
     tempo_final = time.time()
     elapsed_time = tempo_final - tempo_Total  # Calculate elapsed time
     print(f"Tempo Total: {elapsed_time:.4f} seconds")
