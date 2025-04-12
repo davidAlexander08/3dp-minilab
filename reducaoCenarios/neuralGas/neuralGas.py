@@ -304,6 +304,20 @@ class NeuralGas:
             raise ValueError("Model not fitted yet. Call fit() first.")
         distances = cdist(data, self.units)
         assignments = np.argmin(distances, axis=1)
+
+        counts = np.bincount(assignments, minlength=len(self.units))
+        # Fix empty clusters
+        for idx, count in enumerate(counts):
+            if count == 0:
+                # Reassign this unit to the furthest point from its current neighbors
+                furthest_idx = np.argmax(np.min(cdist(data, self.units), axis=1))
+                self.units[idx] = data[furthest_idx]
+                print(f"Reassigned empty cluster {idx} to data[{furthest_idx}]")
+
+                # Recompute assignments
+                distances = cdist(data, self.units)
+                assignments = np.argmin(distances, axis=1)
+
         return assignments
 
 
@@ -329,9 +343,20 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
         representatives = ng.fit(matriz_valores, mapa_linha_posto, no_analise, est)
         clusters = ng.predict(matriz_valores)
 
+        #cluster_counts = np.bincount(clusters)
+        #empty_clusters = np.where(cluster_counts == 0)[0]
+        #if len(empty_clusters) > 0:
+        #    print(f"Empty clusters found: {empty_clusters}")
+        #    non_empty_clusters = np.where(cluster_counts > 0)[0]
+        #    means_of_non_empty_clusters = []
+        #    for cluster in non_empty_clusters:
+        #        points_in_cluster = matriz_valores[clusters == cluster]
+        #        cluster_mean = np.mean(points_in_cluster, axis=0)
+        #        means_of_non_empty_clusters.append(cluster_mean)
+        #        print("cluster: ", cluster, " media: ", means_of_non_empty_clusters)
 
-        print("representatives: ", representatives, " len: ", len(representatives))
-        print(clusters)
+        #print("representatives: ", representatives, " len: ", len(representatives))
+        #print(clusters)
         new_matrix = np.zeros((len(representatives), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
 
@@ -345,7 +370,6 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
             lista_linhas_matriz = np.where(clusters == i)[0]
             lista_nos_cluster = [mapa_linha_no[key] for key in lista_linhas_matriz]
             print("I: ", i , " lista : ", lista_nos_cluster)
-
             
             ########## WEIGHTED AVERAGE OF CLUSTERS
             matriz_cluster = matriz_valores[lista_linhas_matriz,:]
@@ -367,7 +391,6 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
 
             prob_novo_no = df_nos_excluidos["PROB"].sum()
             media_probs = df_nos_excluidos["PROB"].mean()
-            print("df_nos_excluidos[NO_PAI].unique(): ", df_nos_excluidos["NO_PAI"].unique())
             pai_novo_no = df_nos_excluidos["NO_PAI"].unique()[0]
             per_novo_no = df_nos_excluidos["PER"].unique()[0]
             abertura = i+1
@@ -395,7 +418,7 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
                 filhos = df_arvore.loc[(df_arvore["NO_PAI"] == no_excluido)].reset_index(drop = True)["NO"].tolist()
                 for filho in filhos:
                     df_arvore.loc[df_arvore["NO"] == filho, "NO_PAI"] = novo_no
-                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,4)
+                    df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_soma,7)
             df_arvore = pd.concat([df_arvore, df_novo_no]).reset_index(drop = True)
 
     return (df_arvore, df_vazoes)
