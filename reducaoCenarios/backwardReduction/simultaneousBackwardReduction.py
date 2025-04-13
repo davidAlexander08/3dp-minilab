@@ -126,7 +126,7 @@ def compute_caminho_probabilidade_matriz(no, df_arvore, df_vazoes):
     return no, caminho, matrizAfluencias, prob_no
 
 
-def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, df_arvore, Simetrico):
+def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, df_arvore, Simetrico, plotar = False):
     start_time = time.time()
     tempo_Total = time.time()
     
@@ -158,22 +158,24 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
     for est in reversed(estagios_estocasticos):
         
         nos_do_estagio = df_arvore.loc[(df_arvore["PER"] == est) & (df_arvore["PROB"] != 0.0)]["NO"].tolist()
-        fig = go.Figure()
-        lista_x = []
-        lista_y = []
-        for no_plot in nos_do_estagio:
-            vazao_usi1 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 6) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
-            vazao_usi2 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 275) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
-            lista_x.append(vazao_usi2)
-            lista_y.append(vazao_usi1)
-        fig.add_trace(go.Scatter(
-            x=lista_x,
-            y=lista_y,
-            marker=dict(color='blue', size=8),
-            mode="markers",
-            name="TucuruixFurnas",
-            showlegend=False  
-        ))
+
+        if(plotar):
+            fig = go.Figure()
+            lista_x = []
+            lista_y = []
+            for no_plot in nos_do_estagio:
+                vazao_usi1 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 6) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+                vazao_usi2 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 275) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+                lista_x.append(vazao_usi2)
+                lista_y.append(vazao_usi1)
+            fig.add_trace(go.Scatter(
+                x=lista_x,
+                y=lista_y,
+                marker=dict(color='blue', size=8),
+                mode="markers",
+                name="TucuruixFurnas",
+                showlegend=False  
+            ))
 
 
 
@@ -395,7 +397,7 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
                         caminho_no_excluido = retorna_lista_caminho(no_excluido, df_arvore)[:-1]
                         prob_resultante += df_arvore.loc[(df_arvore["NO"] == min(caminho_no_excluido))]["PROB"].iloc[0]
                         df_arvore = df_arvore[~df_arvore["NO"].isin(caminho_no_excluido)].reset_index(drop = True)
-                    df_arvore.loc[(df_arvore["NO"] == min(caminho_no_proximo)),"PROB"] = round(prob_resultante,4)
+                    df_arvore.loc[(df_arvore["NO"] == min(caminho_no_proximo)),"PROB"] = round(prob_resultante,7)
                     df_arvore = df_arvore[~df_arvore["NO"].isin(mapa_excluidos[key])].reset_index(drop = True)
                     #print("key: ", key, " prob: ", round(prob_resultante,4))
                     
@@ -403,7 +405,7 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
                     ## Arrumando probabilidade dos filhos
                     filhos = df_arvore.loc[df_arvore["NO_PAI"] == key]["NO"].tolist()
                     for filho in filhos:
-                        df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_resultante,4)
+                        df_arvore.loc[df_arvore["NO"] == filho, "PROB"] = round(df_arvore.loc[df_arvore["NO"] == filho, "PROB"]/prob_resultante,7)
                     #print(filhos)
 
 
@@ -414,29 +416,30 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
         #print(f"Tempo Calculos Estagio: {est} Tempo: {elapsed_time:.4f} seconds")
         start_time = time.time()
 
-        lista_x = []
-        lista_y = []
-        for no_plot in Q:
-            vazao_usi1 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 6) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
-            vazao_usi2 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 275) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
-            lista_x.append(vazao_usi2)
-            lista_y.append(vazao_usi1)
-        fig.add_trace(go.Scatter(
-            x=lista_x,
-            y=lista_y,
-            marker=dict(color='red', size=8),
-            mode="markers",
-            name="TucuruixFurnas",
-            showlegend=False  
-        ))
+        if(plotar):
+            lista_x = []
+            lista_y = []
+            for no_plot in Q:
+                vazao_usi1 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 6) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+                vazao_usi2 = df_vazoes.loc[(df_vazoes["NOME_UHE"] == 275) & (df_vazoes["NO"] == no_plot)]["VAZAO"].iloc[0]
+                lista_x.append(vazao_usi2)
+                lista_y.append(vazao_usi1)
+            fig.add_trace(go.Scatter(
+                x=lista_x,
+                y=lista_y,
+                marker=dict(color='red', size=8),
+                mode="markers",
+                name="TucuruixFurnas",
+                showlegend=False  
+            ))
 
-        fig.update_layout(
-            title='Scater Plot Centroides',
-            xaxis_title='m3/s',
-            yaxis_title='m3/s'
-        )
-        text_out = "BKSimetrico" if Simetrico == True else "BKAssimetrico"
-        fig.write_html("saidas\\"+text_out+"\\BackwardRed_"+str(est)+'.html', auto_open=False)
+            fig.update_layout(
+                title='Scater Plot Centroides',
+                xaxis_title='m3/s',
+                yaxis_title='m3/s'
+            )
+            text_out = "BKSimetrico" if Simetrico == True else "BKAssimetrico"
+            fig.write_html("saidas\\"+text_out+"\\BackwardRed_"+str(est)+'.html', auto_open=False)
 
 
 

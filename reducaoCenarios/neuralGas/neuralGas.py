@@ -118,8 +118,8 @@ class NeuralGas:
 
         closest_dist_sq = np.array(closest_dist_sq)
         current_pot = closest_dist_sq.sum()
-        print(X)
-        print("closest_dist_sq: ", closest_dist_sq, " current_pot: ", current_pot, " X[center_id, :]: ", X[center_id, :])
+        #print(X)
+        #print("closest_dist_sq: ", closest_dist_sq, " current_pot: ", current_pot, " X[center_id, :]: ", X[center_id, :])
         # Pick the remaining n_clusters-1 points
         for c in range(1, n_clusters):
             list_trials = np.random.random(n_local_trials)
@@ -165,50 +165,52 @@ class NeuralGas:
             closest_dist_sq = best_dist_sq
         return centers
 
-    def fit(self, data, mapa_linha_posto, no_analise, est):
-        ##### PRINT CLUSTERS
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=data[:, mapa_linha_posto[275]],
-            y=data[:, mapa_linha_posto[6]],
-            marker=dict(color='blue', size=8),
-            mode="markers",
-            name="Points",
-            showlegend=True  
-        ))
-        
-        fig.update_layout(
-            title='Scater Plot Centroides',
-            xaxis_title='m3/s',
-            yaxis_title='m3/s'
-        )
-        text_out = "NeuralGas"
+    def fit(self, data, mapa_linha_posto, no_analise, est, plotar = False):
+        if(plotar):
+            ##### PRINT CLUSTERS
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=data[:, mapa_linha_posto[275]],
+                y=data[:, mapa_linha_posto[6]],
+                marker=dict(color='blue', size=8),
+                mode="markers",
+                name="Points",
+                showlegend=True  
+            ))
+            
+            fig.update_layout(
+                title='Scater Plot Centroides',
+                xaxis_title='m3/s',
+                yaxis_title='m3/s'
+            )
+            text_out = "NeuralGas"
 
         centros = self._k_init(data, self.n_units)
         #print("centros: ", centros[:,0:10])
 
-        fig.add_trace(go.Scatter(
-            x=centros[:, mapa_linha_posto[275]],
-            y=centros[:, mapa_linha_posto[6]],
-            marker=dict(color='green', size=8),
-            mode="markers",
-            name="Initial",
-            showlegend=True  
-        ))
+        if(plotar):
+            fig.add_trace(go.Scatter(
+                x=centros[:, mapa_linha_posto[275]],
+                y=centros[:, mapa_linha_posto[6]],
+                marker=dict(color='green', size=8),
+                mode="markers",
+                name="Initial",
+                showlegend=True  
+            ))
 
         #indices = np.random.choice(len(data), self.n_units, replace=False)
         #self.units = data[indices].copy()
         #print(indices)
         self.units = centros.copy()
-        print("Starting points: ", self.units[:,0:10])
+        #print("Starting points: ", self.units[:,0:10])
         #exit(1)
 
         ##### NORMALIZANDO TESTE
         scaler = StandardScaler()
         #data = scaler.fit_transform(data)
         #self.units = scaler.fit_transform(self.units)
-        print("data: ", data[:,0:10])
-        print("self.units: ", self.units[:,0:10])
+        #print("data: ", data[:,0:10])
+        #print("self.units: ", self.units[:,0:10])
         ##### NORMALIZANDO
 
         units_antigo = self.units.copy()
@@ -265,10 +267,10 @@ class NeuralGas:
                     #    print("order: ", order, " key: ", key, " adap menor que 0.000001")
                     #print("rank: ", order, " key: ", key, " distance: ", distance, " self.units: ", self.units[idx_k,:])
                 #exit(1)
-            if(iteration%10000 == 0):
-                print("iteration: ", iteration, " lr: ", lr, " epsilon: ", epsilon)
+            #if(iteration%10000 == 0):
+                #print("iteration: ", iteration, " lr: ", lr, " epsilon: ", epsilon)
                 #print(self.units[:,0:10])
-                print(self.units[:,0:10])
+                #print(self.units[:,0:10])
 
             #if(iteration == 10000):
             #    break
@@ -286,43 +288,87 @@ class NeuralGas:
             #if(lr < self.lrf or epsilon < self.epsilonf or iteration == 40000):
             #    break
         #self.units = scaler.inverse_transform(self.units)
-        fig.add_trace(go.Scatter(
-            x=self.units[:, mapa_linha_posto[275]],
-            y=self.units[:, mapa_linha_posto[6]],
-            marker=dict(color='red', size=8),
-            mode="markers",
-            name="Centroides",
-            showlegend=True  
-        ))
-        fig.write_html("saidas\\"+text_out+"\\neuralGas_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
+
+        if(plotar):
+            fig.add_trace(go.Scatter(
+                x=self.units[:, mapa_linha_posto[275]],
+                y=self.units[:, mapa_linha_posto[6]],
+                marker=dict(color='red', size=8),
+                mode="markers",
+                name="Centroides",
+                showlegend=True  
+            ))
+            fig.write_html("saidas\\"+text_out+"\\neuralGas_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
         return self.units
 
 
-    def predict(self, data):
+    def predict(self, data, Simetrica, abertura_clusters):
         """Assign each data point to its nearest unit"""
         if self.units is None:
             raise ValueError("Model not fitted yet. Call fit() first.")
         distances = cdist(data, self.units)
         assignments = np.argmin(distances, axis=1)
-
         counts = np.bincount(assignments, minlength=len(self.units))
-        # Fix empty clusters
-        for idx, count in enumerate(counts):
-            if count == 0:
-                # Reassign this unit to the furthest point from its current neighbors
-                furthest_idx = np.argmax(np.min(cdist(data, self.units), axis=1))
-                self.units[idx] = data[furthest_idx]
-                print(f"Reassigned empty cluster {idx} to data[{furthest_idx}]")
+        #print(distances)
+        #print(assignments)
+        #print(counts)
+        if(Simetrica == False):
 
-                # Recompute assignments
-                distances = cdist(data, self.units)
-                assignments = np.argmin(distances, axis=1)
+            # Fix empty clusters
+            for idx, count in enumerate(counts):
+                if count == 0:
+                    # Reassign this unit to the furthest point from its current neighbors
+                    furthest_idx = np.argmax(np.min(cdist(data, self.units), axis=1))
+                    self.units[idx] = data[furthest_idx]
+                    print(f"Reassigned empty cluster {idx} to data[{furthest_idx}]")
+                    # Recompute assignments
+                    distances = cdist(data, self.units)
+                    assignments = np.argmin(distances, axis=1)
+        else:
+            remaining_capacity = np.full(len(self.units), abertura_clusters)
+            for i in range(len(self.units)):
+                remaining_capacity[i] -= counts[i]
+            #print("remaining_capacity: ", remaining_capacity)
+            for cluster_idx, contagem in enumerate(counts):
+                if contagem > abertura_clusters:
+                    excess = contagem - abertura_clusters
+                    points_in_cluster = np.where(assignments == cluster_idx)[0]
+                    distances_from_cluster = distances[points_in_cluster, cluster_idx]
+                    sorted_indices = np.argsort(-distances_from_cluster)
+                    farthest_points = np.array(points_in_cluster)[sorted_indices]
+                    #print("farthest_points: ", farthest_points)
+                    #print("sorted_indices: ", sorted_indices)
+                    #print("excess: ", excess)
+                    to_reassign = farthest_points[:excess]
+                    #print("to_reassign: ", to_reassign)
+                    #print(len(to_reassign))
+                    #distances_for_points = distances[points_in_cluster]
+                    #ordered_clusters = np.argsort(distances_for_points, axis=1)
+                    #print("excess: ", excess)
+                    #print("points_in_cluster: ", points_in_cluster)
+                    #print("distances_for_points: ", distances_for_points)
+                    #print("ordered_clusters: ", ordered_clusters)
 
+                    for i, point_idx in enumerate(to_reassign):
+                        distances_this_point = distances[point_idx]
+                        ordered_clusters = np.argsort(distances_this_point)
+                        #print("point_idx: ", point_idx , " distances_this_point: ", distances_this_point , " assigned: ", assignments[point_idx], "ordered_clusters: ", ordered_clusters)
+                        #print("ordered_clusters: ", ordered_clusters)
+                        for alt_cluster in ordered_clusters:
+                            if alt_cluster == cluster_idx:
+                                continue  # pular o cluster original
+                            if remaining_capacity[alt_cluster] > 0:
+                                
+                                assignments[point_idx] = alt_cluster
+                                remaining_capacity[alt_cluster] -= 1
+                                remaining_capacity[cluster_idx] += 1
+                                #print("point_idx: ", point_idx , " remaining_capacity[alt_cluster] : ", remaining_capacity)
+                                break
+            counts = np.bincount(assignments, minlength=len(self.units))
         return assignments
 
 
-def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica):
-
+def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar = False):
     filhos = getFilhos(no_analise, df_arvore)
     est = df_arvore.loc[(df_arvore["NO"] == no_analise)]["PER"].iloc[0]
     if(len(filhos) > mapa_clusters_estagio[est]):
@@ -340,8 +386,10 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
         k = mapa_clusters_estagio[est]
         maximo_iteracoes = 30000
         ng = NeuralGas(n_units=k, max_iter=maximo_iteracoes)
-        representatives = ng.fit(matriz_valores, mapa_linha_posto, no_analise, est)
-        clusters = ng.predict(matriz_valores)
+        representatives = ng.fit(matriz_valores, mapa_linha_posto, no_analise, est, plotar)
+
+        abertura_clusters = len(filhos) //k
+        clusters = ng.predict(matriz_valores, Simetrica, abertura_clusters)
 
         #cluster_counts = np.bincount(clusters)
         #empty_clusters = np.where(cluster_counts == 0)[0]
@@ -369,7 +417,7 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
             novo_no = maior_no + i + 1
             lista_linhas_matriz = np.where(clusters == i)[0]
             lista_nos_cluster = [mapa_linha_no[key] for key in lista_linhas_matriz]
-            print("I: ", i , " lista : ", lista_nos_cluster)
+            #print("I: ", i , " lista : ", lista_nos_cluster)
             
             ########## WEIGHTED AVERAGE OF CLUSTERS
             matriz_cluster = matriz_valores[lista_linhas_matriz,:]
@@ -428,7 +476,7 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
 
 
 
-def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica):
+def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, plotar = False):
     np.random.seed(42)
     start_time = time.time()
     tempo_Total = time.time()
@@ -436,12 +484,14 @@ def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetric
     estagios = sorted(estagios, reverse=False)[:-1]#[1:]
     postos = df_vazoes["NOME_UHE"].unique()
     postos = sorted(postos, reverse=False)
+    #for est in estagios:
     for est in estagios:
-        nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
-        for no_cluster in nos_estagio:
-            df_arvore, df_vazoes = percorreArvoreNeuralGas(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica)
+        if(est < max(estagios)):
+            nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
+            for no_cluster in nos_estagio:
+                df_arvore, df_vazoes = percorreArvoreNeuralGas(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar)
     df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
-    print(df_arvore)
+    #print(df_arvore)
     
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
@@ -449,7 +499,7 @@ def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetric
     start_time = time.time()
     ### COMENTE ESSA LINHA PARA IMPRIMIR TAMBEM NO CADASTRO DE VAZOES OS NOS ELIMINADOS ALEM DO NO RESULTANTE
     df_vazoes = df_vazoes[df_vazoes["NO"].isin(df_arvore["NO"].unique())].reset_index(drop = True)
-    print(df_vazoes)
+    #print(df_vazoes)
     return (df_arvore, df_vazoes)
 
 

@@ -75,7 +75,7 @@ def busca_pai(no, df_arvore):
 
 
 
-def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica):
+def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar = False):
     filhos = getFilhos(no_analise, df_arvore)
     #print("no_analise: ", no_analise, " filhos: ", filhos)
     est = df_arvore.loc[(df_arvore["NO"] == no_analise)]["PER"].iloc[0]
@@ -95,7 +95,7 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         if(Simetrica == True):
             size_min = len(filhos) // k  # Minimum number of points per cluster
             size_max = len(filhos) // k  # Maximum number of points per cluster
-            print("size_min: ", size_min, "size_max: ", size_max, " no_analise: ", no_analise, " est: ", est)
+            #print("size_min: ", size_min, "size_max: ", size_max, " no_analise: ", no_analise, " est: ", est)
             kmeans = KMeansConstrained(n_clusters=k, size_min=size_min, size_max=size_max, random_state=42, n_init=10)
             clusters = kmeans.fit_predict(matriz_valores)
             #print(clusters)
@@ -106,30 +106,44 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print("qntClusters: ", k, " est: ", est)
             #if(no_analise == 1502):
             #    print(clusters)
+            cluster_counts = np.bincount(clusters)
+            empty_clusters = np.where(cluster_counts == 0)[0]
+            if len(empty_clusters) > 0:
+                print(f"Empty clusters found: {empty_clusters}")
+                non_empty_clusters = np.where(cluster_counts > 0)[0]
+                means_of_non_empty_clusters = []
+                for cluster in non_empty_clusters:
+                    points_in_cluster = matriz_valores[clusters == cluster]
+                    cluster_mean = np.mean(points_in_cluster, axis=0)
+                    means_of_non_empty_clusters.append(cluster_mean)
+                for empty_cluster in empty_clusters:
+                    kmeans.cluster_centers_[empty_cluster] = np.mean(means_of_non_empty_clusters, axis=0)
+
 
         new_matrix = np.zeros((len(clusters), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
-        print("matriz_valores: ", matriz_valores)
-        ##### PRINT CLUSTERS
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=matriz_valores[:, mapa_linha_posto[275]],
-            y=matriz_valores[:, mapa_linha_posto[6]],
-            marker=dict(color='blue', size=8),
-            mode="markers",
-            name="TucuruixFurnas",
-            showlegend=False  
-        ))
-        
-        fig.update_layout(
-            title='Scater Plot Centroides',
-            xaxis_title='m3/s',
-            yaxis_title='m3/s'
-        )
-        text_out = "ClusterSimetrico" if Simetrica == True else "ClusterAssimetrico"
+        #print("matriz_valores: ", matriz_valores)
+        if(plotar):
+            ##### PRINT CLUSTERS
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=matriz_valores[:, mapa_linha_posto[275]],
+                y=matriz_valores[:, mapa_linha_posto[6]],
+                marker=dict(color='blue', size=8),
+                mode="markers",
+                name="TucuruixFurnas",
+                showlegend=False  
+            ))
+            
+            fig.update_layout(
+                title='Scater Plot Centroides',
+                xaxis_title='m3/s',
+                yaxis_title='m3/s'
+            )
+            text_out = "ClusterSimetrico" if Simetrica == True else "ClusterAssimetrico"
 
 
-        print("k: ", k)
+        #print("k: ", k)
         for i in range(k):
             novo_no = maior_no + i + 1
             lista_linhas_matriz = np.where(clusters == i)[0]
@@ -159,15 +173,15 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             ########################################
 
             novas_realizacoes = np.sum(save_lines, axis=0)
-
-            fig.add_trace(go.Scatter(
-                x=[novas_realizacoes[mapa_linha_posto[275]]],
-                y=[novas_realizacoes[mapa_linha_posto[6]]],
-                mode="markers",
-                marker=dict(color='red', size=8),
-                name="TucuruixFurnas",
-                showlegend=False  
-            ))
+            if(plotar):
+                fig.add_trace(go.Scatter(
+                    x=[novas_realizacoes[mapa_linha_posto[275]]],
+                    y=[novas_realizacoes[mapa_linha_posto[6]]],
+                    mode="markers",
+                    marker=dict(color='red', size=8),
+                    name="TucuruixFurnas",
+                    showlegend=False  
+                ))
             
 
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
@@ -214,12 +228,13 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print(df_arvore)
     #if(no_analise == 1502):
         #exit(1)
-        fig.write_html("saidas\\"+text_out+"\\Clusterizacao_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
+        if(plotar):
+            fig.write_html("saidas\\"+text_out+"\\Clusterizacao_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
     return (df_arvore, df_vazoes)
 
 
 
-def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica):
+def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, plotar = False):
     start_time = time.time()
     tempo_Total = time.time()
     
@@ -234,9 +249,10 @@ def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Sime
     postos = df_vazoes["NOME_UHE"].unique()
     postos = sorted(postos, reverse=False)
     for est in estagios:
-        nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
-        for no_cluster in nos_estagio:
-            df_arvore, df_vazoes = percorreArvoreClusterizando(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica)
+        if(est < max(estagios)):
+            nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
+            for no_cluster in nos_estagio:
+                df_arvore, df_vazoes = percorreArvoreClusterizando(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar)
     df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
     #df_arvore["NO_PAI"] = df_arvore["NO_PAI"].mask(df_arvore["NO"] == 1, 0)
     end_time = time.time()
