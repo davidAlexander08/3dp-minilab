@@ -11,11 +11,8 @@ import plotly.graph_objects as go
 from scipy.stats import linregress
 from sklearn.metrics import r2_score
 from plotly.subplots import make_subplots
+import math
 
-df_arvore_original = pd.read_csv("arvore_estudo.csv")
-#print(df_arvore_original)
-df_vazoes = pd.read_csv("vazoes_estudo.csv")
-#print(df_vazoes)
 def getFilhos(no, df_arvore):
     filhos = df_arvore[df_arvore["NO_PAI"] == no]["NO"].values
     return filhos
@@ -59,17 +56,22 @@ def weighted_correlation(data_x, data_y, weights):
     correlation = covariance / np.sqrt(var_x * var_y)
     return correlation
 
-#tipo = "ENAAgregado\\"
-tipo = "VazaoIncrementalMultidimensional\\"
-casos = ["Arvore1", "Arvore2", "Arvore3", "Arvore4", "Arvore5", "Arvore6"]
+camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
+df_arvore_original = pd.read_csv(camino_caso_orig+"\\arvore.csv")
+#print(df_arvore_original)
+df_vazoes = pd.read_csv(camino_caso_orig+"\\cenarios.csv")
+
+tipo = "avaliaArvores\\A_125_2_2\\"
+#tipo = "VazaoIncrementalMultidimensional\\"
+casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
 #casos = ["Arvore1"]
 lista_df_final = []
 usinas = df_vazoes["NOME_UHE"].unique()
 #print(usinas)
 #usinas = [17, 275, 66]
-usinas = [66,	45,	46,	285,	292,	275,	172,	176,	6,	169,	33,	74,	75,	40,	25,	42,	39,	229,	178,
-                43,	38,	227,	37,	17,	271,	47,	270,	24,	209,	31,	211,	215,	34,	204,	1,	18,	126,	291,
-                61,	7,	247,	294,	49,	57,	123,	12,	205,	121]
+#usinas = [66,	45,	46,	285,	292,	275,	172,	176,	6,	169,	33,	74,	75,	40,	25,	42,	39,	229,	178,
+#                43,	38,	227,	37,	17,	271,	47,	270,	24,	209,	31,	211,	215,	34,	204,	1,	18,	126,	291,
+#                61,	7,	247,	294,	49,	57,	123,	12,	205,	121]
 
 paresCorrelacaoTemporal = [
     (4,3), #LAG 1 Estágio 4
@@ -83,12 +85,14 @@ mapa_estagio_index ={
     2:2
 }
 for parTemporal in paresCorrelacaoTemporal:
-    fig = make_subplots(rows=6, cols=3, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+    fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
     linha = 1
     coluna = 1
     contador = 0
     for caso in casos:
-        df_arvore_reduzida = pd.read_csv(tipo+caso+"\\df_arvore_reduzida.csv")
+        caminho_red = camino_caso_orig+"\\"+tipo+"\\"+caso+"\\"
+        df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
+        df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
         df_orig_est = df_arvore_original.loc[(df_arvore_original["PER"] == estagio_folhas)].reset_index(drop = True)
         df_red_est = df_arvore_reduzida.loc[(df_arvore_reduzida["PER"] == estagio_folhas)].reset_index(drop = True)
         probabilidadeOriginal = []
@@ -141,7 +145,7 @@ for parTemporal in paresCorrelacaoTemporal:
                     vazao = df_vazoes.loc[(df_vazoes["NOME_UHE"] == usi) & (df_vazoes["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
                     dicionarioVetorRealizacoesOriginal[est].append(vazao)            
                 for no in dicionarioNosEstagioCaminhosReduzida[est]:
-                    vazao = df_vazoes.loc[(df_vazoes["NOME_UHE"] == usi) & (df_vazoes["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
+                    vazao = df_vazoes_reduzida.loc[(df_vazoes_reduzida["NOME_UHE"] == usi) & (df_vazoes_reduzida["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
                     dicionarioVetorRealizacoesReduzida[est].append(vazao)
 
             #print(dicionarioVetorRealizacoesOriginal)
@@ -164,6 +168,9 @@ for parTemporal in paresCorrelacaoTemporal:
         #print("listaCorrelacaoTemporalOriginal: ", listaCorrelacaoTemporalOriginal)
         #print("listaCorrelacaoTemporalReduzida: ",listaCorrelacaoTemporalReduzida)
         # Compute R^2 using linear regression
+
+        listaCorrelacaoTemporalOriginal = [x for x in listaCorrelacaoTemporalOriginal if not math.isnan(x)]
+        listaCorrelacaoTemporalReduzida =  [x for x in listaCorrelacaoTemporalReduzida if not math.isnan(x)]
         slope, intercept, r_value, p_value, std_err = linregress(listaCorrelacaoTemporalOriginal, listaCorrelacaoTemporalReduzida)
         #print(slope)
         #print(intercept)
@@ -192,7 +199,7 @@ for parTemporal in paresCorrelacaoTemporal:
         ), row=linha, col=coluna)
 
         # Add R² annotation
-        axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
+        axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
         fig.add_annotation(
             x=0.9,  # X position (relative to subplot domain)
             y=0.1,  # Y position (relative to subplot domain)
@@ -210,7 +217,7 @@ for parTemporal in paresCorrelacaoTemporal:
         contador += 1
         #print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
         coluna = coluna + 1
-        if(coluna == 4):
+        if(coluna == 3):
             coluna = 1
             linha = linha + 1
 
@@ -231,7 +238,7 @@ for parTemporal in paresCorrelacaoTemporal:
         yaxis=dict(title_font=dict(size=20)),
         showlegend=False
     )
-    fig.write_html(f"{tipo.split("\\")[0]}_{parTemporal[0]}_{parTemporal[1]}_correlacaoEspacialArvores.html")
+    fig.write_html(f"{camino_caso_orig}\\{tipo.split("\\")[0]}_{parTemporal[0]}_{parTemporal[1]}_correlacaoEspacialArvores.html")
     # Print R² value
 
 

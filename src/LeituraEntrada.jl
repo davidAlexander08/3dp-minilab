@@ -67,11 +67,19 @@ str_caso = "Dissertacao/caso_teste_submercados"
 str_caso = "Dissertacao/apresentacaoCarmen/caso_mini"
 #str_caso = "Dissertacao/teste_simples_3est_2A/caso_mini"
 
-str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
-str_caso = "Dissertacao/exercicioDebora/caso_mini"
+
 str_caso = "Capitulo_5/caso_mini"
 str_caso = "Capitulo_5/caso_mini_300Cen"
 str_caso = "Capitulo_5/caso_mini_300Cen_sorteio"
+str_caso = "Capitulo_5/caso_mini_300Cen_sorteio_8cen"
+str_caso = "Capitulo_5/caso_mini_300Cen_sorteio_8cen_toy"
+str_caso = "Capitulo_5/caso_mini_500Cen_sorteio_8cen_mensais"
+
+str_caso = "Dissertacao/exercicioDebora/caso_mini"
+
+
+str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
+str_caso = "Capitulo_5/caso_mini_500Cen_sorteio_mensais"
 #str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
@@ -150,17 +158,6 @@ if vazao_externa == 1
     dados_saida = splitdir(caminho_vazao_externa)[1]
 end
 
-
-
-@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
-dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
-include("arvore.jl")
-
-
-
-
-
-
 @info "Lendo arquivo de horas $(PATH_HORAS)"
 dat_horas = CSV.read(PATH_HORAS, DataFrame)
 
@@ -180,10 +177,23 @@ for sbm in submercados
     cadastroUsinasTermicasSubmercado[sbm["CODIGO"]] = []
 end
 
+
+############# PERIODOS ADICIONAIS PARA EVITAR FIM DE MUNDO
+periodos_fim_de_mundo = dict["PERIODOS_FIM_DE_MUNDO"]
+fim_de_mundo_Vi_equal_Vf = dict["FIM_DE_MUNDO_VOLUMES"]
+
+
+
+
 #SISTEMA
 #sist = dict["SISTEMA"]
 #sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
 #println(sistema)
+
+@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
+dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
+include("arvore.jl")
+
 
 
 @info "Lendo arquivo de rede elétrica"
@@ -359,6 +369,14 @@ for sbm in lista_submercados
         push!(df_eco_termo, (codigo = ute.codigo, nome = ute.nome, Submercado = sbm.codigo, Gmin = ute.gmin, Gmax = ute.gmax))
     end
 end
+
+#println(df_arvore)
+#println(dat_vaz)
+
+#for sbm in lista_submercados
+#    println(sbm.demanda)
+#end
+#println("caso.n_est: ", caso.n_est)
 
 output_dir_eco = dados_saida*"/saidas/PDD/eco"
 println(output_dir_eco)

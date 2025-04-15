@@ -45,20 +45,33 @@ def calcula_prodt_acum_65(codigo_usi, df_confhd, df_hidr):
     return prodt
 
 
-caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_300Cen_sorteio\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais\\"
+#caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen\\"
+#caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_300Cen_sorteio\\"
 ### VAZOES_FEIXES_INCR_SIN
-arquivo = "avaliaArvores\\estatisticasArvores_75_2_2"
+arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
+arquivo = "avaliaArvores\\A_25_10_2\\estatisticasArvores_25_10_2"
+arquivo = "avaliaArvores\\A_5_50_2\\estatisticasArvores_5_50_2"
+arquivo = "avaliaArvores\\A_125_2_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+arquivo = "avaliaArvores\\A_50_5_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
 #df = pd.read_csv("estatisticasArvores.csv", sep=";")
 df = pd.read_csv(caminho+arquivo+".csv", sep=";")
 df = df.dropna().reset_index(drop = True)
+print(df)
+#df = df.loc[ df["mediaOrig"].str.replace(",", ".").astype(float) > 30].reset_index(drop = True)
+#df = df.loc[ df["stdOrig"].str.replace(",", ".").astype(float) > 30].reset_index(drop = True)
 tipos = df["TIPO"].unique()
 casos = df["CASO"].unique()
 estagios = df["EST"].unique()
 postos = df["POSTO"].unique()
 
 df_vazoes = pd.read_csv(caminho+"cenarios.csv")
-df_confhd = Confhd.read("deck_newave_2020_01\\CONFHD.dat").usinas
-df_hidr = Hidr.read("deck_newave_2020_01\\HIDR.dat").cadastro
+caminho_deck = "deck_newave_2020_01"
+#caminho_deck = "deck_newave_2020_01_reduzido_180325"
+#caminho_deck = "deck_newave_2020_01_reduzido_180325_postosAlterados"
+df_confhd = Confhd.read(caminho_deck+"\\CONFHD.dat").usinas
+df_hidr = Hidr.read(caminho_deck+"\\HIDR.dat").cadastro
 df_hidr = df_hidr.reset_index()
 
 lista_df_ena = []
@@ -116,10 +129,29 @@ dicionarioFalhas = {
     "FALHA_W-TEST":["FALHA_W-TEST"],
     "FALHA_F_TEST":["FALHA_F-TEST"],
     "FALHA_L_TEST":["FALHA_L-TEST"],
+    "FALHA_P_Boot_mean":["FALHA_P_Boot_mean"],
+    "FALHA_P_Boot_Variance":["FALHA_P_Boot_Variance"],
     "mean_limite":["Média Viol. LimInf", "Média Viol. LimSup"],
     "std_limite":["Std Viol. LimInf", "Std Viol. LimSup"],
     "distribution":["FALHA_KS-TEST"]
 }
+
+dicionarioFalhasGerais = {
+    "hypotesis_mean":["FALHA_W-TEST","FALHA_T_TEST", "FALHA_P_Boot_mean"], # 
+    "hypotesis_variance":["FALHA_F-TEST", "FALHA_L-TEST", "FALHA_P_Boot_Variance"], #
+    "mean_limite":["Média Viol. LimInf", "Média Viol. LimSup"],
+    "std_limite":["Std Viol. LimInf", "Std Viol. LimSup"],
+    "distribution":["FALHA_KS-TEST"]
+}
+
+dicionarioFalhasGlobais = {
+    "fail_mean":["FALHA_T_TEST", "FALHA_W-TEST", "FALHA_P_Boot_mean", "Média Viol. LimInf", "Média Viol. LimSup"], #
+    "fail_variance":["FALHA_F-TEST", "FALHA_L-TEST", "FALHA_P_Boot_Variance", "Std Viol. LimInf", "Std Viol. LimSup"], #
+    "distribution":["FALHA_KS-TEST"]
+}
+
+
+significancia = 0.01
 lista_relatorio = []
 for tipo in tipos:
     df_1 = df.loc[(df["TIPO"] == tipo)]
@@ -132,53 +164,56 @@ for tipo in tipos:
             df_est = df_est.replace(",", ".", regex=True)
             df_est = df_est.apply(pd.to_numeric, errors='ignore')
             
-            df_falha_FTest = df_est.loc[(df_est["F_p_valor"] < 0.05)]["POSTO"].tolist()
+            df_falha_FTest = df_est.loc[(df_est["F_p_valor"] < significancia)]["POSTO"].tolist()
             print("Falha F-TEST: ", df_falha_FTest)
             if(len(df_falha_FTest) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_FTest, "FALHA_F-TEST")
                 lista_relatorio.append(df_resultado)
             
-            df_falha_TTest = df_est.loc[(df_est["T_p_valor"] < 0.05)]["POSTO"].tolist()
+            df_falha_TTest = df_est.loc[(df_est["T_p_valor"] < significancia)]["POSTO"].tolist()
             print("Falha T-TEST: ", df_falha_TTest)
             if(len(df_falha_TTest) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_TTest, "FALHA_T_TEST")
                 lista_relatorio.append(df_resultado)
 
-            df_falha_KSTest = df_est.loc[(df_est["KS_p_valor"] < 0.05)]["POSTO"].tolist()
+            df_falha_KSTest = df_est.loc[(df_est["KS_p_valor"] < significancia)]["POSTO"].tolist()
             print("Falha KS-TEST: ", df_falha_KSTest)
             if(len(df_falha_KSTest) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_KSTest, "FALHA_KS-TEST")
                 lista_relatorio.append(df_resultado)
 
-            df_falha_Levene = df_est.loc[(df_est["L_p_valor"] < 0.05)]["POSTO"].tolist()
+            df_falha_Levene = df_est.loc[(df_est["L_p_valor"] < significancia)]["POSTO"].tolist()
             print("Falha L-TEST: ", df_falha_Levene)
             if(len(df_falha_Levene) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_Levene, "FALHA_L-TEST")
                 lista_relatorio.append(df_resultado)
 
-            df_falha_Wilcoxon = df_est.loc[(df_est["Wilcoxon_p_valor"] < 0.05)]["POSTO"].tolist()
+            df_falha_Wilcoxon = df_est.loc[(df_est["Wilcoxon_p_valor"] < significancia)]["POSTO"].tolist()
             print("Falha W-TEST: ", df_falha_Wilcoxon)
             if(len(df_falha_Wilcoxon) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_Wilcoxon, "FALHA_W-TEST")
                 lista_relatorio.append(df_resultado)
 
-            df_falha_Bootstrap_mean = df_est.loc[(df_est["P_Boot_mean"] < 0.05)]["POSTO"].tolist()
+            df_falha_Bootstrap_mean = df_est.loc[(df_est["P_Boot_mean"] < significancia)]["POSTO"].tolist()
             print("Falha P_Boot_mean: ", df_falha_Bootstrap_mean)
             if(len(df_falha_Bootstrap_mean) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_Bootstrap_mean, "FALHA_P_Boot_mean")
                 lista_relatorio.append(df_resultado)
 
-            df_falha_Bootstrap_variance = df_est.loc[(df_est["P_Boot_Variance"] < 0.05)]["POSTO"].tolist()
+            df_falha_Bootstrap_variance = df_est.loc[(df_est["P_Boot_Variance"] < significancia)]["POSTO"].tolist()
             print("Falha P_Boot_Variance: ", df_falha_Bootstrap_variance)
             if(len(df_falha_Bootstrap_variance) != 0):
                 df_resultado = retornaDF_Resultado(df_falha_Bootstrap_variance, "FALHA_P_Boot_Variance")
                 lista_relatorio.append(df_resultado)
 
-
-            df_est["mean_violLimInf"] = df_est["mediaRed"] < df_est["mediaLimInf"]
-            df_est["mean_violLimSup"] = df_est["mediaRed"] > df_est["mediaLimSup"]
-            df_est["std_violLimInf"] = df_est["stdRed"] < df_est["stdLimInf"]
-            df_est["std_violLimSup"] = df_est["stdRed"] > df_est["stdLimSup"]
+            #folga_inf = 0.95
+            #folga_sup  = 1.05
+            folga_inf = 1
+            folga_sup  = 1
+            df_est["mean_violLimInf"] = df_est["mediaRed"] < df_est["mediaLimInf"]*folga_inf
+            df_est["mean_violLimSup"] = df_est["mediaRed"] > df_est["mediaLimSup"]*folga_sup
+            df_est["std_violLimInf"] = df_est["stdRed"] < df_est["stdLimInf"]*folga_inf
+            df_est["std_violLimSup"] = df_est["stdRed"] > df_est["stdLimSup"]*folga_sup
 
             df_mean_violLimInf = df_est.loc[(df_est["mean_violLimInf"]== True)]["POSTO"].tolist()
             print("Mean Viol LimInf: ", df_mean_violLimInf)
@@ -214,7 +249,9 @@ print(resultado_final_analise)
 falhas = resultado_final_analise["FALHA"].unique()
 print(falhas)
 
-lista_df_testeArvores = []
+
+
+
 lista_df_todosTestes = []
 for tipo_falha in dicionarioFalhas:
     falhas_tipo = dicionarioFalhas[tipo_falha]
@@ -228,6 +265,8 @@ for tipo_falha in dicionarioFalhas:
                 df_caso = df_tipo.loc[(df_tipo["CASO"] == caso)].reset_index(drop = True)
                 counts = df_caso["POSTO"].value_counts()
                 posto_aoMenosUmaFalha = df_caso["POSTO"].unique()
+                print("FALHA: ", tipo_falha, " EST: ", est, " tipo: ", tipo, " caso: ", caso, " ENA: ", representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean))
+                print(" postos: ", df_caso["POSTO"].tolist())
                 repeated_postos = counts[counts >= len(falhas)].index.tolist()
                 lista_df_todosTestes.append(
                     pd.DataFrame(
@@ -242,26 +281,139 @@ for tipo_falha in dicionarioFalhas:
                         }
                     )
                 )
-                #lista_df_todosTestes.append(
-                #    pd.DataFrame(
-                #        {
-                #            "TIPO":[tipo],
-                #            "CASO":[caso],
-                #            "FALHA":[tipo_falha],
-                #            "EST":[est],
-                #            "TESTE":["FALHA_TODOS_TESTES"],
-                #            "NPOSTOS":[round(len(repeated_postos)/len(postos),2)*100],
-                #            "PERC.ENA":[representacaoNaEnaDOSIN(repeated_postos, df_ena_result_mean)]
-                #        }
-                #    )
-                #)
+df_falhaTestesContagem = pd.concat(lista_df_todosTestes).reset_index(drop = True)
+print(df_falhaTestesContagem)
+df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados.csv", index = False)
+
+lista_df_todosTestes = []
+lista_df_todosTestesTodosEstagios = []
+for tipo_falha in dicionarioFalhasGerais:
+    falhas_tipo = dicionarioFalhasGerais[tipo_falha]
+    resultado_final_analise_falhas = resultado_final_analise[resultado_final_analise["FALHA"].isin(falhas_tipo)]
+    ## PERCORRE PRIMEIRO FALHAS DE MEDIA, DEPOIS FALHAS DE VARIANCIA E DEPOIS FALHAS DE DISTRIBUICAO PROBABILISTICA
+    for est in estagios:
+        df_resultados_est = resultado_final_analise_falhas.loc[(resultado_final_analise_falhas["EST"] == est) ].reset_index(drop = True)
+        for tipo in tipos:
+            df_tipo = df_resultados_est.loc[(df_resultados_est["TIPO"] == tipo)].reset_index(drop = True)
+            for caso in casos:
+                df_caso = df_tipo.loc[(df_tipo["CASO"] == caso)].reset_index(drop = True)
+                counts = df_caso["POSTO"].value_counts()
+                posto_aoMenosUmaFalha = df_caso["POSTO"].unique()
+                print("FALHA: ", tipo_falha, " EST: ", est, " tipo: ", tipo, " caso: ", caso, " ENA: ", representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean))
+                print(" postos: ", df_caso["POSTO"].tolist())
+                repeated_postos = counts[counts >= len(falhas)].index.tolist()
+                lista_df_todosTestes.append(
+                    pd.DataFrame(
+                        {
+                            "TIPO":[tipo],
+                            "CASO":[caso],
+                            "FALHA":[tipo_falha],
+                            "EST":[est],
+                            "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
+                            "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                            "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
+                        }
+                    )
+                )
+
+
+    ## PERCORRE PRIMEIRO FALHAS DE MEDIA, DEPOIS FALHAS DE VARIANCIA E DEPOIS FALHAS DE DISTRIBUICAO PROBABILISTICA
+    for tipo in tipos:
+        df_tipo = resultado_final_analise_falhas.loc[(resultado_final_analise_falhas["TIPO"] == tipo)].reset_index(drop = True)
+        for caso in casos:
+            df_caso = df_tipo.loc[(df_tipo["CASO"] == caso)].reset_index(drop = True)
+            counts = df_caso["POSTO"].value_counts()
+            posto_aoMenosUmaFalha = df_caso["POSTO"].unique()
+            print("FALHA: ", tipo_falha, " EST: ", est, " tipo: ", tipo, " caso: ", caso, " ENA: ", representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean))
+            print(" postos: ", df_caso["POSTO"].tolist())
+            repeated_postos = counts[counts >= len(falhas)].index.tolist()
+            lista_df_todosTestesTodosEstagios.append(
+                pd.DataFrame(
+                    {
+                        "TIPO":[tipo],
+                        "CASO":[caso],
+                        "FALHA":[tipo_falha],
+                        "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
+                        "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                        "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
+                    }
+                )
+            )
 
 df_falhaTestesContagem = pd.concat(lista_df_todosTestes).reset_index(drop = True)
 print(df_falhaTestesContagem)
+df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados_gerais.csv", index = False)
+df_falhaTestesContagemGeralTodosEstagios = pd.concat(lista_df_todosTestesTodosEstagios).reset_index(drop = True)
+df_falhaTestesContagemGeralTodosEstagios.to_csv(caminho+"\\"+arquivo+"_resultados_gerais_geral_todosEstagios.csv", index = False)
+print(df_falhaTestesContagemGeralTodosEstagios)
 
-df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados.csv", index = False)
+lista_df_todosTestes = []
+lista_df_todosTestesTodosEstagios = []
+for tipo_falha in dicionarioFalhasGlobais:
+    falhas_tipo = dicionarioFalhasGlobais[tipo_falha]
+    resultado_final_analise_falhas = resultado_final_analise[resultado_final_analise["FALHA"].isin(falhas_tipo)]
+    ## PERCORRE PRIMEIRO FALHAS DE MEDIA, DEPOIS FALHAS DE VARIANCIA E DEPOIS FALHAS DE DISTRIBUICAO PROBABILISTICA
+    for est in estagios:
+        df_resultados_est = resultado_final_analise_falhas.loc[(resultado_final_analise_falhas["EST"] == est) ].reset_index(drop = True)
+        for tipo in tipos:
+            df_tipo = df_resultados_est.loc[(df_resultados_est["TIPO"] == tipo)].reset_index(drop = True)
+            for caso in casos:
+                df_caso = df_tipo.loc[(df_tipo["CASO"] == caso)].reset_index(drop = True)
+                counts = df_caso["POSTO"].value_counts()
+                posto_aoMenosUmaFalha = df_caso["POSTO"].unique()
+                #print("FALHA: ", tipo_falha, " EST: ", est, " tipo: ", tipo, " caso: ", caso, " ENA: ", representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean))
+                #print(" postos: ", df_caso["POSTO"].tolist())
+                repeated_postos = counts[counts >= len(falhas)].index.tolist()
+                lista_df_todosTestes.append(
+                    pd.DataFrame(
+                        {
+                            "TIPO":[tipo],
+                            "CASO":[caso],
+                            "FALHA":[tipo_falha],
+                            "EST":[est],
+                            "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
+                            "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                            "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
+                        }
+                    )
+                )
+
+
+    ## PERCORRE PRIMEIRO FALHAS DE MEDIA, DEPOIS FALHAS DE VARIANCIA E DEPOIS FALHAS DE DISTRIBUICAO PROBABILISTICA
+    for tipo in tipos:
+        df_tipo = resultado_final_analise_falhas.loc[(resultado_final_analise_falhas["TIPO"] == tipo)].reset_index(drop = True)
+        for caso in casos:
+            df_caso = df_tipo.loc[(df_tipo["CASO"] == caso)].reset_index(drop = True)
+            counts = df_caso["POSTO"].value_counts()
+            posto_aoMenosUmaFalha = df_caso["POSTO"].unique()
+            #print("FALHA: ", tipo_falha, " EST: ", est, " tipo: ", tipo, " caso: ", caso, " ENA: ", representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean))
+            #print(" postos: ", df_caso["POSTO"].tolist())
+            repeated_postos = counts[counts >= len(falhas)].index.tolist()
+            lista_df_todosTestesTodosEstagios.append(
+                pd.DataFrame(
+                    {
+                        "TIPO":[tipo],
+                        "CASO":[caso],
+                        "FALHA":[tipo_falha],
+                        "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
+                        "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                        "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
+                    }
+                )
+            )
+
+df_falhaTestesContagem = pd.concat(lista_df_todosTestes).reset_index(drop = True)
+df_falhaTestesContagemTodosEstagios = pd.concat(lista_df_todosTestesTodosEstagios).reset_index(drop = True)
+print(df_falhaTestesContagemTodosEstagios)
+df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados_gerais_globais.csv", index = False)
+df_falhaTestesContagemTodosEstagios.to_csv(caminho+"\\"+arquivo+"_resultados_gerais_globais_todosEstagios.csv", index = False)
+
+
+
+
 
 exit(1)
+lista_df_testeArvores = []
 with open(aquivo+".txt", "w") as report_file:
     report_file.write(f"=== RELATÓRIO DE CONSTRUÇÃO DA ÁRVORE DE CENÁRIOS ===\n")
     report_file.write("=" * 50 + "\n\n")

@@ -371,6 +371,10 @@ caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGeva
 caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
 caso = "..\\Capitulo_5\\caso_mini_300Cen"
 caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio"
+caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen"
+caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen_toy"
+caso = "..\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
+
 
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
@@ -380,19 +384,10 @@ mapa_aberturas_estagio = {1:25,    2:4,    3:3}
 mapa_aberturas_estagio = {1:15,    2:4,    3:5}
 mapa_aberturas_estagio = {1:10,    2:10,    3:3}
 mapa_aberturas_estagio = {1:75,    2:2,    3:2}
-
-#mapa_aberturas_estagio = {1:2,    2:2,    3:3}
-#mapa_aberturas_estagio = {1:3,    2:2,    3:2}
-#mapa_aberturas_estagio = {1:3,    2:3,    3:2}
-#mapa_aberturas_estagio = {1:3,    2:3,    3:3}
-#mapa_aberturas_estagio = {1:2,    2:3,    3:3}
-#mapa_aberturas_estagio = {1:3,    2:3}
-##ARVORE CARMEN EXEMPLO
-#mapa_reducao_estagio = {
-#    2:6,
-#    3:18,
-#    4:0
-#}
+mapa_aberturas_estagio = {1:125,    2:2,    3:2}
+mapa_aberturas_estagio = {1:50,    2:5,    3:2}
+mapa_aberturas_estagio = {1:25,    2:10,    3:2}
+mapa_aberturas_estagio = {1:5,    2:50,    3:2}
 
 
 arquivo_vazoes = caso+"\\cenarios.csv"
@@ -403,11 +398,14 @@ arquivo_estrutura_feixes = caso+"\\arvore.csv"
 #arquivo_estrutura_feixes = caso+"\\arvore_teste.csv"
 df_arvore_original = pd.read_csv(arquivo_estrutura_feixes)
 df_arvore_original.to_csv("saidas\\arvore_estudo.csv", index=False)
-print(df_arvore_original)
 
+print(df_arvore_original)
+print("TOTAL POSTOS: ", len(df_vazoes_original["NOME_UHE"].unique()))
 mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_original.copy())
 print("mapa_aberturas_estagio: ", mapa_aberturas_estagio)
 print("mapa_reducao_estagio: ", mapa_reducao_estagio)
+
+
 
 
 ###########Realizacao de testes unitários
@@ -417,6 +415,7 @@ testeSimetriaFilhos(df_arvore_original, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 #printaArvore("Arvore Original", "saidas\\",df_arvore_original)
 #exit(1)
+######################################### COMPARACAO GRANULARIDADE
 
 
 
@@ -426,7 +425,9 @@ testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 
 
 
+exit(1)
 
+######################################## COMPARACAO METODOS 
 print("###########################################################################")
 ### METODOS DE CLUSTERIZACAO ASSIMETRICO
 Simetrica = False
@@ -530,15 +531,15 @@ printaArvore("NeuralGas", path_saida, df_arvore)
 
 
 
-print("###########################################################################")
-### METODO NEURAL GAS
-Simetrica = True
-df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
-path_saida = "saidas\\NeuralGasSimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-texto = "Arvore Neural Gas Simetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("NeuralGasSimetrico", path_saida, df_arvore)
+#print("###########################################################################")
+#### METODO NEURAL GAS
+#Simetrica = True
+#df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
+#path_saida = "saidas\\NeuralGasSimetrico"
+#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+#
+#texto = "Arvore Neural Gas Simetrico"
+#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+#printaArvore("NeuralGasSimetrico", path_saida, df_arvore)

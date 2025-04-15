@@ -74,12 +74,14 @@ module Main
         CustoF[(it,no.codigo, etapa)] = 0.0
     end
     df_intercambio            = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], SubmercadoDE = Int[], SubmercadoPARA = Int[], Valor = Float64[])
-    df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
-    df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
+    df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
     df_termicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
     df_hidreletricas          = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[])
     df_cortes                 = DataFrame(iter = Int[], est = Int[], no = Int[],  usina = Int[], Indep = Float64[], Coef = Float64[])
+    df_cortes_equivalentes    = DataFrame(iter = Int[], est = Int[], noUso = Int[],  usina = String[], Indep = Float64[], Coef = Float64[])
+
     df_folga_vazmin           = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], nome = String[], usina = Int[], Vazmin = Float64[], Qdef = Float64[], FolgaPosit = Float64[], FolgaNeg = Float64[])            
 
 
@@ -109,8 +111,8 @@ module Main
             turb_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="turb_$(no.codigo)_$(uhe.codigo)_$(etapa)")
             vert_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="vert_$(no.codigo)_$(uhe.codigo)_$(etapa)")
             vf_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="vf_$(no.codigo)_$(uhe.codigo)_$(etapa)")
-            folga_positiva_vazmin_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="sdefmin_$(no.codigo)_$(uhe.codigo)_$(etapa)")
-            folga_negativa_vazmin_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="sdefmin_$(no.codigo)_$(uhe.codigo)_$(etapa)")
+            folga_positiva_vazmin_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="spdefmin_$(no.codigo)_$(uhe.codigo)_$(etapa)")
+            folga_negativa_vazmin_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="sndefmin_$(no.codigo)_$(uhe.codigo)_$(etapa)")
         end
         for sbm in lista_submercados
             deficit_vars[(no.codigo, sbm.nome, etapa)] = @variable(m, base_name="def_$(no.codigo)_$(sbm.codigo)_$(etapa)")
@@ -204,12 +206,13 @@ module Main
                 vol_max_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
                 vol_max_uhe = vol_max_uhe/100
                 #println("vol_max_uhe: ", vol_max_uhe)
-                if !isnan(vol_max_uhe)
+                if !isnan(vol_max_uhe) 
                     @constraint(m, vf_vars[(no.codigo, uhe.nome, etapa)] <= vol_max_uhe*uhe.vmax)
                 else
                     #println("No vazmin found for ", uhe.nome, " - Skipping constraint.")
                 end
             end
+
         end
 
         #write_to_file(m, "saidas/PDD/model_output.txt", format = MOI.FileFormats.FORMAT_LP)
@@ -254,9 +257,13 @@ module Main
         excesso_SIN = 0
         CustoPresenteSIN = 0
         VolumeArmazenadoSIN = 0
+        AfluenciaSIN = 0
+        VolumeArmazenadoInicialSIN = 0
         for sbm in lista_submercados
             GeracaoHidreletricaTotal = 0
             VolumeArmazenadoTotal = 0
+            AfluenciaTotal = 0
+            VolumeArmazenadoInicialTotal = 0
             GeracaoTermicaTotal = 0
             for term in cadastroUsinasTermicasSubmercado[sbm.codigo]
                 geracao = JuMP.value(gt_vars[(no.codigo, term.nome, etapa)])
@@ -269,6 +276,8 @@ module Main
                 turbinamento = JuMP.value(turb_vars[(no.codigo, uhe.nome, etapa)]) 
                 vertimento = JuMP.value(vert_vars[(no.codigo, uhe.nome, etapa)]) 
                 volumeFinal = JuMP.value(vf_vars[(no.codigo, uhe.nome, etapa)]) 
+                volumeInicial = Vi[(no.codigo, uhe.codigo, etapa)]
+                Afluencia = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
                 if(vazao_minima == 1)
 
                     matching_rows = dat_vazmin[dat_vazmin.USI .== uhe.nome, :vazmin]
@@ -284,7 +293,8 @@ module Main
                 end
 
                 push!(df_hidreletricas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
-                                VI = Vi[(no.codigo,uhe.codigo, etapa)], AFL = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
+                                VI = Vi[(no.codigo,uhe.codigo, etapa)], 
+                                AFL = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
                                 TURB = turbinamento, 
                                 VERT = vertimento, 
                                 VF = volumeFinal))
@@ -296,8 +306,12 @@ module Main
 
                 GeracaoHidreletricaTotal += geracao
                 VolumeArmazenadoTotal += volumeFinal
+                AfluenciaTotal += Afluencia
+                VolumeArmazenadoInicialTotal += volumeInicial
                 GeracaoHidreletricaSIN += geracao
                 VolumeArmazenadoSIN += volumeFinal
+                AfluenciaSIN += Afluencia
+                VolumeArmazenadoInicialSIN += volumeInicial
             end
             custo_presente = 0
             for term in cadastroUsinasTermicasSubmercado[sbm.codigo]
@@ -313,7 +327,7 @@ module Main
             excesso_SIN += excesso_sbm
             CustoPresenteSIN += custo_presente
             valor_CMO = -JuMP.shadow_price( constraint_balancDem_dict[(no.codigo, sbm.nome, etapa)])
-            push!(df_balanco_energetico_SBM,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, Demanda = sbm.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, VolArm = VolumeArmazenadoTotal, Deficit = def, Excesso = excesso_sbm, CustoPresente = custo_presente, CMO = round(valor_CMO, digits = 2)))
+            push!(df_balanco_energetico_SBM,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, Demanda = sbm.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, AFL = AfluenciaTotal, Vini = VolumeArmazenadoInicialTotal, VolArm = VolumeArmazenadoTotal, Deficit = def, Excesso = excesso_sbm, CustoPresente = custo_presente, CMO = round(valor_CMO, digits = 2)))
             for sbm_2 in lista_submercados
                 if sbm.codigo != sbm_2.codigo
                     interc = JuMP.value(intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)])
@@ -321,7 +335,7 @@ module Main
                 end
             end
         end
-        push!(df_balanco_energetico_SIN,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Demanda = DemandaTotalSIN, GT = GeracaoTermicaSIN, GH = GeracaoHidreletricaSIN, Deficit = DeficitSIN, Excesso = excesso_SIN, VolArm = VolumeArmazenadoSIN, CustoPresente = CustoPresenteSIN, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
+        push!(df_balanco_energetico_SIN,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Demanda = DemandaTotalSIN, GT = GeracaoTermicaSIN, GH = GeracaoHidreletricaSIN, Deficit = DeficitSIN, Excesso = excesso_SIN, AFL = AfluenciaSIN, Vini = VolumeArmazenadoInicialSIN, VolArm = VolumeArmazenadoSIN, CustoPresente = CustoPresenteSIN, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
     end
 
 
@@ -338,6 +352,7 @@ module Main
                 penalidadePositivaVazmin = JuMP.value(folga_positiva_vazmin_vars[(no.codigo, hydro.nome, etapa)])
                 custo_presente += penalidadePositivaVazmin*penalidVazMin
             end
+
         end
 
         for sbm in lista_submercados
@@ -355,6 +370,7 @@ module Main
     @time begin
         for it in 1:caso.n_iter
             start_time_iter = time()
+            empty!(df_cortes_equivalentes)
             for est in 1:caso.n_est
                 #println("Relizando FW - Iter ", it, " Est ", est)
                 start_time = time()
@@ -367,7 +383,8 @@ module Main
                         #    for filho in i_no.filhos
                         #        @constraint(m, alpha_vars[(i_no.codigo,etapa)] - sum(vf_vars[(i_no.codigo, uhe.nome,etapa)]*FCF_coef[iter, filho.codigo, uhe.codigo] for uhe in lista_uhes)   >= FCF_indep[iter, filho.codigo] ) #linha, coluna
                         #    end
-                        #end
+                        #
+                        
                         for iter in 1:caso.n_iter
                             indep_equivalente = 0
                             dict_vfvars_coef = OrderedDict{Int, Float64}()
@@ -384,6 +401,11 @@ module Main
                                     dict_vfvars_coef[uhe.codigo] += coef_eq
                                 end
                             end
+                            for uhe in lista_uhes
+                                push!(df_cortes_equivalentes, (iter = iter, est = est, noUso = i_no.codigo,  usina = uhe.nome, Indep = indep_equivalente, Coef = dict_vfvars_coef[uhe.codigo] ))
+                            end
+
+
                             @constraint(m, alpha_vars[(i_no.codigo,etapa)] - sum(vf_vars[(i_no.codigo, uhe.nome,etapa)]*dict_vfvars_coef[uhe.codigo] for uhe in lista_uhes)   >= indep_equivalente ) #linha, coluna
                             #for filho in i_no.filhos
                             #    @constraint(m, alpha_vars[(i_no.codigo,etapa)] - sum(vf_vars[(i_no.codigo, uhe.nome,etapa)]*FCF_coef[iter, filho.codigo, uhe.codigo] for uhe in lista_uhes)   >= FCF_indep[iter, filho.codigo] ) #linha, coluna
@@ -583,8 +605,6 @@ module Main
     df_folga_vazmin_bk = df_folga_vazmin[(df_folga_vazmin.etapa .== "BK"), :]
     df_folga_vazmin_sf = df_folga_vazmin[(df_folga_vazmin.etapa .== "FW") .& (df_folga_vazmin.iter .== max_iter), :]
 
-    
-
     df_termicas_fw = df_termicas[(df_termicas.etapa .== "FW"), :]
     df_termicas_bk = df_termicas[(df_termicas.etapa .== "BK"), :]
     df_termicas_sf = df_termicas[(df_termicas.etapa .== "FW") .&& (df_termicas.iter .== max_iter), :]
@@ -594,7 +614,7 @@ module Main
     df_hidreletricas_sf = df_hidreletricas[(df_hidreletricas.etapa .== "FW") .&& (df_hidreletricas.iter .== max_iter), :]
 
 
-    df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[],  est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[],  est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     for est_value in unique(df_balanco_energetico_SIN.est)
         #println("est: ", est_value)
         subset = df_balanco_energetico_SIN_sf[df_balanco_energetico_SIN_sf.est .== est_value, :]
@@ -602,6 +622,8 @@ module Main
             subsubset = subset[(subset.iter .== iteracao), :]
             ProbGT = 0
             ProbVarm = 0
+            ProbAFL = 0
+            ProbVini = 0
             ProbGH = 0
             ProbDeficit = 0
             ProbCustoPresente = 0
@@ -612,7 +634,9 @@ module Main
             for no in unique(subsubset.node)
                 ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
                 ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
+                ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
                 ProbVarm += (subsubset[(subsubset.node .== no), "VolArm"][1])*(mapaProbCondicionalNo[no])
+                ProbVini += (subsubset[(subsubset.node .== no), "Vini"][1])*(mapaProbCondicionalNo[no])
                 ProbDeficit += (subsubset[(subsubset.node .== no), "Deficit"][1])*(mapaProbCondicionalNo[no])
                 ProbExcesso += (subsubset[(subsubset.node .== no), "Excesso"][1])*(mapaProbCondicionalNo[no])
                 ProbCustoPresente += (subsubset[(subsubset.node .== no), "CustoPresente"][1])*(mapaProbCondicionalNo[no])
@@ -622,7 +646,7 @@ module Main
             end
             
             dem = (subset[(subset.est .== est_value), "Demanda"][1])
-            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), VolArm = round(ProbVarm, digits = 0), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
+            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
         end
     end
     df_per_balanco_energetico = sort(df_per_balanco_energetico, :iter)
@@ -651,6 +675,7 @@ module Main
     CSV.write(output_dir_oper*"/folgaVazmin_sf.csv", df_folga_vazmin_sf)
     CSV.write(output_dir_oper*"/convergencia.csv", df_convergencia)
     CSV.write(output_dir_oper*"/df_cortes.csv", df_cortes)
+    CSV.write(output_dir_oper*"/df_cortes_equivalentes.csv", df_cortes_equivalentes)
 
 
 end

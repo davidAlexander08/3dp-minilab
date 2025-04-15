@@ -118,7 +118,7 @@ mutable struct IlhaConfig
     end
 end
 
-struct SubmercadoConfigData
+mutable struct SubmercadoConfigData
     nome::String
     codigo::Int32
     deficit_cost::Float64

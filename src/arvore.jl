@@ -101,15 +101,58 @@ if arvore_externa == 1
 
     println(caminho_arvore_externa)
     df_arvore = CSV.read(caminho_arvore_externa, DataFrame)
+
+
+    if(periodos_fim_de_mundo != 0)
+        global max_est = maximum(unique(df_arvore.PER))
+        global caso.n_est = caso.n_est + periodos_fim_de_mundo
+        for per in 0:periodos_fim_de_mundo - 1
+            for sbm in lista_submercados
+                push!(sbm.demanda, sbm.demanda[end])
+            end
+            lista_periodos_adicionais_fim_de_mundo = DataFrame[]  # list of DataFrames
+            lista_periodos_adicionais_fim_de_mundo_vazoes = DataFrame[]  # list of DataFrames
+            push!(lista_periodos_adicionais_fim_de_mundo, df_arvore)
+            push!(lista_periodos_adicionais_fim_de_mundo_vazoes, dat_vaz)
+            df_arvore_ultimo_periodo = filter(:PER => ==(max_est), df_arvore)
+            maior_no = maximum(unique(df_arvore_ultimo_periodo.NO))
+            contador_nos_adicionais = 1
+            # Update rows for the next period
+            for row in eachrow(df_arvore_ultimo_periodo)
+                row.NO_PAI = row.NO
+    
+                df_vazoes_ultimo_periodo = filter(:NO => ==(row.NO), dat_vaz)
+                df_vazoes_ultimo_periodo.NO .= maior_no + contador_nos_adicionais
+                push!(lista_periodos_adicionais_fim_de_mundo_vazoes,  df_vazoes_ultimo_periodo) # list of DataFrames
+                
+                row.NO = maior_no + contador_nos_adicionais
+                row.PER = max_est + 1
+                row.PROB = 1
+                row.Abertura = 1
+                contador_nos_adicionais += 1
+            end
+            push!(lista_periodos_adicionais_fim_de_mundo, df_arvore_ultimo_periodo)
+            global df_arvore = vcat(lista_periodos_adicionais_fim_de_mundo...)
+            global dat_vaz = vcat(lista_periodos_adicionais_fim_de_mundo_vazoes...)
+            global max_est += 1
+        end
+    end
+    
+
+
+
+
+
+
     lista_total_de_nos = []
     no1 = no(1, 1, 1, 0, [])
     push!(lista_total_de_nos, no1)
     montaArvore(no1, df_arvore, lista_total_de_nos)
-    println(dat_prob)
-    println(df_arvore)
+    #println(dat_prob)
+    #println(df_arvore)
     dat_prob = df_arvore[:, [:NO, :PROB]]
     rename!(dat_prob, :PROB => :PROBABILIDADE)
-    println(dat_prob)
+    #println(dat_prob)
     #exit(1)
     mapa_periodos = OrderedDict()
     for est in unique(df_arvore.PER)
