@@ -216,7 +216,7 @@ class NeuralGas:
         units_antigo = self.units.copy()
         flag_teste_convergencia = False
         distancia_convergencia = 9999
-        self.lr0 = 1  ## NEIGHBOUR RANGE
+        self.lr0 = 0.8  ## NEIGHBOUR RANGE
         self.lrf = 0.01
         self.epsilon0 = 0.1  ### LEARNING RATE
         self.epsilonf = 0.05
@@ -302,7 +302,7 @@ class NeuralGas:
         return self.units
 
 
-    def predict(self, data, Simetrica, abertura_clusters):
+    def predict(self, data, Simetrica, filhos, k):
         """Assign each data point to its nearest unit"""
         if self.units is None:
             raise ValueError("Model not fitted yet. Call fit() first.")
@@ -324,7 +324,9 @@ class NeuralGas:
                     # Recompute assignments
                     distances = cdist(data, self.units)
                     assignments = np.argmin(distances, axis=1)
+
         else:
+            abertura_clusters = len(filhos) //k
             remaining_capacity = np.full(len(self.units), abertura_clusters)
             for i in range(len(self.units)):
                 remaining_capacity[i] -= counts[i]
@@ -388,8 +390,23 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
         ng = NeuralGas(n_units=k, max_iter=maximo_iteracoes)
         representatives = ng.fit(matriz_valores, mapa_linha_posto, no_analise, est, plotar)
 
-        abertura_clusters = len(filhos) //k
-        clusters = ng.predict(matriz_valores, Simetrica, abertura_clusters)
+        
+        clusters = ng.predict(matriz_valores, Simetrica, filhos, k)
+        
+        for j in range(k):
+            points_in_cluster = np.where(clusters == j)[0]
+            #print("points_in_cluster: ", points_in_cluster)
+            if len(points_in_cluster) == 0:
+                print(f"Cluster {j} is empty. Fixing it...")
+                distances_to_j = np.linalg.norm(matriz_valores - representatives[j], axis=1)
+                sorted_indices = np.argsort(distances_to_j)
+                #print(distances_to_j)
+                #print(sorted_indices)
+                for idx in sorted_indices:
+                    current_cluster = clusters[idx]
+                    if np.sum(clusters == current_cluster) > 1:
+                        clusters[idx] = j  # Reassign this point to the empty cluster
+                        break
 
         #cluster_counts = np.bincount(clusters)
         #empty_clusters = np.where(cluster_counts == 0)[0]
@@ -439,12 +456,13 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
 
             prob_novo_no = df_nos_excluidos["PROB"].sum()
             media_probs = df_nos_excluidos["PROB"].mean()
+            
             pai_novo_no = df_nos_excluidos["NO_PAI"].unique()[0]
             per_novo_no = df_nos_excluidos["PER"].unique()[0]
             abertura = i+1
             for coluna, posto in enumerate(postos):
-                df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[representatives[i][coluna]]}) #### CLASSIC NEURAL GAS
-                #df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[novas_realizacoes[coluna]]}) #### CLUSTER NEURAL GAS, UTILIZA A MEDIA PONDERADA DOS ELEMENTOS DO CLUSTER
+                #df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[representatives[i][coluna]]}) #### CLASSIC NEURAL GAS
+                df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[novas_realizacoes[coluna]]}) #### CLUSTER NEURAL GAS, UTILIZA A MEDIA PONDERADA DOS ELEMENTOS DO CLUSTER
                 df_vazoes = pd.concat([df_vazoes, df_vaz]).reset_index(drop = True)
             ### COMENTE ESSA LINHA PARA IMPRIMIR TAMBEM NO CADASTRO DE VAZOES OS NOS ELIMINADOS ALEM DO NO RESULTANTE
             df_vazoes = df_vazoes[~df_vazoes["NO"].isin(lista_nos_cluster)] 
@@ -476,7 +494,7 @@ def percorreArvoreNeuralGas(no_analise, df_arvore, df_vazoes, mapa_clusters_esta
 
 
 
-def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, plotar = False):
+def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, perservaFolhas, plotar = False):
     np.random.seed(42)
     start_time = time.time()
     tempo_Total = time.time()
@@ -485,11 +503,15 @@ def reducaoArvoreNeuralGas(mapa_clusters_estagio, df_vazoes, df_arvore, Simetric
     postos = df_vazoes["NOME_UHE"].unique()
     postos = sorted(postos, reverse=False)
     #for est in estagios:
+    if(perservaFolhas):
+        estagios.remove(max(estagios))
+
     for est in estagios:
-        if(est < max(estagios)):
-            nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
-            for no_cluster in nos_estagio:
-                df_arvore, df_vazoes = percorreArvoreNeuralGas(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar)
+        #if(est < max(estagios)):
+        #if(True):
+        nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
+        for no_cluster in nos_estagio:
+            df_arvore, df_vazoes = percorreArvoreNeuralGas(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar)
     df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
     #print(df_arvore)
     

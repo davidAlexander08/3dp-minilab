@@ -9,7 +9,7 @@ module Main
     for etapa in etapas
         for no in lista_total_de_nos
             for uhe in lista_uhes
-                if no.codigo == 1
+                if no.codigo == 1 
                     Vi[(no.codigo, uhe.codigo, etapa)] = uhe.v0 
                 else
                     Vi[(no.codigo, uhe.codigo, etapa)] = 0
@@ -155,7 +155,7 @@ module Main
             @constraint(m, vf_vars[(no.codigo, uhe.nome, etapa)] <=  uhe.vmax) #linha, coluna
             @constraint(m, vf_vars[(no.codigo, uhe.nome, etapa)] >=  uhe.vmin) #linha, coluna
 
-
+            #print("est: ", est, " no: ", no.codigo, " etapa: ", etapa)
             constraint_dict[(no.codigo, uhe.nome, etapa)] = @constraint(m, 
             vf_vars[(no.codigo, uhe.nome, etapa)]
             + turb_vars[(no.codigo, uhe.nome, etapa)]

@@ -30,7 +30,7 @@ def printaArvore(texto, path_saida, df_arvore):
     #plt.show()
 
 
-def calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore):
+def calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore, perservaFolhas):
 
     mapa_reducao_estagio = {}
     mapaCenariosRemanescentes = {}
@@ -42,10 +42,12 @@ def calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore):
     mapaCenariosRemanescentes[int(max(df_arvore["PER"].unique()))] = cenariosRemanescentesEstagio
     estagios = sorted(df_arvore["PER"].unique(), reverse=True)
     estagios = estagios[1:-1]
+
     for est in estagios:
         cenariosRemanescentesEstagio = cenariosRemanescentesEstagio/mapa_aberturas_estagio[est]
         mapaCenariosRemanescentes[int(est)] = cenariosRemanescentesEstagio
         mapa_reducao_estagio[int(est)] = mapaCenariosRemanescentes[int(est+1)] - cenariosRemanescentesEstagio
+
     return mapa_reducao_estagio
 
 
@@ -143,23 +145,29 @@ def testeEstruturaVazoes(df_vazoes_teste, df_vazoes, texto):
 
 
 def testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio ):
+    Weighted = True
+    perservaFolhas = False
     print("###########################################################################")
     Simetrica = False
-    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica, perservaFolhas, Weighted)
     #print(df_arvore)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Clusterizacao Assimetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Clusterizacao Assimetrica")
     testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, texto+" Clusterizacao Assimetrica")
     testeEstruturaVazoes(df_vazoes_arvore_teste1, df_vazoes, texto+" Clusterizacao Assimetrica")
     print("###########################################################################")
-    df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica, perservaFolhas)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Backward Reduction Assimetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Backward Reduction Assimetrica")
     testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, texto+" Backward Reduction Assimetrica")
     testeEstruturaVazoes(df_vazoes_arvore_teste1, df_vazoes, texto+" Backward Reduction Assimetrica")
+    #df_arvore.to_csv("casosTestesUnitarios/Export/arvore.csv")
+    #df_vazoes.to_csv("casosTestesUnitarios/Export/cenarios.csv")
+    #exit(1)
+
     print("###########################################################################")
     Simetrica = True
-    df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica, perservaFolhas)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Backward Reduction Simetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Backward Reduction Simetrica")
     testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, texto+" Backward Reduction Simetrica")
@@ -176,13 +184,13 @@ def testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste
             mapa_red_auxiliar[est] = 0
         mapa_red_auxiliar[max(df_arvore_pente_teste1["PER"].tolist())] =  mapa_reducao_estagio[max(df_arvore_pente_teste1["PER"].tolist())]
         Simetrica = False
-        df_arvore_BK, df_vazoes_BK = backwardReduction(mapa_red_auxiliar, mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+        df_arvore_BK, df_vazoes_BK = backwardReduction(mapa_red_auxiliar, mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica, perservaFolhas, Weighted)
         Simetrica = True
         df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_BK.copy(), df_arvore_BK.copy(), Simetrica)
     else:
         print("Clusterizacao Simetrica Usual")
         Simetrica = True
-        df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+        df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica, perservaFolhas, Weighted)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Clustering Simetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Clustering Simetrica")
     testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, texto+" Clustering Simetrica")
@@ -195,7 +203,7 @@ def testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste
     print("###########################################################################")
     ### METODO NEURAL GAS
     Simetrica = False
-    df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica, perservaFolhas)
     #print(df_arvore)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Neural Gas Assimetrica")
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Neural Gas Assimetrica")
@@ -204,19 +212,50 @@ def testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste
 
 
 
-    print("###########################################################################")
-    ### METODO NEURAL GAS
-    Simetrica = True
-    df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
-    #print(df_arvore)
-    testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Neural Gas Simetrica")
-    realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Neural Gas Simetrica")
-    testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, texto+" Neural Gas Simetrica")
-    testeEstruturaVazoes(df_vazoes_arvore_teste1, df_vazoes, texto+" Neural Gas Simetrica")
+    #print("###########################################################################")
+    #### METODO NEURAL GAS
+    #Simetrica = True
+    #df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_pente_teste1.copy(), df_arvore_pente_teste1.copy(), Simetrica)
+    ##print(df_arvore)
+    #testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes,   texto+" Neural Gas Simetrica")
+    #realizaTesteConsistenciaProbabilidadesFilhos(df_arvore,  texto+" Neural Gas Simetrica")
+    #testeEstruturaArvore(df_arvore_arvore_teste1, df_arvore, texto+" Neural Gas Simetrica")
+    #testeEstruturaVazoes(df_vazoes_arvore_teste1, df_vazoes, texto+" Neural Gas Simetrica")
 
 
 
 def executaTestesReducaoArvoresGVZP():
+
+    perservaFolhas = False
+
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    texto = "Teste 1D 6A 2A, 3 EQUIPROVAVEL Est GVZP"
+    print(texto)
+    caso_teste1 = "casosTestesUnitarios\\1D\\3Estagios\\6Aberturas"
+    df_vazoes_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\cenarios.csv")
+    df_arvore_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\arvore.csv")
+    df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
+    df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
+    mapa_aberturas_estagio = {1:6,    2:2}
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
+    testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    #exit(1)
+
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    texto = "Teste 1D 6A 2A, 3 ASSIMETRICO Est GVZP"
+    print(texto)
+    caso_teste1 = "casosTestesUnitarios\\1D\\3Estagios\\6Aberturas_Assim"
+    df_vazoes_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\cenarios.csv")
+    df_arvore_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\arvore.csv")
+    df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
+    df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
+    mapa_aberturas_estagio = {1:6,    2:2}
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
+    testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
+
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
     texto = "Teste 2 A, 3 Est Simetrica GVZP"
     print(texto)
@@ -226,7 +265,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:2,    2:2}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -238,7 +277,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:2,    2:2}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -250,7 +289,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:3,    2:3}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
 
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -262,7 +301,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:2,    2:2, 3:2}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
@@ -275,7 +314,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:2,    2:2, 3:2}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
@@ -289,7 +328,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:3,    2:3, 3:3}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
@@ -303,9 +342,54 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:3,    2:3, 3:3}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
+
+###########################################################
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    texto = "Teste 2D 3 A, 4 Est GVZP"
+    print(texto)
+    caso_teste1 = "casosTestesUnitarios\\2D\\4Estagios\\3Aberturas"
+    df_vazoes_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\cenarios.csv")
+    df_arvore_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\arvore.csv")
+    df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
+    df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
+    mapa_aberturas_estagio = {1:3,    2:3, 3:3}
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
+    testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
+###########################################################
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    texto = "Teste 4D 3 A, 4 Est GVZP"
+    print(texto)
+    caso_teste1 = "casosTestesUnitarios\\4D\\4Estagios\\3Aberturas"
+    df_vazoes_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\cenarios.csv")
+    df_arvore_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\arvore.csv")
+    df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
+    df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
+    mapa_aberturas_estagio = {1:3,    2:3, 3:3}
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
+    testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
+###########################################################
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    texto = "Teste 5D 3 A, 4 Est GVZP"
+    print(texto)
+    caso_teste1 = "casosTestesUnitarios\\5D\\4Estagios\\3Aberturas"
+    df_vazoes_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\cenarios.csv")
+    df_arvore_pente_teste1 = pd.read_csv(caso_teste1+"\\Pente_GVZP\\arvore.csv")
+    df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
+    df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
+    mapa_aberturas_estagio = {1:3,    2:3, 3:3}
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
+    testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
+
 
 ###########################################################
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -317,7 +401,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:2,    2:2}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -329,7 +413,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:3,    2:3}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
 
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -341,7 +425,7 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:2,    2:2, 3:2}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
@@ -354,13 +438,18 @@ def executaTestesReducaoArvoresGVZP():
     df_vazoes_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\cenarios.csv")
     df_arvore_arvore_teste1 = pd.read_csv(caso_teste1+"\\Arvore_GVZP\\arvore.csv")
     mapa_aberturas_estagio = {1:3,    2:3, 3:3}
-    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy())
+    mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_pente_teste1.copy(), perservaFolhas)
     testeReducaoArvoresGVZP(texto, df_arvore_pente_teste1, df_vazoes_pente_teste1 , df_arvore_arvore_teste1,  df_vazoes_arvore_teste1, mapa_aberturas_estagio, mapa_reducao_estagio )
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 
-#executaTestesReducaoArvoresGVZP()
-#exit(1)
+
+
+
+
+
+executaTestesReducaoArvoresGVZP()
+exit(1)
 
 
 
@@ -374,8 +463,8 @@ caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio"
 caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen"
 caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen_toy"
 caso = "..\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
-
-
+caso = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp_V2\caso_mini\exercicioGevazp\TesteCarmen\Pente_GVZP_6A_Eq"
+caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen\3Aberturas_Equiprovavel\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
@@ -388,7 +477,12 @@ mapa_aberturas_estagio = {1:125,    2:2,    3:2}
 mapa_aberturas_estagio = {1:50,    2:5,    3:2}
 mapa_aberturas_estagio = {1:25,    2:10,    3:2}
 mapa_aberturas_estagio = {1:5,    2:50,    3:2}
-
+mapa_aberturas_estagio = {1:6,    2:2}
+mapa_aberturas_estagio = {1:4,    2:2, 3:1}
+mapa_aberturas_estagio = {1:4,    2:2, 3:3}
+mapa_aberturas_estagio = {1:24,    2:1, 3:1}
+mapa_aberturas_estagio = {1:2,    2:2, 3:6}
+#mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 
 arquivo_vazoes = caso+"\\cenarios.csv"
 #arquivo_vazoes = caso+"\\cenarios_teste.csv"
@@ -399,13 +493,17 @@ arquivo_estrutura_feixes = caso+"\\arvore.csv"
 df_arvore_original = pd.read_csv(arquivo_estrutura_feixes)
 df_arvore_original.to_csv("saidas\\arvore_estudo.csv", index=False)
 
+
+#####################PARAMETROS
+Plota = False
+perservaFolhas = False
+Weighted = True
+#################################
 print(df_arvore_original)
 print("TOTAL POSTOS: ", len(df_vazoes_original["NOME_UHE"].unique()))
-mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_original.copy())
+mapa_reducao_estagio = calculaMapaReducaoEstagio(mapa_aberturas_estagio, df_arvore_original.copy(), perservaFolhas)
 print("mapa_aberturas_estagio: ", mapa_aberturas_estagio)
 print("mapa_reducao_estagio: ", mapa_reducao_estagio)
-
-
 
 
 ###########Realizacao de testes unitários
@@ -414,24 +512,34 @@ realizaTesteConsistenciaProbabilidadesFilhos(df_arvore_original, texto)
 testeSimetriaFilhos(df_arvore_original, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 #printaArvore("Arvore Original", "saidas\\",df_arvore_original)
-#exit(1)
-######################################### COMPARACAO GRANULARIDADE
 
 
-
-
-
-
-
-
-
-exit(1)
 
 ######################################## COMPARACAO METODOS 
+
+
+
+
+print("###########################################################################")
+### METODO -  BACKWARD REDUCTION ASSIMETRICO
+Simetrica = False
+df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+path_saida = "saidas\\BKAssimetrico"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+
+texto = "Arvore Backward Reduction Assimetrico"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("BKAssimetrico", path_saida, df_arvore)
+
+
+
 print("###########################################################################")
 ### METODOS DE CLUSTERIZACAO ASSIMETRICO
 Simetrica = False
-df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
+df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Weighted, Plota)
 path_saida = "saidas\\ClusterAssimetrico"
 df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
 df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
@@ -440,7 +548,6 @@ texto = "Arvore Cluster Assimetrico"
 realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
 printaArvore("ClusterAssimetrico", path_saida, df_arvore)
-
 
 
 print("###########################################################################")
@@ -452,11 +559,12 @@ if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
     for est in df_arvore_original["PER"].tolist():
         mapa_red_auxiliar[est] = 0
     mapa_red_auxiliar[max(df_arvore_original["PER"].tolist())] =  mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())]
+    
     Simetrica = False
-    df_arvore, df_vazoes = backwardReduction(mapa_red_auxiliar, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
-
+    df_arvore, df_vazoes = backwardReduction(mapa_red_auxiliar, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, Plota)
+    print(df_arvore)
     Simetrica = True
-    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore.copy(), Simetrica, True)
+    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore.copy(), Simetrica, perservaFolhas, Weighted, Plota)
     path_saida = "saidas\\ClusterSimetrico"
     df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
     df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
@@ -464,7 +572,7 @@ if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
 else:
     print("Clusterizacao Simetrica Usual")
     Simetrica = True
-    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
+    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Weighted, Plota)
     path_saida = "saidas\\ClusterSimetrico"
     df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
     df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
@@ -479,26 +587,12 @@ printaArvore("ClusterSimetrico", path_saida, df_arvore)
 
 
 
-print("###########################################################################")
-### METODO -  BACKWARD REDUCTION ASSIMETRICO
-Simetrica = False
-df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
-path_saida = "saidas\\BKAssimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-
-texto = "Arvore Backward Reduction Assimetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("BKAssimetrico", path_saida, df_arvore)
-
 
 
 print("###########################################################################")
 ### METODO -  BACKWARD REDUCTION SIMETRICO
 Simetrica = True
-df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
+df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, Plota)
 path_saida = "saidas\\BKSimetrico"
 df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
 df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
@@ -511,11 +605,10 @@ printaArvore("BKSimetrico", path_saida, df_arvore)
 
 
 
-
 print("###########################################################################")
 ### METODO NEURAL GAS
 Simetrica = False
-df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
+df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
 path_saida = "saidas\\NeuralGas"
 df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
 df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
@@ -531,15 +624,30 @@ printaArvore("NeuralGas", path_saida, df_arvore)
 
 
 
-#print("###########################################################################")
-#### METODO NEURAL GAS
-#Simetrica = True
-#df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, True)
-#path_saida = "saidas\\NeuralGasSimetrico"
-#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-#
-#texto = "Arvore Neural Gas Simetrico"
-#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-#printaArvore("NeuralGasSimetrico", path_saida, df_arvore)
+print("###########################################################################")
+### METODO NEURAL GAS
+Simetrica = True
+df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+path_saida = "saidas\\NeuralGasSimetrico"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+texto = "Arvore Neural Gas Simetrico"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("NeuralGasSimetrico", path_saida, df_arvore)
+
+
+Weighted = False
+print("###########################################################################")
+### METODOS DE CLUSTERIZACAO ASSIMETRICO
+Simetrica = False
+df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Weighted, Plota)
+path_saida = "saidas\\ClusterAssimetricoLinear"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+texto = "Arvore Cluster ClusterAssimetricoLinear"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("ClusterAssimetricoLinear", path_saida, df_arvore)

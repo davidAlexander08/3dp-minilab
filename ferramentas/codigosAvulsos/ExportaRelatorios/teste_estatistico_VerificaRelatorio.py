@@ -49,12 +49,13 @@ caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_300Cen_sorteio\\"
 ### VAZOES_FEIXES_INCR_SIN
-arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
-arquivo = "avaliaArvores\\A_25_10_2\\estatisticasArvores_25_10_2"
-arquivo = "avaliaArvores\\A_5_50_2\\estatisticasArvores_5_50_2"
-arquivo = "avaliaArvores\\A_125_2_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
-arquivo = "avaliaArvores\\A_50_5_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
-arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+arquivo = "avaliaArvores\\A_125_2_2\\estatisticasArvores_75_2_2"
+#arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
+#arquivo = "avaliaArvores\\A_25_10_2\\estatisticasArvores_25_10_2"
+#arquivo = "avaliaArvores\\A_5_50_2\\estatisticasArvores_5_50_2"
+#arquivo = "avaliaArvores\\A_125_2_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+#arquivo = "avaliaArvores\\A_50_5_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+#arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
 #df = pd.read_csv("estatisticasArvores.csv", sep=";")
 df = pd.read_csv(caminho+arquivo+".csv", sep=";")
 df = df.dropna().reset_index(drop = True)
@@ -151,7 +152,7 @@ dicionarioFalhasGlobais = {
 }
 
 
-significancia = 0.01
+significancia = 0.05
 lista_relatorio = []
 for tipo in tipos:
     df_1 = df.loc[(df["TIPO"] == tipo)]

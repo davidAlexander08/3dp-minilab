@@ -1,6 +1,16 @@
 import numpy as np
+
+from sklearn.base import BaseEstimator, ClusterMixin
+from sklearn.utils.extmath import row_norms
+from scipy.spatial.distance import cdist
+
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+
+from k_means_constrained import KMeansConstrained
+from sklearn.utils.extmath import row_norms, squared_norm, stable_cumsum
+import ot  # POT - Python Optimal Transport
+
 import os
 import pandas as pd
 import numpy as np
@@ -10,7 +20,6 @@ import matplotlib.pyplot as plt
 from anytree import Node, RenderTree
 import time
 from joblib import Parallel, delayed, parallel_backend
-from k_means_constrained import KMeansConstrained
 import os
 os.environ["LOKY_MAX_CPU_COUNT"] = "4"  # Adjust based on your CPU
 os.environ["PATH"] += os.pathsep + r"C:\\Program Files (x86)\\Graphviz\\bin"
@@ -18,7 +27,6 @@ os.environ["PATH"] += os.pathsep + r"C:\\Program Files (x86)\\Graphviz\\bin"
 from itertools import combinations  # Efficiently generate unique (i, j) pairs
 from scipy.stats import skew
 import plotly.graph_objects as go
-
 
 #caso = "..\\..\\Mestrado\\caso_1D"
 ##caso = "..\\..\\casos\\Mestrado\\caso_2D"
@@ -70,12 +78,208 @@ def busca_pai(no, df_arvore):
 
 
 
+class MyKMeans(BaseEstimator, ClusterMixin):
+    def __init__(self, n_clusters=8, max_iter=300, tol=1e-4, random_state=None):
+        self.n_clusters = n_clusters
+        self.max_iter = max_iter
+        self.tol = tol
+        self.random_state = random_state
+
+    def _k_init(self, X, n_clusters, n_local_trials=None):
+        """Init n_clusters seeds according to k-means++
+
+        Parameters
+        -----------
+        X : array or sparse matrix, shape (n_samples, n_features)
+            The data to pick seeds for. To avoid memory copy, the input data
+            should be double precision (dtype=np.float64).
+
+        n_clusters : integer
+            The number of seeds to choose
+
+        x_squared_norms : array, shape (n_samples,)
+            Squared Euclidean norm of each data point.
+
+        random_state : numpy.RandomState
+            The generator used to initialize the centers.
+
+        n_local_trials : integer, optional
+            The number of seeding trials for each center (except the first),
+            of which the one reducing inertia the most is greedily chosen.
+            Set to None to make the number of trials depend logarithmically
+            on the number of seeds (2+log(k)); this is the default.
+
+        Notes
+        -----
+        Selects initial cluster centers for k-mean clustering in a smart way
+        to speed up convergence. see: Arthur, D. and Vassilvitskii, S.
+        "k-means++: the advantages of careful seeding". ACM-SIAM symposium
+        on Discrete algorithms. 2007
+
+        Version ported from http://www.stanford.edu/~darthur/kMeansppTest.zip,
+        which is the implementation used in the aforementioned paper.
+        """
+        n_samples, n_features = X.shape
+
+        centers = np.empty((n_clusters, n_features), dtype=X.dtype)
+        # Set the number of local seeding trials if none is given
+        if n_local_trials is None:
+            # This is what Arthur/Vassilvitskii tried, but did not report
+            # specific results for other than mentioning in the conclusion
+            # that it helped.
+            n_local_trials = 2 + int(np.log(n_clusters))
+
+        # Pick first center randomly
+        center_id = np.random.mtrand._rand.randint(n_samples)
+        centers[0,:] = X[center_id, :]
+
+        # Initialize list of closest distances and calculate current potential
+        #closest_dist_sq = self.personalEuclidianDistance(centers[0, np.newaxis], X)
+        #print(centers[0,:])
+        
+        closest_dist_sq = []
+        for line in range(0,n_samples):
+            distancias = np.linalg.norm(np.array(centers[0,:]) - np.array(X[line,:]))
+            closest_dist_sq.append(distancias)
+
+        closest_dist_sq = np.array(closest_dist_sq)
+        current_pot = closest_dist_sq.sum()
+        #print(X)
+        #print("closest_dist_sq: ", closest_dist_sq, " current_pot: ", current_pot, " X[center_id, :]: ", X[center_id, :])
+        # Pick the remaining n_clusters-1 points
+        for c in range(1, n_clusters):
+            list_trials = np.random.random(n_local_trials)
+            rand_vals = list_trials * current_pot
+            #print("list_trials: ", list_trials, " rand_vals: ", rand_vals)
+            soma_probs = stable_cumsum(closest_dist_sq)
+            candidate_ids = np.searchsorted(soma_probs, rand_vals)
+            #print("soma_probs: ", soma_probs,  " candidate_ids: ", candidate_ids)
+
+            # Compute distances to center candidates
+            #print("X[candidate_ids]: ", X[candidate_ids])
+            distance_to_candidates = np.zeros((len(candidate_ids), len(X[:, 0])))
+            for candidato in range(0, len(candidate_ids)):
+                for linhaMatriz in range(0, len(X[:,0])):
+                    #print("candidato: ", candidato, " line: ", X[candidate_ids[candidato],:])
+                    distance_to_candidates[candidato, linhaMatriz] = np.linalg.norm(np.array(X[candidate_ids[candidato],:]) - np.array(X[linhaMatriz,:]))
+            
+            
+            #distance_to_candidates = self.euclidean_distances(X[candidate_ids], X)
+            #print(distance_to_candidates)
+            # Decide which candidate is the best
+            best_candidate = None
+            best_pot = None
+            best_dist_sq = None
+            for trial in range(n_local_trials):
+                # Compute potential when including center candidate
+                new_dist_sq = np.minimum(closest_dist_sq, distance_to_candidates[trial,:])
+                new_pot = new_dist_sq.sum()
+                #print(new_dist_sq)
+                #print(new_pot)
+                # Store result if it is the best local trial so far
+                if (best_candidate is None) or (new_pot < best_pot):
+                    best_candidate = candidate_ids[trial]
+                    best_pot = new_pot
+                    best_dist_sq = new_dist_sq
+
+            #print(rand_vals)
+            #print(candidate_ids)
+            #print(distance_to_candidates)
+            # Permanently add best center candidate found in local tries
+            centers[c] = X[best_candidate]
+            current_pot = best_pot
+            closest_dist_sq = best_dist_sq
+        return centers
+
+
+    #def _wasserstein_distance(self, x, y):
+    #    # x and y are 1D distributions (e.g., vectors)
+    #    x = x.reshape(-1, 1)
+    #    y = y.reshape(-1, 1)
+    #    a = np.ones((x.shape[0],)) / x.shape[0]
+    #    b = np.ones((y.shape[0],)) / y.shape[0]
+    #    M = ot.dist(x, y)  # Cost matrix
+    #    return ot.emd2(a, b, M)  # Squared Wasserstein distance
+
+
+    def fit(self, X, weights, Weighted):
+        rng = np.random.RandomState(self.random_state)
+
+        n_samples, n_features = X.shape
+
+        ## Randomly choose initial centers
+        #initial_idx = rng.choice(n_samples, self.n_clusters, replace=False)
+        #centers = X[initial_idx]
+        #print(centers)
+
+        centers = self._k_init(X, self.n_clusters)
+        #print(centers)
+        #exit(1)
+        for i in range(self.max_iter):
+            # Assign labels based on closest center
+            distances = cdist(X, centers, 'euclidean') * weights[:, np.newaxis] if Weighted else cdist(X, centers, 'euclidean')
+            #distances = cdist(X, centers, 'euclidean')
+            #distances = distances * weights[:, np.newaxis]
+            labels = np.argmin(distances, axis=1)
+
+            #labels = []
+            #for i in range(n_samples):
+            #    dists = [self._wasserstein_distance(X[i], c) for c in centers]
+            #    labels.append(np.argmin(dists))
+            #labels = np.array(labels)
 
 
 
+            # Compute new centers
+            #new_centers = np.array([X[labels == j].mean(axis=0) for j in range(self.n_clusters)])
+            new_centers = []
+            for j in range(self.n_clusters):
+                # Get all points assigned to cluster j
+                points_in_cluster = X[labels == j]
+                weights_in_cluster = weights[labels == j]
+
+                #print(points_in_cluster, " j: ", j)
+                
+
+                # Compute the mean of those points
+                if len(points_in_cluster) > 0:
+                    center = np.average(points_in_cluster, axis=0, weights=weights_in_cluster) if Weighted else points_in_cluster.mean(axis=0)
+                    #center = points_in_cluster.mean(axis=0)
+                    #center = np.average(points_in_cluster, axis=0, weights=weights_in_cluster)
+
+                else:
+                    # If no points are assigned to the cluster, keep the old center
+                    center = centers[j]
+
+                new_centers.append(center)
+            # Convert the list to a numpy array
+            new_centers = np.array(new_centers)
 
 
-def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar = False):
+
+            # Check for convergence
+            center_shift = np.linalg.norm(new_centers - centers)
+            if center_shift < self.tol:
+                break
+            centers = new_centers
+
+        self.cluster_centers_ = centers
+        self.labels_ = labels
+        #print(self.cluster_centers_)
+        #print(self.labels_)
+        return self
+
+    def predict(self, X):
+        distances = cdist(X, self.cluster_centers_, 'euclidean')
+        return np.argmin(distances, axis=1)
+
+
+    def fit_predict(self, X, weights, Weighted):
+        self.fit(X, weights, Weighted)
+        return self.labels_
+
+
+def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, plotar = False):
     filhos = getFilhos(no_analise, df_arvore)
     #print("no_analise: ", no_analise, " filhos: ", filhos)
     est = df_arvore.loc[(df_arvore["NO"] == no_analise)]["PER"].iloc[0]
@@ -83,42 +287,75 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         matriz_valores = np.zeros((len(filhos), len(postos)))
         mapa_linha_no = {}
         mapa_linha_posto = {}
+        weights =[]
         for linha, no in enumerate(filhos):  # FIXED: Use enumerate() to track row index
             for coluna, posto in enumerate(postos):  # FIXED: Same for column index
                 vazao = df_vazoes[(df_vazoes["NOME_UHE"] == posto) & (df_vazoes["NO"] == no)]["VAZAO"].iloc[0]
                 matriz_valores[linha, coluna] = vazao
                 mapa_linha_posto[posto] = coluna
             mapa_linha_no[linha] = no
+            weights.append(
+                df_arvore.loc[(df_arvore["NO"] == no)]["PROB"].iloc[0]
+            )
+        weights = np.array(weights)
                 #print("no: ", no, " posto: ", posto, " Vazao: ", vazao)
         k = mapa_clusters_estagio[est]
 
         if(Simetrica == True):
             size_min = len(filhos) // k  # Minimum number of points per cluster
             size_max = len(filhos) // k  # Maximum number of points per cluster
-            #print("size_min: ", size_min, "size_max: ", size_max, " no_analise: ", no_analise, " est: ", est)
+            #print(filhos)
+            #print(df_arvore)
+            #print("no_analise: ", no_analise, "len(filhos): ", len(filhos), " k: ", k, " size_min: ", size_min, "size_max: ", size_max, " no_analise: ", no_analise, " est: ", est)
             kmeans = KMeansConstrained(n_clusters=k, size_min=size_min, size_max=size_max, random_state=42, n_init=10)
             clusters = kmeans.fit_predict(matriz_valores)
             #print(clusters)
         else:
             #print("K: ", k, " matriz: ", matriz_valores)
-            kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-            clusters = kmeans.fit_predict(matriz_valores)
-            #print("qntClusters: ", k, " est: ", est)
-            #if(no_analise == 1502):
-            #    print(clusters)
-            cluster_counts = np.bincount(clusters)
-            empty_clusters = np.where(cluster_counts == 0)[0]
-            if len(empty_clusters) > 0:
-                print(f"Empty clusters found: {empty_clusters}")
-                non_empty_clusters = np.where(cluster_counts > 0)[0]
-                means_of_non_empty_clusters = []
-                for cluster in non_empty_clusters:
-                    points_in_cluster = matriz_valores[clusters == cluster]
-                    cluster_mean = np.mean(points_in_cluster, axis=0)
-                    means_of_non_empty_clusters.append(cluster_mean)
-                for empty_cluster in empty_clusters:
-                    kmeans.cluster_centers_[empty_cluster] = np.mean(means_of_non_empty_clusters, axis=0)
+            kmeans = MyKMeans(n_clusters=k, random_state=42)
+            clusters= kmeans.fit_predict(matriz_valores, weights, Weighted)
+            centers_kmeans = kmeans.cluster_centers_
 
+
+
+            #empty_clusters = np.where(cluster_counts == 0)[0]
+            #if len(empty_clusters) > 0:
+            #    print(f"Empty clusters found: {empty_clusters}")
+            #    non_empty_clusters = np.where(cluster_counts > 0)[0]
+            #    means_of_non_empty_clusters = []
+            #    for cluster in non_empty_clusters:
+            #        points_in_cluster = matriz_valores[clusters == cluster]
+            #        cluster_mean = np.mean(points_in_cluster, axis=0)
+            #        means_of_non_empty_clusters.append(cluster_mean)
+            #    for empty_cluster in empty_clusters:
+            #        kmeans.cluster_centers_[empty_cluster] = np.mean(means_of_non_empty_clusters, axis=0)
+            #exit(1) 
+
+            #kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+            #clusters = kmeans.fit_predict(matriz_valores)
+            #print("K: ", k)
+            for j in range(k):
+                points_in_cluster = np.where(clusters == j)[0]
+                #print("points_in_cluster: ", points_in_cluster)
+                if len(points_in_cluster) == 0:
+                    print(f"Cluster {j} is empty. Fixing it...")
+                    distances_to_j = np.linalg.norm(matriz_valores - centers_kmeans[j], axis=1)
+                    sorted_indices = np.argsort(distances_to_j)
+                    #print(distances_to_j)
+                    #print(sorted_indices)
+                    for idx in sorted_indices:
+                        current_cluster = clusters[idx]
+                        if np.sum(clusters == current_cluster) > 1:
+                            clusters[idx] = j  # Reassign this point to the empty cluster
+                            break
+                    # Recalculate centers after fixing
+                    new_centers = []
+                    for j in range(k):
+                        new_centers.append(matriz_valores[clusters == j].mean(axis=0))
+                    centers_kmeans = np.array(new_centers)
+
+        #cluster_counts = np.bincount(clusters)
+        #print(cluster_counts)
 
         new_matrix = np.zeros((len(clusters), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
@@ -234,7 +471,7 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
 
 
 
-def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, plotar = False):
+def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, perservaFolhas, Weighted, plotar = False):
     start_time = time.time()
     tempo_Total = time.time()
     
@@ -248,11 +485,17 @@ def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Sime
     estagios = sorted(estagios, reverse=False)[:-1]#[1:]
     postos = df_vazoes["NOME_UHE"].unique()
     postos = sorted(postos, reverse=False)
+
+    if(perservaFolhas):
+        estagios.remove(max(estagios))
+
     for est in estagios:
-        if(est < max(estagios)):
-            nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
-            for no_cluster in nos_estagio:
-                df_arvore, df_vazoes = percorreArvoreClusterizando(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, plotar)
+        #if(est < max(estagios)):
+        #    print("est: ", est)
+        #if(True):
+        nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
+        for no_cluster in nos_estagio:
+            df_arvore, df_vazoes = percorreArvoreClusterizando(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, plotar)
     df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
     #df_arvore["NO_PAI"] = df_arvore["NO_PAI"].mask(df_arvore["NO"] == 1, 0)
     end_time = time.time()

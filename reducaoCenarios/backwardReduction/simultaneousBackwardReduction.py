@@ -126,7 +126,7 @@ def compute_caminho_probabilidade_matriz(no, df_arvore, df_vazoes):
     return no, caminho, matrizAfluencias, prob_no
 
 
-def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, df_arvore, Simetrico, plotar = False):
+def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, df_arvore, Simetrico, perservaFolhas, plotar = False):
     start_time = time.time()
     tempo_Total = time.time()
     
@@ -154,6 +154,9 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
     elapsed_time = end_time - start_time  # Calculate elapsed time
     print(f"Tempo de Inicialização: {elapsed_time:.4f} seconds")
     start_time = time.time()
+
+    if(perservaFolhas):
+        mapa_reducao_estagio[max(estagios_estocasticos)] = 0
 
     for est in reversed(estagios_estocasticos):
         
