@@ -8,12 +8,12 @@
    18 A. VERMELHA    18    34   10  23.70   EX      1     1931     2018
    34 I. SOLTEIRA    34    45   10  68.14   EX      1     1931     2018
    66 ITAIPU         66     0    5   0.00   EX      0     1931     2018
-  156 TRES MARIAS   156     0    1  57.02   EX      1     1931     2018
+  156 TRES MARIAS   156   169    1  57.02   EX      1     1931     2018
   227 SINOP         227   229    7  49.95   EX      1     1931     2018
   229 TELES PIRES   229     0    7   0.00   EX      1     1931     2018
   251 SERRA MESA    270   257    1   9.41   EX      1     1931     2018
   257 PEIXE ANGIC   257   261    1  18.25   EX      1     1931     2018
-  261 LAJEADO       273     0    1   0.00   EX      1     1931     2018
+  261 LAJEADO       273   267    1   0.00   EX      1     1931     2018
   285 JIRAU         285   287    6   0.00   EX      1     1931     2018
   287 STO ANTONIO   287     0    6   0.00   EX      1     1931     2018
   279 SAMUEL        279     0    6  18.93   EX      0     1931     2018
@@ -47,13 +47,7 @@
   169 SOBRADINHO    169   172    3  28.81   EX      1     1931     2018
   172 ITAPARICA     172   178    3  37.45   EX      1     1931     2018
   178 XINGO         178     0    3   0.00   EX      1     1931     2018
-  295 FICT.TRES MA  156   169    3  57.02   EX      1     1931     2018
   267 ESTREITO TOC  271   275    4   0.00   EX      1     1931     2018
   275 TUCURUI       275     0    4  17.26   EX      1     1931     2018
-  291 FICT.SERRA M  270   292    4  17.11   EX      1     1931     2018
-  292 FICT.CANA BR  191   306    4   0.00   EX      1     1931     2018
-  302 FICT.LAJEADO  273   267    4   0.00   EX      1     1931     2018
-  303 FICT.PEIXE A  257   302    4  18.25   EX      1     1931     2018
-  306 FICT.SAO SAL  253   303    4   0.00   EX      1     1931     2018
   314 PIMENTAL      302     0    8   0.00   EX      0     1931     2018
   288 BELO MONTE    292     0    8   0.00   EX      1     1931     2018

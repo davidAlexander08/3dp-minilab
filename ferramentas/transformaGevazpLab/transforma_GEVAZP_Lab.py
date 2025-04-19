@@ -12,6 +12,7 @@ pasta = "3Aberturas_4Est_teste\\"
 pasta = "3D\\Estagios_4\\Aberturas_3\\"
 pasta = "1D\\6_Aberturas\\"
 pasta = "5D\\4Estagios\\3_3_3\\"
+pasta = "4D\\4Estagios\\3_3_3_Teste\\"
 #pasta = "2Aberturas\\"
 caminho_caso = caminho+pasta
 df_cenarios = pd.read_csv(caminho_caso+"fort.156", sep=";", skipinitialspace=True)

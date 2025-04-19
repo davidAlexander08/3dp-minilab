@@ -10,7 +10,7 @@ from datetime import timedelta  # <-- Add this import at the top of your script
 import random
 import time
 caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp\caso_mini\exercicioGevazp\4Estagios\3Aberturas\Pente_GVZP"
-caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen\3Aberturas_Equiprovavel\Pente_GVZP"
+caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
 arvore = pd.read_csv(caminho+"\\arvore.csv")
 cenarios = pd.read_csv(caminho+"\\cenarios.csv")
 
@@ -18,7 +18,7 @@ cenarios = pd.read_csv(caminho+"\\cenarios.csv")
 
 
 caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp\caso_mini\exercicioGevazp\4Estagios\3Aberturas\PenteBase_16cen"
-caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen\3Aberturas_Equiprovavel\Pente_24cen\Pente_modelo_24cen"
+caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_8cen\modelo"
 arvore_modelo = pd.read_csv(caminho_modelo+"\\arvore.csv")
 cenarios_modelo = pd.read_csv(caminho_modelo+"\\cenarios.csv")
 

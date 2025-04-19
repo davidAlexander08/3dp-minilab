@@ -448,8 +448,8 @@ def executaTestesReducaoArvoresGVZP():
 
 
 
-executaTestesReducaoArvoresGVZP()
-exit(1)
+#executaTestesReducaoArvoresGVZP()
+#exit(1)
 
 
 
@@ -465,6 +465,11 @@ caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen_toy"
 caso = "..\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp_V2\caso_mini\exercicioGevazp\TesteCarmen\Pente_GVZP_6A_Eq"
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen\3Aberturas_Equiprovavel\Pente_GVZP"
+caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_2D\2D_3Aberturas_Equiprovavel\Pente_GVZP"
+caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_3D\3D_3Aberturas_Equiprovavel\Pente_GVZP"
+caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_4D_Teste\4D_3Aberturas_Equiprovavel\Pente_GVZP"
+caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
+#caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
@@ -480,8 +485,9 @@ mapa_aberturas_estagio = {1:5,    2:50,    3:2}
 mapa_aberturas_estagio = {1:6,    2:2}
 mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 mapa_aberturas_estagio = {1:4,    2:2, 3:3}
-mapa_aberturas_estagio = {1:24,    2:1, 3:1}
-mapa_aberturas_estagio = {1:2,    2:2, 3:6}
+mapa_aberturas_estagio = {1:8,    2:1, 3:1}
+mapa_aberturas_estagio = {1:8,    2:1, 3:1}
+#mapa_aberturas_estagio = {1:2,    2:2, 3:6}
 #mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 
 arquivo_vazoes = caso+"\\cenarios.csv"
@@ -516,10 +522,6 @@ testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 
 
 ######################################## COMPARACAO METODOS 
-
-
-
-
 print("###########################################################################")
 ### METODO -  BACKWARD REDUCTION ASSIMETRICO
 Simetrica = False
@@ -534,7 +536,7 @@ realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
 printaArvore("BKAssimetrico", path_saida, df_arvore)
 
-
+exit(1)
 
 print("###########################################################################")
 ### METODOS DE CLUSTERIZACAO ASSIMETRICO
