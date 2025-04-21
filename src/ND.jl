@@ -89,8 +89,8 @@ function calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_a
                         #vazao_orig = sorted_orig[:, "VAZAO"]
                         #vazao_red  = sorted_red[:, "VAZAO"]
                         #println("vazao_orig: ", vazao_orig, " vazao_red: ", vazao_red)
-                        @assert length(unique(vazoes_no_filho_orig[:, "NOME_UHE"])) == nrow(vazoes_no_filho_orig)
-                        @assert length(unique(vazoes_no_filho_red[:, "NOME_UHE"])) == nrow(vazoes_no_filho_red)
+                        #@assert length(unique(vazoes_no_filho_orig[:, "NOME_UHE"])) == nrow(vazoes_no_filho_orig)
+                        #@assert length(unique(vazoes_no_filho_red[:, "NOME_UHE"])) == nrow(vazoes_no_filho_red)
                         joined = innerjoin(vazoes_no_filho_orig, vazoes_no_filho_red, on="NOME_UHE", makeunique=true)
                         #println("joined: ", joined)
                         vazao_orig = joined[:, "VAZAO"]
@@ -211,19 +211,27 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
             parcelas = zeros(length(sorted_idxs))
             for no_orig in nos_originais_estagios
                 df_orig = df_cenarios_original[df_cenarios_original[:, "NO"] .== no_orig, :]
-                sorted_orig = sort(df_orig, by = row -> row["NOME_UHE"])  # Ensure consistent hydro order
-                vazoes_no_orig = sorted_orig[:, "VAZAO"]
+                #println(df_orig)
+                #sorted_orig = sort(df_orig, by = row -> row["NOME_UHE"])  # Ensure consistent hydro order
+                #sorted_orig = sort(df_orig, by = :NOME_UHE)# Ensure consistent hydro order
+                #sorted_orig = sort(df_orig, cols = :NOME_UHE)  # ← aqui está a mudança!
+                #sorted_orig = sort(df_orig, by = :NOME_UHE, rev = false)
+                #vazoes_no_orig = sorted_orig[:, "VAZAO"]
+                vazoes_no_orig = df_orig[:, "VAZAO"]
                 pi_alteracao = solucao_planoTransporteCondicional[("o" * string(no_orig), "r" * string(no_red))]
                 soma_pis += pi_alteracao
                 parcelas .+= pi_alteracao .* vazoes_no_orig
                 #println("parcelas: ", parcelas, " soma_pis: ", soma_pis, " pi_alteracao: ", pi_alteracao, " vazoes_no_orig: ", vazoes_no_orig, " no_orig: ", no_orig, " no_red: ", no_red)
             end
-            if(no_red == 4)
-                println("parcelas: ", parcelas, " soma_pis: ", soma_pis)
-            end
+            #if(no_red == 4)
+            #    println("parcelas: ", parcelas, " soma_pis: ", soma_pis)
+            #end
             if soma_pis == 0
                 println("⚠️ Ignorando atualização para no_red = $no_red no estágio $estagio (soma_pis = 0)")
-                continue
+                distancia_aninhada = Dict()
+                distancia_aninhada[("o1", "r1")] = 99999999999999999999999999999
+                return (0,0,distancia_aninhada,0)
+                #continue
             end
             parcelas = parcelas/soma_pis
             #df_cenarios_reduzida[sorted_idxs, "VAZAO"] .= parcelas
@@ -284,16 +292,17 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
                 planoTransporte[("o" * string(no_orig), "r" * string(no_red))] = @variable(m, base_name="pi_o$(no_orig)_r$(no_red)")
                 #distancia[("o" * string(no_orig), "r" * string(no_red))] = dist
                 distancia[("o" * string(no_orig), "r" * string(no_red))] = round(dist, digits=2)
-                if no_orig == 4 && no_red in [4, 7]
-                    println(joined)
-                    println(vazoes_no_orig)
-                    println(vazoes_no_red)
-                    println("no_orig: ", no_orig, " no_red: ", no_red, " dist: ", distancia[("o" * string(no_orig), "r" * string(no_red))])
-                end
+                #if no_orig == 4 && no_red in [4, 7]
+                #    println(joined)
+                #    println(vazoes_no_orig)
+                #    println(vazoes_no_red)
+                #    println("no_orig: ", no_orig, " no_red: ", no_red, " dist: ", distancia[("o" * string(no_orig), "r" * string(no_red))])
+                #end
             end
         end#+ distancia_aninhada[("o" * string(no_filho_orig), "r" * string(no_filho_red))]
 
         @objective(m, Min, sum( (round(distancia[("o" * string(no_orig), "r" * string(no_red))]^2, digits=2) + distancia_aninhada[("o" * string(no_orig), "r" * string(no_red))]) * planoTransporte[("o" * string(no_orig), "r" * string(no_red))] for no_orig in nos_originais_estagios, no_red in nos_reduzido_estagio))
+        #@objective(m, Min, sum( (round(distancia[("o" * string(no_orig), "r" * string(no_red))], digits=2) + distancia_aninhada[("o" * string(no_orig), "r" * string(no_red))]) * planoTransporte[("o" * string(no_orig), "r" * string(no_red))] for no_orig in nos_originais_estagios, no_red in nos_reduzido_estagio))
         
         nos_estagio_anterior_red = unique(df_arvore_reduzida[df_arvore_reduzida[:, "PER"] .== estagio-1, "NO"])
         nos_estagio_anterior_orig = unique(df_arvore_original[df_arvore_original[:, "PER"] .== estagio-1, "NO"])
@@ -372,7 +381,7 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
         end
     end
 
-    print(df_arvore_reduzida)
+    #print(df_arvore_reduzida)
 
     ###### ATUALIZA PROBABILIDADES ARVORE
     for estagio in sort(estagios_otimizacao, rev=true)
@@ -385,7 +394,7 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
             end
         end
     end
-    print(df_arvore_reduzida)
+    #print(df_arvore_reduzida)
 
     #### CALCULA PLANO DE TRANSPORTE CONDICIONAL
     estagios_pos_otimizacao = copy(estagios)
@@ -418,14 +427,14 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
     return (df_arvore_reduzida, df_cenarios_reduzida, distancia_aninhada, solucao_planoTransporteCondicional)
 end
 
-str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_3D/3Aberturas_Equiprovavel"
+str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_1D/1D_3Aberturas_Equiprovavel"
 Path_orig = str_caso*"/Arvore_GVZP"
 PATH_ARVORE_ORIGINAL = Path_orig*"/arvore.csv"
 df_arvore_original = CSV.read(PATH_ARVORE_ORIGINAL, DataFrame)
 PATH_CENARIOS_ORIGINAL = Path_orig*"/cenarios.csv"
 df_cenarios_original = CSV.read(PATH_CENARIOS_ORIGINAL, DataFrame)
 
-lista_paths_red = ["A_2_2_2","A_4_2_1","A_2_2_6","A_4_2_3", "A_6_2_2"]
+lista_paths_red = ["A_2_2_2", "A_4_2_1", "A_2_2_6", "A_4_2_3", "A_6_2_2"]
 lista_casos = ["BKAssimetrico", "ClusterAssimetrico"]
 for path_red in lista_paths_red
     for caso in lista_casos
@@ -456,16 +465,17 @@ df_cenarios_reduzida = CSV.read(PATH_CENARIOS_REDUZIDA, DataFrame)
 (distancia_aninhada,solucao_planoTransporteCondicional , solucao_planoTransporte ) = calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_arvore_reduzida, df_cenarios_reduzida)
 println(Path_red, ": ", distancia_aninhada[("o1","r1")])  
 
+exit(1)
 
 
 
 
-
-
-str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/teste_ND"
-str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_1D/1D_3Aberturas_Equiprovavel"
+#str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/teste_ND"
+str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_4D/3Aberturas_Equiprovavel"
 Path_orig = str_caso*"/Arvore_GVZP"
-Path_red = str_caso*"/A_6_2_2/ClusterAssimetrico"
+Path_red = str_caso*"/A_4_2_3/ClusterSimetrico"
+#Path_orig = str_caso*"/Original"
+#Path_red = str_caso*"/Reduzida"
 PATH_ARVORE_ORIGINAL = Path_orig*"/arvore.csv"
 PATH_ARVORE_REDUZIDA = Path_red*"/arvore.csv"
 df_arvore_original = CSV.read(PATH_ARVORE_ORIGINAL, DataFrame)
@@ -478,7 +488,10 @@ df_cenarios_reduzida = CSV.read(PATH_CENARIOS_REDUZIDA, DataFrame)
 global distancia_anterior = distancia_aninhada[("o1","r1")]
 global iteracao = 1
 global mapa_arvoreOtima = Dict{Int, Tuple{DataFrame, DataFrame}}()
-global distancia_nova = 9999999
+mapa_arvoreOtima[0] = (df_arvore_reduzida, df_cenarios_reduzida)
+#print(df_arvore_reduzida)
+println("Dist ini: ", distancia_aninhada[("o1","r1")])
+global distancia_nova = 9999999999999999999999999
 global df_arvore_red = deepcopy(df_arvore_reduzida)
 global df_cen_red = deepcopy(df_cenarios_reduzida)
 global sol_tranporte_condicional = copy(solucao_planoTransporteCondicional)
@@ -490,33 +503,41 @@ while true
     global mapa_arvoreOtima
     global distancia_anterior
 
-    (arvore_red, cenarios_red, distancia_aninhada, sol_transporte_condi) = atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_original, df_arvore_reduzida, df_cenarios_reduzida, sol_tranporte_condicional)
-    println(df_arvore_red)
-    println(distancia_aninhada)
-    println(sol_tranporte_condicional)
+    (arvore_red, cenarios_red, distancia_aninhada, sol_transporte_condi) = 
+    atualizaArvoreDistanciaAninhada(
+        df_arvore_original,
+        df_cenarios_original,
+        copy(df_arvore_reduzida),
+        copy(df_cenarios_reduzida),
+        sol_tranporte_condicional
+    )
+    #println(df_arvore_red)
+    #println(distancia_aninhada)
+    println("iter: ", iteracao, " dist: ", distancia_aninhada[("o1","r1")])
+    #println(sol_tranporte_condicional)
     sol_tranporte_condicional = sol_transporte_condi
     df_cen_red =  deepcopy(cenarios_red)
     df_arvore_red = deepcopy(arvore_red)
     distancia_nova = distancia_aninhada[("o1", "r1")]
-    mapa_arvoreOtima[iteracao] = (df_arvore_red, df_cen_red)
+    
     
     if distancia_nova >= distancia_anterior
         break
-    else
-        iteracao += 1
     end
+    mapa_arvoreOtima[iteracao] = (df_arvore_red, df_cen_red)
     distancia_anterior = distancia_nova
+    iteracao += 1
 end
 
-iter_acesso = iteracao == 1 ? 1 : iteracao - 1
-println("FINALIZOU, ARVORE OTIMA, ITER: ", iteracao, " ACESSO: ", iter_acesso)
-(df_arvore_otima, df_cenario_otimo) = mapa_arvoreOtima[iter_acesso]
-println("df_arvore_otima: ", df_arvore_otima)
-println("df_cenario_otimo: ", df_cenario_otimo)
 
-CSV.write(Path_red*"/df_arvore_otima.csv", df_arvore_otima)
-CSV.write(Path_red*"/df_cenario_otimo.csv", df_cenario_otimo)
-
+println("FINALIZOU, ARVORE OTIMA, ITER: ", iteracao, " ACESSO: ", iteracao-1)
+(df_arvore_otima, df_cenario_otimo) = mapa_arvoreOtima[iteracao-1]
+#println("df_arvore_otima: ", df_arvore_otima)
+#println("df_cenario_otimo: ", df_cenario_otimo)
+if(iteracao-1 != 0)
+    CSV.write(Path_red*"/arvore_ND.csv", df_arvore_otima)
+    CSV.write(Path_red*"/cenarios_ND.csv", df_cenario_otimo)
+end
 exit(1)
 #estagios_pos_otimizacao = copy(estagios)
 #deleteat!(estagios_pos_otimizacao, findfirst(==(minimum(estagios_pos_otimizacao)), estagios_pos_otimizacao))

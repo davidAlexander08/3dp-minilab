@@ -45,11 +45,11 @@ def calcula_prodt_acum_65(codigo_usi, df_confhd, df_hidr):
     return prodt
 
 
-caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_300Cen_sorteio\\"
 ### VAZOES_FEIXES_INCR_SIN
-arquivo = "avaliaArvores\\A_125_2_2\\estatisticasArvores_75_2_2"
+arquivo = "avaliaArvores\\A_125_2_2\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
 #arquivo = "avaliaArvores\\A_25_10_2\\estatisticasArvores_25_10_2"
 #arquivo = "avaliaArvores\\A_5_50_2\\estatisticasArvores_5_50_2"
@@ -60,6 +60,8 @@ arquivo = "avaliaArvores\\A_125_2_2\\estatisticasArvores_75_2_2"
 df = pd.read_csv(caminho+arquivo+".csv", sep=";")
 df = df.dropna().reset_index(drop = True)
 print(df)
+print(df.columns)
+
 #df = df.loc[ df["mediaOrig"].str.replace(",", ".").astype(float) > 30].reset_index(drop = True)
 #df = df.loc[ df["stdOrig"].str.replace(",", ".").astype(float) > 30].reset_index(drop = True)
 tipos = df["TIPO"].unique()
@@ -104,7 +106,7 @@ def representacaoNaEnaDOSIN(listaPostos, df_ena):
     valor = 0
     ENA_SIN = round(df_ena["ENA"].sum(),2)
     for posto in listaPostos:
-        ena = df_ena_result_mean.loc[(df_ena_result_mean["NOME_UHE"] == posto), "ENA"]
+        ena = df_ena.loc[(df_ena["NOME_UHE"] == posto), "ENA"]
         if not ena.empty and pd.notna(ena.iloc[0]):
             valor += ena.iloc[0]
     representacao_ena_sin = round((valor/ENA_SIN)*100,2)
@@ -211,36 +213,43 @@ for tipo in tipos:
             #folga_sup  = 1.05
             folga_inf = 1
             folga_sup  = 1
-            df_est["mean_violLimInf"] = df_est["mediaRed"] < df_est["mediaLimInf"]*folga_inf
-            df_est["mean_violLimSup"] = df_est["mediaRed"] > df_est["mediaLimSup"]*folga_sup
-            df_est["std_violLimInf"] = df_est["stdRed"] < df_est["stdLimInf"]*folga_inf
-            df_est["std_violLimSup"] = df_est["stdRed"] > df_est["stdLimSup"]*folga_sup
-
+            #print("Low_ci_95_var_red: ", np.sqrt(df_est["Low_ci_95_var_orig"]))
+            #print("Low_ci_95_var_red: ", df_est["stdLimInf95"])
+            #exit(1)
+            #df_est["mean_violLimInf"] = df_est["mediaRed"] < df_est["mediaLimInf95"]*folga_inf
+            #df_est["mean_violLimSup"] = df_est["mediaRed"] > df_est["mediaLimSup95"]*folga_sup
+            #df_est["std_violLimInf"] = df_est["stdRed"] < df_est["stdLimInf95"]*folga_inf
+            #df_est["std_violLimSup"] = df_est["stdRed"] > df_est["stdLimSup95"]*folga_sup
+            df_est["mean_violLimInf"] = df_est["mediaRed"] < df_est["Low_ci_95_mean_orig"]*folga_inf
+            df_est["mean_violLimSup"] = df_est["mediaRed"] > df_est["Sup_ci_95_mean_orig"]*folga_sup
+            df_est["std_violLimInf"] = df_est["stdRed"] < np.sqrt(df_est["Low_ci_95_var_orig"])*folga_inf
+            df_est["std_violLimSup"] = df_est["stdRed"] > np.sqrt(df_est["Sup_ci_95_var_orig"])*folga_sup            
+            
             df_mean_violLimInf = df_est.loc[(df_est["mean_violLimInf"]== True)]["POSTO"].tolist()
-            print("Mean Viol LimInf: ", df_mean_violLimInf)
+            #print("Mean Viol LimInf: ", df_mean_violLimInf)
             if(len(df_mean_violLimInf) != 0):
                 df_resultado = retornaDF_Resultado(df_mean_violLimInf, "Média Viol. LimInf")
                 lista_relatorio.append(df_resultado)
 
             df_mean_violLimSup = df_est.loc[(df_est["mean_violLimSup"]== True)]["POSTO"].tolist()
-            print("Mean Viol LimSup: ", df_mean_violLimSup)
+            #print("Mean Viol LimSup: ", df_mean_violLimSup)
             if(len(df_mean_violLimSup) != 0):
                 df_resultado = retornaDF_Resultado(df_mean_violLimSup, "Média Viol. LimSup")
                 lista_relatorio.append(df_resultado)
 
             df_std_violLimInf = df_est.loc[(df_est["std_violLimInf"]== True)]["POSTO"].tolist()
-            print("Std Viol LimInf: ", df_std_violLimInf)
+            #print("Std Viol LimInf: ", df_std_violLimInf)
             if(len(df_std_violLimInf) != 0):
                 df_resultado = retornaDF_Resultado(df_std_violLimInf, "Std Viol. LimInf")
                 lista_relatorio.append(df_resultado)
 
             df_std_violLimSup = df_est.loc[(df_est["std_violLimSup"]== True)]["POSTO"].tolist()
-            print("Std Viol LimSup: ", df_std_violLimSup)
+            #print("Std Viol LimSup: ", df_std_violLimSup)
             if(len(df_std_violLimSup) != 0):
                 df_resultado = retornaDF_Resultado(df_std_violLimSup, "Std Viol. LimSup")
                 lista_relatorio.append(df_resultado)
 
-            print(df_est.columns)
+            #print(df_est.columns)
             
 resultado_final_analise = pd.concat(lista_relatorio).reset_index(drop = True)
 

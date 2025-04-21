@@ -469,6 +469,7 @@ caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_2D\2D_3
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_3D\3D_3Aberturas_Equiprovavel\Pente_GVZP"
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_4D_Teste\4D_3Aberturas_Equiprovavel\Pente_GVZP"
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
+caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
 #caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
@@ -487,6 +488,7 @@ mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 mapa_aberturas_estagio = {1:4,    2:2, 3:3}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
+mapa_aberturas_estagio = {1:125,    2:2,    3:2}
 #mapa_aberturas_estagio = {1:2,    2:2, 3:6}
 #mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 
@@ -502,7 +504,7 @@ df_arvore_original.to_csv("saidas\\arvore_estudo.csv", index=False)
 
 #####################PARAMETROS
 Plota = False
-perservaFolhas = False
+perservaFolhas = True
 Weighted = True
 #################################
 print(df_arvore_original)
@@ -536,7 +538,6 @@ realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
 printaArvore("BKAssimetrico", path_saida, df_arvore)
 
-exit(1)
 
 print("###########################################################################")
 ### METODOS DE CLUSTERIZACAO ASSIMETRICO
