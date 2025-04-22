@@ -13,6 +13,7 @@ from sklearn.metrics import r2_score
 from plotly.subplots import make_subplots
 from inewave.newave import Confhd
 from inewave.newave import Hidr
+pd.set_option('display.max_rows', None)
 
 def calcula_prodt_65(codigo_usi, df_hidr):
     df_hidr_uhe = df_hidr.loc[(df_hidr["codigo_usina"] == codigo_usi)]
@@ -49,7 +50,7 @@ caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_300Cen_sorteio\\"
 ### VAZOES_FEIXES_INCR_SIN
-arquivo = "avaliaArvores\\A_125_2_2\\estatisticasArvores"
+arquivo = "avaliaArvores\\A_50_5_2_Teste\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
 #arquivo = "avaliaArvores\\A_25_10_2\\estatisticasArvores_25_10_2"
 #arquivo = "avaliaArvores\\A_5_50_2\\estatisticasArvores_5_50_2"
@@ -140,16 +141,16 @@ dicionarioFalhas = {
 }
 
 dicionarioFalhasGerais = {
-    "hypotesis_mean":["FALHA_W-TEST","FALHA_T_TEST", "FALHA_P_Boot_mean"], # 
-    "hypotesis_variance":["FALHA_F-TEST", "FALHA_L-TEST", "FALHA_P_Boot_Variance"], #
+    "hypotesis_mean":["FALHA_T_TEST"], # "FALHA_T_TEST", "FALHA_W-TEST" ,"FALHA_P_Boot_mean"
+    "hypotesis_variance":["FALHA_L-TEST"], # "FALHA_F-TEST", , "FALHA_P_Boot_Variance"
     "mean_limite":["Média Viol. LimInf", "Média Viol. LimSup"],
     "std_limite":["Std Viol. LimInf", "Std Viol. LimSup"],
     "distribution":["FALHA_KS-TEST"]
 }
 
 dicionarioFalhasGlobais = {
-    "fail_mean":["FALHA_T_TEST", "FALHA_W-TEST", "FALHA_P_Boot_mean", "Média Viol. LimInf", "Média Viol. LimSup"], #
-    "fail_variance":["FALHA_F-TEST", "FALHA_L-TEST", "FALHA_P_Boot_Variance", "Std Viol. LimInf", "Std Viol. LimSup"], #
+    "fail_mean":[ "FALHA_T_TEST", "Média Viol. LimInf", "Média Viol. LimSup"], # "FALHA_T_TEST", "FALHA_P_Boot_mean", ,
+    "fail_variance":["FALHA_L-TEST", "Std Viol. LimInf", "Std Viol. LimSup"], # "FALHA_F-TEST", "FALHA_P_Boot_Variance", 
     "distribution":["FALHA_KS-TEST"]
 }
 
