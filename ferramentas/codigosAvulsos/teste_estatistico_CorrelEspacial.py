@@ -56,20 +56,29 @@ def weighted_correlation(data_x, data_y, weights):
     return correlation
 
 
-camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
+camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
 
 df_arvore_original = pd.read_csv(camino_caso_orig+"\\arvore.csv")
 #print(df_arvore_original)
 df_vazoes = pd.read_csv(camino_caso_orig+"\\cenarios.csv")
 #print(df_vazoes)
-tipo = "avaliaArvores\\A_125_2_2\\"
+tipo = "avaliaArvores\\A_125_2_2_Teste\\"
 #tipo = "VazaoIncrementalMultidimensional\\"
-casos = ["BKAssimetrico", "ClusterAssimetrico", "ClusterSimetrico", "NeuralGas"]
+mapa_casos = {
+    "BKAssimetrico":"Redução Regressiva",
+    "KMeansAssimetricoProb":"K-Means Assimetrico", 
+    "KMeansSimetricoProbQuad":"K-Means Simetrico", 
+    "NeuralGas":"NeuralGas"
+}
+casos = ["BKAssimetrico", "KMeansAssimetricoProb", "KMeansSimetricoProbQuad", "NeuralGas"]
 #casos = ["Arvore6"]
 lista_df_final = []
 usinas = df_vazoes["NOME_UHE"].unique()
+
+
+print(len(usinas))
 print(usinas)
-#usinas = [17, 275, 66]
+#usinas = [17, 275, 266, 1] #, 275, 266, 1, 49, 57, 123, 12, 205, 121
 #usinas = [66,	45,	46,	285,	292,	275,	172,	176,	6,	169,	33,	74,	75,	40,	25,	42,	39,	229,	178,
 #                43,	38,	227,	37,	17,	271,	47,	270,	24,	209,	31,	211,	215,	34,	204,	1,	18,	126,	291,
 #                61,	7,	247,	294,	49,	57,	123,	12,	205,	121]
@@ -79,7 +88,7 @@ fig = make_subplots(rows=4, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " "
 linha = 1
 coluna = 1
 contador = 0
-for caso in casos:
+for caso in mapa_casos:
     caminho_red = camino_caso_orig+"\\"+tipo+"\\"+caso+"\\"
     df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
     df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
@@ -134,39 +143,44 @@ for caso in casos:
             for j, usi_y in enumerate(usinas):
                 if i < j:  # Ensure only the upper triangular part is considered
                     try:
+                        
                         corr_orig = weighted_correlation(dict_atributos_original[usi_x], dict_atributos_original[usi_y], prob_original)
                         
                         corr_red = weighted_correlation(dict_atributos_reduzida[usi_x], dict_atributos_reduzida[usi_y], prob_red)
                         dicionario_correlacao_original[(usi_x, usi_y)] = corr_orig
                         dicionario_correlacao_reduzida[(usi_x, usi_y)] = corr_red
-
+                        #if( abs(corr_orig - corr_red) > 0.1 or math.isnan(corr_orig) or math.isnan(corr_red)):
+                        #    print("usi_x: ", usi_x, " usi_y: ", usi_y, " corr_orig: ", corr_orig, " corr_red: ", corr_red)
                         lista_correl_orig.append(corr_orig)
                         lista_correl_red.append(corr_red)
                     except Exception as e:
                         print(f"Error calculating correlation for {usi_x} and {usi_y}: {e}")
 
+        print(len(lista_correl_orig))
+        print(len(lista_correl_red))
         lista_correl_orig = [x for x in lista_correl_orig if not math.isnan(x)]
         lista_correl_red =  [x for x in lista_correl_red if not math.isnan(x)]
         # Compute R^2 using linear regression
         slope, intercept, r_value, p_value, std_err = linregress(lista_correl_orig, lista_correl_red)
-        print(slope)
-        print(intercept)
-        print(r_value)
-        print(r_value**2)
-        print(p_value)
-        print(std_err)
+        #print(slope)
+        #print(intercept)
+        #print(r_value)
+        #print(r_value**2)
+        #print(p_value)
+        #print(std_err)
         r_squared = r_value**2
-
+        print("R-squared 1:", r_squared)
         r_squared = r2_score(lista_correl_orig, lista_correl_red)
-        print("R-squared:", r_squared)
-
-
-
+        print("R-squared 2:", r_squared)
+        print(len(lista_correl_orig))
+        print(len(lista_correl_red))
+        #print(lista_correl_orig)
+        #print(lista_correl_red)
         fig.add_trace(go.Scatter(
             x=lista_correl_orig, 
             y=lista_correl_red, 
             mode='markers',
-            name=f' {caso} {str(est)} (R² = {r_squared:.2f})',
+            name=f' {mapa_casos[caso]} {str(est)} (R² = {r_squared:.2f})',
             showlegend=False,
             marker=dict(size=10, color='blue')
         ), row=linha, col=coluna)
@@ -184,8 +198,8 @@ for caso in casos:
         #axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
         axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
         fig.add_annotation(
-            x=0.9,  # X position (relative to subplot domain)
-            y=0.1,  # Y position (relative to subplot domain)
+            x=1.0,  # X position (relative to subplot domain)
+            y=1.0,  # Y position (relative to subplot domain)
             xref=f"x{axis_index}",  # Dynamic x-axis reference
             yref=f"y{axis_index}",  # Dynamic y-axis reference
             text=f"R² = {r_squared:.2f}",
@@ -195,7 +209,7 @@ for caso in casos:
         )
 
 
-        titulo =  "Caso: " + caso + " Est: "+str(est)
+        titulo =  "Caso: " + mapa_casos[caso] + " Est: "+str(est)
         fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
         contador += 1
         #print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
@@ -204,7 +218,7 @@ for caso in casos:
             coluna = 1
             linha = linha + 1
 
-        print(f" Caso {caso} Est {est} R²: {r_squared:.2f}")
+        print(f" Caso {mapa_casos[caso]} Est {est} R²: {r_squared:.2f}")
         # Print the results
         #print("ORIGINAL: ")
         #print(dicionario_correlacao_original)

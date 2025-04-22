@@ -156,11 +156,18 @@ module Main
             @constraint(m, vf_vars[(no.codigo, uhe.nome, etapa)] >=  uhe.vmin) #linha, coluna
 
             #print("est: ", est, " no: ", no.codigo, " etapa: ", etapa)
+            vazao_afluente = 0
+            if(uhe.posto != 999)
+                vazao_afluente = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
+            else
+                vazao_afluente = 0
+            end
+            
             constraint_dict[(no.codigo, uhe.nome, etapa)] = @constraint(m, 
             vf_vars[(no.codigo, uhe.nome, etapa)]
             + turb_vars[(no.codigo, uhe.nome, etapa)]
             + vert_vars[(no.codigo, uhe.nome, etapa)]
-            == Vi[no.codigo,uhe.codigo, etapa] + (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
+            == Vi[no.codigo,uhe.codigo, etapa] + (vazao_afluente)
             + sum(turb_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])
             + sum(vert_vars[(no.codigo, nomeUsiMont, etapa)] for nomeUsiMont in mapa_montantesUsina[uhe.nome])) #linha, colun * converte_m3s_hm3
             #println(constraint_dict)

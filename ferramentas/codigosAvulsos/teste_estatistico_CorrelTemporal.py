@@ -56,14 +56,20 @@ def weighted_correlation(data_x, data_y, weights):
     correlation = covariance / np.sqrt(var_x * var_y)
     return correlation
 
-camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
+camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
 df_arvore_original = pd.read_csv(camino_caso_orig+"\\arvore.csv")
 #print(df_arvore_original)
 df_vazoes = pd.read_csv(camino_caso_orig+"\\cenarios.csv")
 
-tipo = "avaliaArvores\\A_125_2_2\\"
+tipo = "avaliaArvores\\A_125_2_2_Teste\\"
 #tipo = "VazaoIncrementalMultidimensional\\"
-casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
+mapa_casos = {
+    "BKAssimetrico":"Redução Regressiva",
+    "KMeansAssimetricoProb":"K-Means Assimetrico", 
+    "KMeansSimetricoProbQuad":"K-Means Simetrico", 
+    "NeuralGas":"NeuralGas"
+}
+#casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
 #casos = ["Arvore1"]
 lista_df_final = []
 usinas = df_vazoes["NOME_UHE"].unique()
@@ -89,7 +95,7 @@ for parTemporal in paresCorrelacaoTemporal:
     linha = 1
     coluna = 1
     contador = 0
-    for caso in casos:
+    for caso in mapa_casos:
         caminho_red = camino_caso_orig+"\\"+tipo+"\\"+caso+"\\"
         df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
         df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
@@ -168,7 +174,8 @@ for parTemporal in paresCorrelacaoTemporal:
         #print("listaCorrelacaoTemporalOriginal: ", listaCorrelacaoTemporalOriginal)
         #print("listaCorrelacaoTemporalReduzida: ",listaCorrelacaoTemporalReduzida)
         # Compute R^2 using linear regression
-
+        print(len(listaCorrelacaoTemporalOriginal))
+        print(len(listaCorrelacaoTemporalReduzida))
         listaCorrelacaoTemporalOriginal = [x for x in listaCorrelacaoTemporalOriginal if not math.isnan(x)]
         listaCorrelacaoTemporalReduzida =  [x for x in listaCorrelacaoTemporalReduzida if not math.isnan(x)]
         slope, intercept, r_value, p_value, std_err = linregress(listaCorrelacaoTemporalOriginal, listaCorrelacaoTemporalReduzida)
@@ -180,11 +187,16 @@ for parTemporal in paresCorrelacaoTemporal:
         #print(std_err)
         r_squared = r_value**2
         print("R-squared:", r_squared)
+        print(len(listaCorrelacaoTemporalOriginal))
+        print(len(listaCorrelacaoTemporalReduzida))
+        #print(listaCorrelacaoTemporalOriginal)
+        #print(listaCorrelacaoTemporalReduzida)
+        
         fig.add_trace(go.Scatter(
             x=listaCorrelacaoTemporalOriginal, 
             y=listaCorrelacaoTemporalReduzida, 
             mode='markers',
-            name=f' {caso} {str(est)} (R² = {r_squared:.2f})',
+            name=f' {mapa_casos[caso]} {str(est)} (R² = {r_squared:.2f})',
             showlegend=False,
             marker=dict(size=10, color='blue')
         ), row=linha, col=coluna)
@@ -212,7 +224,7 @@ for parTemporal in paresCorrelacaoTemporal:
         )
 
 
-        titulo =  "Caso: " + caso
+        titulo =  "Caso: " + mapa_casos[caso]
         fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
         contador += 1
         #print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
@@ -221,7 +233,7 @@ for parTemporal in paresCorrelacaoTemporal:
             coluna = 1
             linha = linha + 1
 
-        print(f" Caso {caso} Est {est} R²: {r_squared:.2f}")
+        print(f" Caso {mapa_casos[caso]} Est {est} R²: {r_squared:.2f}")
         # Print the results
         #print("ORIGINAL: ")
         #print(dicionario_correlacao_original)
