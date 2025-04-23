@@ -199,7 +199,7 @@ for caso in mapa_casos:
         axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
         fig.add_annotation(
             x=1.0,  # X position (relative to subplot domain)
-            y=1.0,  # Y position (relative to subplot domain)
+            y=0,  # Y position (relative to subplot domain)
             xref=f"x{axis_index}",  # Dynamic x-axis reference
             yref=f"y{axis_index}",  # Dynamic y-axis reference
             text=f"R² = {r_squared:.2f}",

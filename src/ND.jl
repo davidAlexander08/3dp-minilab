@@ -434,7 +434,7 @@ df_arvore_original = CSV.read(PATH_ARVORE_ORIGINAL, DataFrame)
 PATH_CENARIOS_ORIGINAL = Path_orig*"/cenarios.csv"
 df_cenarios_original = CSV.read(PATH_CENARIOS_ORIGINAL, DataFrame)
 
-lista_paths_red = ["A_2_2_2", "A_4_2_1", "A_2_2_6", "A_4_2_3", "A_6_2_2"]
+lista_paths_red = ["A_4_2_1"]
 lista_casos = ["BKAssimetrico", "ClusterAssimetrico"]
 for path_red in lista_paths_red
     for caso in lista_casos
@@ -471,7 +471,7 @@ exit(1)
 
 
 #str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/teste_ND"
-str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_4D/3Aberturas_Equiprovavel"
+str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_1D/3Aberturas_Equiprovavel"
 Path_orig = str_caso*"/Arvore_GVZP"
 Path_red = str_caso*"/A_4_2_3/ClusterSimetrico"
 #Path_orig = str_caso*"/Original"

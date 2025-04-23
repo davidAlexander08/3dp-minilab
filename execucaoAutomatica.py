@@ -3,16 +3,20 @@ import subprocess
 
 # Paths
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Carmen\\exercicio_27cen_3D\\"
+caminho_caso = "Carmen\\exercicio_27cen_5D\\"
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "src\\PDD.jl"
 
-caminho_caso_arvores = "3Aberturas_Equiprovavel\\"
-caminho_arvores = ["A_2_2_2_Teste\\"]
+caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
+caminho_arvores = ["Pente_8cen\\"]
 caminho_avaliacao = ["KMeansAssimetricoLinear\\", "KMeansAssimetricoLinearQuad\\", "KMeansAssimetricoPacote\\",
                     "KMeansAssimetricoProb\\", "KMeansAssimetricoProbQuad\\", "KMeansSimetricoLinear\\",
                     "KMeansSimetricoLinearQuad\\", "KMeansSimetricoPacote\\", "KMeansSimetricoProb\\", 
                     "KMeansSimetricoProbQuad\\"]
+caminho_avaliacao = ["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\",
+                    "KMeansSimetricoProbQuad\\", "NeuralGas\\", "NeuralGasSimetrico\\"]
+caminho_avaliacao = ["BKAssimetrico\\", "KMeansAssimetricoProb\\","A_8cen_1\\", "A_8cen_2\\", "A_8cen_3\\", "A_8cen_4\\", "A_8cen_5\\"]
+
 for caminho_arvore in caminho_arvores:
     for avaliacao in caminho_avaliacao:
         new_arvore_path = caminho_base+caminho_caso+caminho_caso_arvores+caminho_arvore+avaliacao+"arvore.csv"

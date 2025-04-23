@@ -61,7 +61,7 @@ df_arvore_original = pd.read_csv(camino_caso_orig+"\\arvore.csv")
 #print(df_arvore_original)
 df_vazoes = pd.read_csv(camino_caso_orig+"\\cenarios.csv")
 
-tipo = "avaliaArvores\\A_125_2_2_Teste\\"
+tipo = "avaliaArvores\\A_25_10_2_Teste\\"
 #tipo = "VazaoIncrementalMultidimensional\\"
 mapa_casos = {
     "BKAssimetrico":"Redução Regressiva",

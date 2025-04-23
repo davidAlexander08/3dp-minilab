@@ -444,7 +444,9 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                 clusters = kmeans.fit_predict(matriz_valores)
             else:
                 #print("Executando Artesanal Assimetrico")
-                kmeans = MyKMeans(n_clusters=k, random_state=42)
+                #kmeans = MyKMeans(n_clusters=k, random_state=42)
+                kmeans = MyKMeans(n_clusters=k, random_state=10)
+                kmeans = MyKMeans(n_clusters=k, random_state=10)
                 clusters= kmeans.fit_predict(matriz_valores, weights, Weighted, quad)
 
             centers_kmeans = kmeans.cluster_centers_
