@@ -97,7 +97,7 @@ function calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_a
                         vazao_red  = joined[:, "VAZAO_1"]
                         #println("vazao_orig: ", vazao_orig, " vazao_red: ", vazao_red)
                         dist = norm(vazao_orig .- vazao_red)
-                        #println(dist)  # This will give the Euclidean distance
+                        #println("no_filho_orig: ", no_filho_orig, " vazoes_no_filho_orig: ", vazao_orig, " no_filho_red: ", no_filho_red, " vazoes_no_filho_red: ", vazao_red , " dist: ",dist)  # This will give the Euclidean distance
                         planoTransporte[("o" * string(no_filho_orig), "r" * string(no_filho_red))] = @variable(m, base_name="pi_o$(no_filho_orig)_r$(no_filho_red)")
                         distancia[("o" * string(no_filho_orig), "r" * string(no_filho_red))] = round(dist, digits=2)
                     end
@@ -123,6 +123,7 @@ function calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_a
                         
                     end
                 end
+                #println("no_orig: ", no_orig, " filhos_originais: ", filhos_originais, " no_red: ", no_red, " filhos_red: ", filhos_red)
                 #println(m)
 
 
@@ -333,7 +334,7 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
             constraint_dict["P_r" * string(no_anterior)] = @constraint(m, sum(variavelProbabilidade["r"*string(no_red)] for no_red in filhos) == 1) 
         end
 
-        #println(m)
+        println(m)
 
 
 
@@ -426,16 +427,20 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
     end
     return (df_arvore_reduzida, df_cenarios_reduzida, distancia_aninhada, solucao_planoTransporteCondicional)
 end
-
-str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_1D/1D_3Aberturas_Equiprovavel"
-Path_orig = str_caso*"/Arvore_GVZP"
+str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_1D/27_Aberturas_Equiprovavel"
+#str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo"
+#str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples/caso_mini_60"
+Path_orig = str_caso*"/Pente_GVZP"
+#Path_orig = str_caso*"/Arvore_GVZP"
 PATH_ARVORE_ORIGINAL = Path_orig*"/arvore.csv"
 df_arvore_original = CSV.read(PATH_ARVORE_ORIGINAL, DataFrame)
 PATH_CENARIOS_ORIGINAL = Path_orig*"/cenarios.csv"
 df_cenarios_original = CSV.read(PATH_CENARIOS_ORIGINAL, DataFrame)
 
-lista_paths_red = ["A_4_2_1"]
-lista_casos = ["BKAssimetrico", "ClusterAssimetrico"]
+lista_paths_red = ["A_2_2_2", "A_4_2_1"]
+lista_casos = ["BKAssimetrico", "KMeansAssimetricoProb"]
+lista_paths_red = ["Pente_8cen"]
+lista_casos = ["BKAssimetrico", "KMeansAssimetricoProb","KMeansPente", "A_8cen_1", "A_8cen_2", "Amostrado_1", "Amostrado_2", "Amostrado_C_1", "Amostrado_C_2"]
 for path_red in lista_paths_red
     for caso in lista_casos
         global Path_red = str_caso*"/"*path_red*"/"*caso
@@ -449,6 +454,19 @@ for path_red in lista_paths_red
 end
 
 
+
+#Path_red = str_caso*"/Arvore"
+#Path_red = str_caso*"/Arvore_GVZP"
+#PATH_ARVORE_REDUZIDA = Path_red*"/arvore.csv"
+#df_arvore_reduzida = CSV.read(PATH_ARVORE_REDUZIDA, DataFrame)
+#PATH_CENARIOS_REDUZIDA = Path_red*"/cenarios.csv"
+#df_cenarios_reduzida = CSV.read(PATH_CENARIOS_REDUZIDA, DataFrame)
+#(distancia_aninhada,solucao_planoTransporteCondicional , solucao_planoTransporte ) = calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_arvore_reduzida, df_cenarios_reduzida)
+#println(Path_red, ": ", distancia_aninhada[("o1","r1")])  
+
+
+
+Path_red = str_caso*"/Pente"
 Path_red = str_caso*"/Pente_GVZP"
 PATH_ARVORE_REDUZIDA = Path_red*"/arvore.csv"
 df_arvore_reduzida = CSV.read(PATH_ARVORE_REDUZIDA, DataFrame)
@@ -456,15 +474,6 @@ PATH_CENARIOS_REDUZIDA = Path_red*"/cenarios.csv"
 df_cenarios_reduzida = CSV.read(PATH_CENARIOS_REDUZIDA, DataFrame)
 (distancia_aninhada,solucao_planoTransporteCondicional , solucao_planoTransporte ) = calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_arvore_reduzida, df_cenarios_reduzida)
 println(Path_red, ": ", distancia_aninhada[("o1","r1")])  
-
-Path_red = str_caso*"/Arvore_GVZP"
-PATH_ARVORE_REDUZIDA = Path_red*"/arvore.csv"
-df_arvore_reduzida = CSV.read(PATH_ARVORE_REDUZIDA, DataFrame)
-PATH_CENARIOS_REDUZIDA = Path_red*"/cenarios.csv"
-df_cenarios_reduzida = CSV.read(PATH_CENARIOS_REDUZIDA, DataFrame)
-(distancia_aninhada,solucao_planoTransporteCondicional , solucao_planoTransporte ) = calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_arvore_reduzida, df_cenarios_reduzida)
-println(Path_red, ": ", distancia_aninhada[("o1","r1")])  
-
 exit(1)
 
 

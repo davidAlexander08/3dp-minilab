@@ -89,18 +89,18 @@ str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
 #str_caso = "Carmen/exercicio_27cen_4D"
 ##str_caso = "Capitulo_5/caso_mini_500Cen_sorteio_mensais"
 str_caso = "Capitulo_5/caso_mini_500Cen_cluster_semanais"
-str_caso = "Carmen/exercicio_27cen_1D"
-str_caso = "Carmen/exercicio_27cen_2D"
-str_caso = "Carmen/exercicio_27cen_3D"
-str_caso = "Carmen/exercicio_27cen_4D_Teste"
-str_caso = "Carmen/exercicio_27cen_5D"
+#str_caso = "Carmen/exercicio_27cen_1D"
+#str_caso = "Carmen/exercicio_27cen_2D"
+#str_caso = "Carmen/exercicio_27cen_3D"
+#str_caso = "Carmen/exercicio_27cen_4D_Teste"
+#str_caso = "Carmen/exercicio_27cen_5D"
 #str_caso = "Carmen/exercicio_27cen_3D"
 ##str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
 
 
-@info "Lendo arquivo de configuração $(CONFIG_PATH)"
+#@info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
 
 
@@ -124,21 +124,21 @@ caso.estrutura_arvore = dict["ARVORE"]
 
 if(limites_intercambio == 1)
     PATH_RESTR_INTERCAMBIOS = str_caso*"/restr_limite_Intercambio.csv"
-    @info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+    #@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
     dat_interc = CSV.read(PATH_RESTR_INTERCAMBIOS, DataFrame)
     #print(dat_interc)
 end
 
 if(volume_minimo == 1)
     PATH_RESTR_VOLUME_MINIMO = str_caso*"/restr_vol_min.csv"
-    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
     dat_volmin = CSV.read(PATH_RESTR_VOLUME_MINIMO, DataFrame)
     #print(dat_volmin)
 end
 
 if(volume_espera == 1)
     PATH_RESTR_VOLUME_ESPERA = str_caso*"/restr_vol_max.csv"
-    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_ESPERA)"
+    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_ESPERA)"
     dat_volmax = CSV.read(PATH_RESTR_VOLUME_ESPERA, DataFrame)
     #print(dat_volmax)
 end
@@ -146,7 +146,7 @@ end
 
 if(vazao_minima == 1)
     PATH_RESTR_VAZAO_MINIMA = str_caso*"/restr_vazao_minima.csv"
-    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VAZAO_MINIMA)"
+    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VAZAO_MINIMA)"
     dat_vazmin = CSV.read(PATH_RESTR_VAZAO_MINIMA, DataFrame)
     #print(dat_vazmin)
 end
@@ -164,7 +164,7 @@ end
 PATH_VAZOES = str_caso*"/cenarios.csv"
 PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
 dados_saida = str_caso
-@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
+#@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
 dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
 
 if vazao_externa == 1
@@ -173,7 +173,7 @@ if vazao_externa == 1
     dados_saida = splitdir(caminho_vazao_externa)[1]
 end
 
-@info "Lendo arquivo de horas $(PATH_HORAS)"
+#@info "Lendo arquivo de horas $(PATH_HORAS)"
 dat_horas = CSV.read(PATH_HORAS, DataFrame)
 
 #caso_teste_submercados
@@ -205,13 +205,13 @@ fim_de_mundo_Vi_equal_Vf = dict["FIM_DE_MUNDO_VOLUMES"]
 #sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
 #println(sistema)
 
-@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
+#@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
 dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
 include("arvore.jl")
 
 
 
-@info "Lendo arquivo de rede elétrica"
+#@info "Lendo arquivo de rede elétrica"
 
 dicionario_codigo_barra = OrderedDict()
 # BARRAS

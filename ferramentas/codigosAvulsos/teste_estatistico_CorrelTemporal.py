@@ -57,11 +57,13 @@ def weighted_correlation(data_x, data_y, weights):
     return correlation
 
 camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
-df_arvore_original = pd.read_csv(camino_caso_orig+"\\arvore.csv")
+pasta_arvores = "\\avaliaArvoresRepresentativo"
+caminho_pente = "\\Pente"
+df_arvore_original = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\arvore.csv")
 #print(df_arvore_original)
-df_vazoes = pd.read_csv(camino_caso_orig+"\\cenarios.csv")
+df_vazoes = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\cenarios.csv")
 
-tipo = "avaliaArvores\\A_25_10_2_Teste\\"
+tipo = "avaliaArvoresRepresentativo\\A_25_10_2\\"
 #tipo = "VazaoIncrementalMultidimensional\\"
 mapa_casos = {
     "BKAssimetrico":"Redução Regressiva",
@@ -250,7 +252,7 @@ for parTemporal in paresCorrelacaoTemporal:
         yaxis=dict(title_font=dict(size=20)),
         showlegend=False
     )
-    fig.write_html(f"{camino_caso_orig}\\{tipo.split("\\")[0]}_{parTemporal[0]}_{parTemporal[1]}_correlacaoEspacialArvores.html")
+    fig.write_html(f"{camino_caso_orig}\\{tipo}{tipo.split("\\")[0]}_{parTemporal[0]}_{parTemporal[1]}_correlacaoEspacialArvores.html")
     # Print R² value
 
 

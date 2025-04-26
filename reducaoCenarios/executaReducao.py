@@ -479,6 +479,7 @@ caso = "..\\Carmen\\exercicio_27cen_1D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 #caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
+caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente"
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
 mapa_aberturas_estagio = {1:4,    2:5,    3:15}
 mapa_aberturas_estagio = {1:25,    2:4,    3:3}
@@ -495,8 +496,10 @@ mapa_aberturas_estagio = {1:4,    2:2, 3:3}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:125,    2:2,    3:2}
-mapa_aberturas_estagio = {1:50,    2:5,    3:2}
-mapa_aberturas_estagio = {1:8,    2:1,    3:1}
+mapa_aberturas_estagio = {1:25,    2:10,    3:2}
+mapa_aberturas_estagio = {1:300,    2:1,    3:1}
+#mapa_aberturas_estagio = {1:50,    2:5,    3:2}
+#mapa_aberturas_estagio = {1:8,    2:1,    3:1}
 #mapa_aberturas_estagio = {1:6,    2:2,    3:2}
 #mapa_aberturas_estagio = {1:2,    2:2,    3:2}
 #mapa_aberturas_estagio = {1:2,    2:2, 3:6}
@@ -533,18 +536,18 @@ testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 
 
 #            #SIMETR, WEIGHT, QUAD, PACOTE
-#binarios =  [False, False, False, False]
-#df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-#    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-#path_saida = "saidas\\"+"KMeansPente"
-#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-#
-#texto = "Arvore "+"KMeansPente"
-#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-#printaArvore("KMeansPente", path_saida, df_arvore)
-#exit(1)
+binarios =  [False, False, False, False]
+df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+path_saida = "saidas\\"+"KMeansPente"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+texto = "Arvore "+"KMeansPente"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("KMeansPente", path_saida, df_arvore)
+exit(1)
 
 ######################################## COMPARACAO METODOS 
 print("###########################################################################")
@@ -586,15 +589,15 @@ printaArvore("BKSimetrico", path_saida, df_arvore)
 
 #####################PARAMETROS PARA CLUSTERIZACAO
 DicionarioListaKmeans = {          #SIMETR, WEIGHT, QUAD, PACOTE
-    "KMeansAssimetricoLinear":      [False, False, False, False],
-    "KMeansAssimetricoLinearQuad":  [False, False, True , False],
-    "KMeansAssimetricoPacote":      [False, False, False, True ],
+#    "KMeansAssimetricoLinear":      [False, False, False, False],
+#    "KMeansAssimetricoLinearQuad":  [False, False, True , False],
+#    "KMeansAssimetricoPacote":      [False, False, False, True ],
     "KMeansAssimetricoProb":        [False, True , False, False],
-    "KMeansAssimetricoProbQuad":    [False, True , True , False],
-    "KMeansSimetricoLinear":        [True , False, False, False],
-    "KMeansSimetricoLinearQuad":    [True , False, True , False],
-    "KMeansSimetricoPacote":        [True , False, False, True ],
-    "KMeansSimetricoProb":          [True , True , False, False],
+#    "KMeansAssimetricoProbQuad":    [False, True , True , False],
+#    "KMeansSimetricoLinear":        [True , False, False, False],
+#    "KMeansSimetricoLinearQuad":    [True , False, True , False],
+#    "KMeansSimetricoPacote":        [True , False, False, True ],
+#    "KMeansSimetricoProb":          [True , True , False, False],
     "KMeansSimetricoProbQuad":      [True , True , True , False],
 }
 for chave in DicionarioListaKmeans:
@@ -617,7 +620,7 @@ for chave in DicionarioListaKmeans:
         testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
         printaArvore(chave, path_saida, df_arvore)
     if(binarios[0] == True):
-        ## METODO CLUSTERIZACAO SIMETRICO
+        # METODO CLUSTERIZACAO SIMETRICO
         if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
             print(chave+ " Pós Backward Reduction no Último Estágio")
             #print(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())])
@@ -640,12 +643,20 @@ for chave in DicionarioListaKmeans:
         else:
             print("###########################################################################")
             print(chave)
+            #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
             df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
             binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
             path_saida = "saidas\\"+chave
             df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
             df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
+        #print("###########################################################################")
+        #print(chave)
+        ##df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+        #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+        #binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+        #path_saida = "saidas\\"+chave
+        #df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+        #df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
         texto = "Arvore "+chave
         realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
         testeSimetriaFilhos(df_arvore, texto)

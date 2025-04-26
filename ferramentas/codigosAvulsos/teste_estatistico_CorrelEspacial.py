@@ -57,12 +57,12 @@ def weighted_correlation(data_x, data_y, weights):
 
 
 camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
-
-df_arvore_original = pd.read_csv(camino_caso_orig+"\\arvore.csv")
-#print(df_arvore_original)
-df_vazoes = pd.read_csv(camino_caso_orig+"\\cenarios.csv")
+pasta_arvores = "\\avaliaArvoresRepresentativo"
+caminho_pente = "\\Pente"
+df_arvore_original = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\arvore.csv")
+df_vazoes = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\cenarios.csv")
 #print(df_vazoes)
-tipo = "avaliaArvores\\A_125_2_2_Teste\\"
+tipo = "\\A_25_10_2"
 #tipo = "VazaoIncrementalMultidimensional\\"
 mapa_casos = {
     "BKAssimetrico":"Redução Regressiva",
@@ -90,8 +90,8 @@ coluna = 1
 contador = 0
 for caso in mapa_casos:
     caminho_red = camino_caso_orig+"\\"+tipo+"\\"+caso+"\\"
-    df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
-    df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
+    df_arvore_reduzida = pd.read_csv(camino_caso_orig+pasta_arvores+tipo+"\\"+caso+"\\arvore.csv")
+    df_vazoes_reduzida = pd.read_csv(camino_caso_orig+pasta_arvores+tipo+"\\"+caso+"\\cenarios.csv")
     #estagios = [2,3,4]
     #estagios = [4,3,2]
     estagios = [3,2]
@@ -235,7 +235,7 @@ for caso in mapa_casos:
         yaxis=dict(title_font=dict(size=20)),
         showlegend=False
     )
-fig.write_html(camino_caso_orig+"\\"+tipo+tipo.split("\\")[0]+"_correlacaoEspacialArvores.html")
+fig.write_html(camino_caso_orig+pasta_arvores+tipo+"\\correlacaoEspacialArvores.html")
     # Print R² value
 
 

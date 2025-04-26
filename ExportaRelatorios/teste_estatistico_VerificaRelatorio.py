@@ -50,6 +50,7 @@ def calcula_prodt_acum_65(codigo_usi, df_confhd, df_hidr):
 #caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\casos\\Mestrado\\caso_construcaoArvore_SIN_500cen\\"
 caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Dissertacao\\apresentacaoCarmen\\caso_mini\\"
 pastaRelatorioEstatisticoCSV = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Dissertacao\\apresentacaoCarmen\\caso_mini\\avaliaArvores\\"
+pastaRelatorioEstatisticoCSV = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\A_125_2_2\\"
 ### VAZOES_FEIXES_INCR_SIN
 #aquivo = "ENAAgregado_estatisticasArvores"
 #aquivo = "vazIncrEstatisticasArvores"

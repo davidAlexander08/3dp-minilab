@@ -1,19 +1,23 @@
 {
-    "MAX_ITERACOES": 60,
+    "MAX_ITERACOES": 150,
     "ESTAGIOS": 4,
-    "ARVORE":[500, 1, 1],
-    "REDE":0,
-    "LIMITES_INTERCAMBIO":1,
-    "VAZAO_MINIMA":1,
-    "PENALIDADE_VAZAO_MINIMA":5000,
-    "VOLUME_MINIMO":1,
-    "VOLUME_ESPERA":1,
-    "ARVORE_EXTERNA":0,
-    "VAZAO_EXTERNA":0,
-    "FIM_DE_MUNDO_VOLUMES":0,
-    "PERIODOS_FIM_DE_MUNDO":0,
-    "CAMINHO_ARVORE_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_sorteio_mensais/avaliaArvores/A_25_10_2/BKAssimetrico/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_sorteio_mensais/avaliaArvores/A_25_10_2/BKAssimetrico/cenarios.csv",
+    "ARVORE": [
+        500,
+        1,
+        1
+    ],
+    "REDE": 0,
+    "LIMITES_INTERCAMBIO": 1,
+    "VAZAO_MINIMA": 1,
+    "PENALIDADE_VAZAO_MINIMA": 5000,
+    "VOLUME_MINIMO": 1,
+    "VOLUME_ESPERA": 1,
+    "ARVORE_EXTERNA": 1,
+    "VAZAO_EXTERNA": 1,
+    "FIM_DE_MUNDO_VOLUMES": 0,
+    "PERIODOS_FIM_DE_MUNDO": 0,
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Familia_300/A_25_150_300/BKAssimetrico/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Familia_300/A_25_150_300/BKAssimetrico/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",
@@ -1925,10 +1929,10 @@
             "CODIGO": 2,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                12899.0,
-                12704.0,
-                13434.0,
-                11810.0
+                10899.0,
+                10704.0,
+                11434.0,
+                9810.0
             ]
         },
         {
@@ -1936,10 +1940,10 @@
             "CODIGO": 3,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                11671.0,
-                11740.0,
-                11951.0,
-                11752.0
+                5171.0,
+                5240.0,
+                5451.0,
+                5252.0
             ]
         },
         {
@@ -1965,16 +1969,233 @@
             ]
         }
     ],
-    "BARRAS":[{"NOME":"BARRA01", "CODIGO":1, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":2, "CARGA":[0,0,0,0,0], "AREA":1},
-              {"NOME":"BARRA02", "CODIGO":2, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
-              {"NOME":"BARRA03", "CODIGO":3, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
-              {"NOME":"BARRA04", "CODIGO":4, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
-              {"NOME":"BARRA05", "CODIGO":5, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[500000,600000,500000,650000,0], "AREA":1}],
-
-    "LINHAS":[{"DE":1, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,100 ,100 ,10 ,10 ]},
-              {"DE":3, "PARA":1, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,50,50,500,500]},
-              {"DE":3, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]},
-              {"DE":3, "PARA":4, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]},
-              {"DE":3, "PARA":5, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]}
+    "BARRAS": [
+        {
+            "NOME": "BARRA01",
+            "CODIGO": 1,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 2,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA02",
+            "CODIGO": 2,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA03",
+            "CODIGO": 3,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA04",
+            "CODIGO": 4,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA05",
+            "CODIGO": 5,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                500000,
+                600000,
+                500000,
+                650000,
+                0
+            ],
+            "AREA": 1
+        }
+    ],
+    "LINHAS": [
+        {
+            "DE": 1,
+            "PARA": 2,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                50,
+                100,
+                100,
+                10,
+                10
             ]
+        },
+        {
+            "DE": 3,
+            "PARA": 1,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                50,
+                50,
+                50,
+                500,
+                500
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 2,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                200,
+                100,
+                100,
+                500,
+                500
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 4,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                200,
+                100,
+                100,
+                500,
+                500
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 5,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                200,
+                100,
+                100,
+                500,
+                500
+            ]
+        }
+    ]
 }

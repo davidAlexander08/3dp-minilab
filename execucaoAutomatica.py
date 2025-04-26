@@ -3,12 +3,12 @@ import subprocess
 
 # Paths
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Carmen\\exercicio_27cen_5D\\"
+caminho_caso = "Carmen\\exercicio_27cen_2D\\"
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "src\\PDD.jl"
 
-caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
-caminho_arvores = ["Pente_8cen\\"]
+caminho_caso_arvores = "3Aberturas_Equiprovavel\\"
+caminho_arvores = ["A_2_2_2\\", "A_4_2_1\\","Pente_8cen\\"]
 caminho_avaliacao = ["KMeansAssimetricoLinear\\", "KMeansAssimetricoLinearQuad\\", "KMeansAssimetricoPacote\\",
                     "KMeansAssimetricoProb\\", "KMeansAssimetricoProbQuad\\", "KMeansSimetricoLinear\\",
                     "KMeansSimetricoLinearQuad\\", "KMeansSimetricoPacote\\", "KMeansSimetricoProb\\", 
@@ -16,9 +16,43 @@ caminho_avaliacao = ["KMeansAssimetricoLinear\\", "KMeansAssimetricoLinearQuad\\
 caminho_avaliacao = ["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\",
                     "KMeansSimetricoProbQuad\\", "NeuralGas\\", "NeuralGasSimetrico\\"]
 caminho_avaliacao = ["BKAssimetrico\\", "KMeansAssimetricoProb\\","A_8cen_1\\", "A_8cen_2\\", "A_8cen_3\\", "A_8cen_4\\", "A_8cen_5\\"]
+caminho_avaliacao = ["Amostrado_1\\", "Amostrado_2\\","Amotrado_C_1\\", "Amostrado_C_2\\"]
+mapa_caminho_avaliacao = {
+    "A_2_2_2\\":["BKAssimetrico\\","KMeansAssimetricoProb\\"],
+    "A_4_2_1\\":["BKAssimetrico\\","KMeansAssimetricoProb\\"],
+    "Pente_8cen\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\","KMeansPente\\", "A_8cen_1\\", "A_8cen_2\\","Amostrado_1\\", "Amostrado_2\\","Amotrado_C_1\\", "Amostrado_C_2\\"],
+}
+
+
+caminho_arvores = ["A_6_2_2\\","A_4_2_3\\","A_2_2_6\\", "Pente_24cen\\", "A_4_2_1\\", "A_2_2_2\\", "Pente_8cen\\"]
+mapa_caminho_avaliacao = {
+    "A_6_2_2\\":["BKAssimetrico\\","ClusterAssimetrico\\"],
+    "A_4_2_3\\":["BKAssimetrico\\","ClusterAssimetrico\\"],
+    "A_2_2_6\\":["BKAssimetrico\\","ClusterAssimetrico\\"],
+    "Pente_24cen\\":["BKAssimetrico\\","Pente_Amostrado_1\\", "Pente_Amostrado_2\\", "Pente_Amostrado_3\\","Pente_Amostrado_4\\", "Pente_Amostrado_5\\","Pente_modelo_24cen\\"],
+    "A_4_2_1\\":["BKAssimetrico\\","ClusterAssimetrico\\"],
+    "A_2_2_2\\":["BKAssimetrico\\","ClusterAssimetrico\\"],
+    "Pente_8cen\\":["BKAssimetrico\\","Pente_Amostrado_1\\", "Pente_Amostrado_2\\", "Pente_Amostrado_3\\","Pente_Amostrado_4\\", "Pente_Amostrado_5\\","Pente_modelo_8cen\\"],
+}
+
+
+
+caminho_arvores = ["Familia_100\\A_25_50_100\\",
+                    "Familia_300\\A_25_150_300\\","Familia_300\\A_75_150_300\\"] #"Familia_100\\A_5_50_100\\",
+mapa_caminho_avaliacao = {
+    "Familia_100\\A_5_50_100\\":["BKAssimetrico\\"],
+    "Familia_100\\A_25_50_100\\":["BKAssimetrico\\"],
+    "Familia_300\\A_25_150_300\\":["BKAssimetrico\\"],
+    "Familia_300\\A_75_150_300\\":["BKAssimetrico\\"],
+}
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
+caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
+json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
+julia_script = "src\\PDD.jl"
 
 for caminho_arvore in caminho_arvores:
-    for avaliacao in caminho_avaliacao:
+    for avaliacao in mapa_caminho_avaliacao[caminho_arvore]:
         new_arvore_path = caminho_base+caminho_caso+caminho_caso_arvores+caminho_arvore+avaliacao+"arvore.csv"
         new_cenarios_path = caminho_base+caminho_caso+caminho_caso_arvores+caminho_arvore+avaliacao+"cenarios.csv"
         new_arvore_path = new_arvore_path.replace("\\", "/")

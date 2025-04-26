@@ -1,6 +1,6 @@
 module Main
 
-    using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames, Dates
+    using JuMP, GLPK, Plots, Measures, Plots, SparseArrays, DataFrames, Dates, Statistics
     #include("CapacidadeLinhas.jl")
     include("LeituraEntrada.jl")
     #conversao_m3_hm3 = (60*60)/1000000
@@ -18,17 +18,17 @@ module Main
         end
     end
 
-    println("ENERGIA ARMAZENADA INICIAL-----")
+    #println("ENERGIA ARMAZENADA INICIAL-----")
     for sbm in lista_submercados
         EARM_INI = 0
         for uhe in cadastroUsinasHidreletricasSubmercado[sbm.codigo]
             #println("UHE: ", uhe.codigo, " EARM: ", uhe.v0*uhe.prodt)
             EARM_INI += uhe.v0*uhe.prodt
         end
-        println("SUBM: ", sbm.nome, " EARMI: ", EARM_INI)
+        #println("SUBM: ", sbm.nome, " EARMI: ", EARM_INI)
     end
 
-    println("GERACAO TERMICA MINIMA E MAXIMA -----------")
+    #println("GERACAO TERMICA MINIMA E MAXIMA -----------")
     GTER_MIN_SIN = 0
     GTER_MAX_SIN = 0
     for sbm in lista_submercados
@@ -41,7 +41,7 @@ module Main
         end
         global GTER_MIN_SIN += GTER_MIN  # 🔹 Adicione `global`
         global GTER_MAX_SIN += GTER_MAX  # 🔹 Adicione `global`
-        println("SUBM: ", sbm.nome, " GTMIN: ", GTER_MIN,  " GTMAX: ", GTER_MAX)
+        #println("SUBM: ", sbm.nome, " GTMIN: ", GTER_MIN,  " GTMAX: ", GTER_MAX)
     end
     println("SIN GTMIN: ", GTER_MIN_SIN,  " GTMAX: ", GTER_MAX_SIN)
     
@@ -78,7 +78,7 @@ module Main
     df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
     df_termicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
     df_hidreletricas          = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
-    df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[])
+    df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[], MIN = Float64[], SEC = Float64[], MIN_TOT = Float64[], SEC_TOT = Float64[])
     df_cortes                 = DataFrame(iter = Int[], est = Int[], no = Int[],  usina = Int[], Indep = Float64[], Coef = Float64[])
     df_cortes_equivalentes    = DataFrame(iter = Int[], est = Int[], noUso = Int[],  usina = String[], Indep = Float64[], Coef = Float64[])
 
@@ -284,7 +284,13 @@ module Main
                 vertimento = JuMP.value(vert_vars[(no.codigo, uhe.nome, etapa)]) 
                 volumeFinal = JuMP.value(vf_vars[(no.codigo, uhe.nome, etapa)]) 
                 volumeInicial = Vi[(no.codigo, uhe.codigo, etapa)]
-                Afluencia = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
+                Afluencia = 0
+                if( uhe.posto == 999)
+                    Afluencia = 0
+                else
+                    Afluencia = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
+                end
+                #Afluencia = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
                 if(vazao_minima == 1)
 
                     matching_rows = dat_vazmin[dat_vazmin.USI .== uhe.nome, :vazmin]
@@ -301,7 +307,7 @@ module Main
 
                 push!(df_hidreletricas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
                                 VI = Vi[(no.codigo,uhe.codigo, etapa)], 
-                                AFL = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1]),
+                                AFL = Afluencia,
                                 TURB = turbinamento, 
                                 VERT = vertimento, 
                                 VF = volumeFinal))
@@ -506,8 +512,9 @@ module Main
             #println("BK - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
             println("Iteração: ", it, " ZINF: ", zinf, " ZSUP: ", valor_zsup, " GAP: ", gap, " Tempo: ", minutes, " min ", seconds, "secs", 
             " Tempo Total: ", minutes_acumulados, " min ", seconds_acumulados, "secs")
-            push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup))
-            if gap < 0.00001
+            push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup, MIN = minutes, SEC = seconds, MIN_TOT = minutes_acumulados, SEC_TOT = seconds_acumulados))
+            #if gap < 0.00001
+            if gap < 0.001
                 println("CONVERGIU")
                 break
             end
@@ -621,44 +628,9 @@ module Main
     df_hidreletricas_sf = df_hidreletricas[(df_hidreletricas.etapa .== "FW") .&& (df_hidreletricas.iter .== max_iter), :]
 
 
-    df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[],  est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
-    for est_value in unique(df_balanco_energetico_SIN.est)
-        #println("est: ", est_value)
-        subset = df_balanco_energetico_SIN_sf[df_balanco_energetico_SIN_sf.est .== est_value, :]
-        for iteracao in unique(subset.iter)
-            subsubset = subset[(subset.iter .== iteracao), :]
-            ProbGT = 0
-            ProbVarm = 0
-            ProbAFL = 0
-            ProbVini = 0
-            ProbGH = 0
-            ProbDeficit = 0
-            ProbCustoPresente = 0
-            ProbCustoFuturo = 0
-            ProbExcesso = 0
-            Demanda = 0
-            #println("mapaProbCondicionalNo: ", mapaProbCondicionalNo)
-            for no in unique(subsubset.node)
-                ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
-                ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
-                ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
-                ProbVarm += (subsubset[(subsubset.node .== no), "VolArm"][1])*(mapaProbCondicionalNo[no])
-                ProbVini += (subsubset[(subsubset.node .== no), "Vini"][1])*(mapaProbCondicionalNo[no])
-                ProbDeficit += (subsubset[(subsubset.node .== no), "Deficit"][1])*(mapaProbCondicionalNo[no])
-                ProbExcesso += (subsubset[(subsubset.node .== no), "Excesso"][1])*(mapaProbCondicionalNo[no])
-                ProbCustoPresente += (subsubset[(subsubset.node .== no), "CustoPresente"][1])*(mapaProbCondicionalNo[no])
-                ProbCustoFuturo += (subsubset[(subsubset.node .== no), "CustoFuturo"][1])*(mapaProbCondicionalNo[no])
-                Demanda += (subsubset[(subsubset.node .== no), "Demanda"][1])*(mapaProbCondicionalNo[no])
-                #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
-            end
-            
-            dem = (subset[(subset.est .== est_value), "Demanda"][1])
-            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
-        end
-    end
-    df_per_balanco_energetico = sort(df_per_balanco_energetico, :iter)
-    #println(df_per_balanco_energetico)
-    show(IOContext(stdout, :compact => false), df_per_balanco_energetico)
+
+
+
 
     output_dir_oper = dados_saida*"/saidas/PDD/oper"
     mkpath(output_dir_oper)
@@ -685,4 +657,92 @@ module Main
     CSV.write(output_dir_oper*"/df_cortes_equivalentes.csv", df_cortes_equivalentes)
 
 
+    df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[],  est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    for est_value in unique(df_balanco_energetico_SIN.est)
+        subset = df_balanco_energetico_SIN_sf[df_balanco_energetico_SIN_sf.est .== est_value, :]
+        for iteracao in unique(subset.iter)
+            subsubset = subset[(subset.iter .== iteracao), :]
+            ProbGT = 0
+            ProbVarm = 0
+            ProbAFL = 0
+            ProbVini = 0
+            ProbGH = 0
+            ProbDeficit = 0
+            ProbCustoPresente = 0
+            ProbCustoFuturo = 0
+            ProbExcesso = 0
+            Demanda = 0
+            for no in unique(subsubset.node)
+                ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
+                ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
+                ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
+                ProbVarm += (subsubset[(subsubset.node .== no), "VolArm"][1])*(mapaProbCondicionalNo[no])
+                ProbVini += (subsubset[(subsubset.node .== no), "Vini"][1])*(mapaProbCondicionalNo[no])
+                ProbDeficit += (subsubset[(subsubset.node .== no), "Deficit"][1])*(mapaProbCondicionalNo[no])
+                ProbExcesso += (subsubset[(subsubset.node .== no), "Excesso"][1])*(mapaProbCondicionalNo[no])
+                ProbCustoPresente += (subsubset[(subsubset.node .== no), "CustoPresente"][1])*(mapaProbCondicionalNo[no])
+                ProbCustoFuturo += (subsubset[(subsubset.node .== no), "CustoFuturo"][1])*(mapaProbCondicionalNo[no])
+                Demanda += (subsubset[(subsubset.node .== no), "Demanda"][1])*(mapaProbCondicionalNo[no])
+                #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
+            end
+            
+            dem = (subset[(subset.est .== est_value), "Demanda"][1])
+            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
+        end
+    end
+    df_per_balanco_energetico = sort(df_per_balanco_energetico, :iter)
+    CSV.write(output_dir_oper*"/balanco_energetico_final.csv", df_per_balanco_energetico)
+
+    #println(df_per_balanco_energetico)
+    show(IOContext(stdout, :compact => false), df_per_balanco_energetico)
+
+    means = combine(df_per_balanco_energetico, names(df_per_balanco_energetico, Number) .=> mean)
+    println(means)
+    CSV.write(output_dir_oper*"/media_SIN.csv", means)
+    
+
+    df_per_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[],  Submercado = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
+    sbms = unique(df_balanco_energetico_SBM_sf.Submercado)
+    for sbm in sbms
+        println("sbm: ", sbm)
+        subsubset_1 = df_balanco_energetico_SBM_sf[(df_balanco_energetico_SBM_sf.Submercado .== sbm), :]
+        for est_value in unique(subsubset_1.est)
+            subset = subsubset_1[subsubset_1.est .== est_value, :]
+            for iteracao in unique(subset.iter)
+                subsubset = subset[(subset.iter .== iteracao), :]
+                ProbGT = 0
+                ProbVarm = 0
+                ProbAFL = 0
+                ProbVini = 0
+                ProbGH = 0
+                ProbDeficit = 0
+                ProbCustoPresente = 0
+                ProbCMO = 0
+                ProbExcesso = 0
+                Demanda = 0
+                for no in unique(subsubset.node)
+                    ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
+                    ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
+                    ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
+                    ProbVarm += (subsubset[(subsubset.node .== no), "VolArm"][1])*(mapaProbCondicionalNo[no])
+                    ProbVini += (subsubset[(subsubset.node .== no), "Vini"][1])*(mapaProbCondicionalNo[no])
+                    ProbDeficit += (subsubset[(subsubset.node .== no), "Deficit"][1])*(mapaProbCondicionalNo[no])
+                    ProbExcesso += (subsubset[(subsubset.node .== no), "Excesso"][1])*(mapaProbCondicionalNo[no])
+                    ProbCustoPresente += (subsubset[(subsubset.node .== no), "CustoPresente"][1])*(mapaProbCondicionalNo[no])
+                    ProbCMO += (subsubset[(subsubset.node .== no), "CMO"][1])*(mapaProbCondicionalNo[no])
+                    Demanda += (subsubset[(subsubset.node .== no), "Demanda"][1])*(mapaProbCondicionalNo[no])
+                    #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
+                end
+                dem = (subset[(subset.est .== est_value), "Demanda"][1])
+                push!(df_per_balanco_energetico_SBM, (etapa = "SF", iter = iteracao, Submercado = sbm, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), CustoPresente = round(ProbCustoPresente, digits = 0) , CMO = round(ProbCMO, digits = 0)))
+            end
+        end
+    end
+    df_per_balanco_energetico_SBM = sort(df_per_balanco_energetico_SBM, :iter)
+    CSV.write(output_dir_oper*"/balanco_energetico_final_sbm.csv", df_per_balanco_energetico_SBM)
+    show(IOContext(stdout, :compact => false), df_per_balanco_energetico_SBM)
+
+    means_sbm = combine(df_per_balanco_energetico_SBM, names(df_per_balanco_energetico_SBM, Number) .=> mean)
+    println(means_sbm)
+    CSV.write(output_dir_oper*"/media_SBM.csv", means_sbm)
 end

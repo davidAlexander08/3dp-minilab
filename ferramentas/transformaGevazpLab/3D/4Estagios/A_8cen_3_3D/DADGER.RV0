@@ -1,0 +1,340 @@
+&---------------------------------------------------------------------
+&      BLOCO 3 *** VOLUME DOS RESERVATORIOS ****
+&      (REGISTRO UH )      
+&---------------------------------------------------------------------
+&   UHE  REE      VINI    DEFMIN  GRID EVAP OPER VMORTOINI LIMSUP    FATOR
+&   xxx  X    xxxxxxxxxxXXXXXXXXXXxx   X    xx   XXXXXXXXXXxxxxxxxxxxXXXXX
+&UH
+&
+&.................................
+&* 019       FURNAS
+&.................................
+& TUCURUI
+UH  275   4        19.54               1
+& TRES MARIAS
+UH  156   1        55.69               1
+& FURNAS
+UH    6  10        12.21               1
+&------------------------------------------------------------------------------------------
+&         BLOCO 24 *** TEMPO DE VIAGEM DA AGUA
+&         (REGISTROS VI)
+&------------------------------------------------------------------------------------------
+&   USI  DUR  QDEF1QDEF2QDEF3QDEF4QDEF5...
+&   xxx  XXX  XXXXXxxxxxXXXXXxxxxxXXXXXxxxxxXXXXXxxxxxXXXXX
+&VI
+&TRÊS MARIAS
+VI  156  360    296  296  293  328  455
+&QUEIMADO
+VI  162  360     14   15   14   14   16
+&----------------------------------------------------------------------
+&         BLOCO 25 *** MODIFICACAO DO CADASTRO ***
+&         (REGISTROS AC)
+&----------------------------------------------------------------------
+&AC
+& Jusante de Ilha Solteira
+AC   34  NUMJUS       45                              
+& Jusante de Tres Irmaos
+AC   43  NUMJUS       45                              
+&Volume Minimo de Ilha Solteira
+AC   34  VOLMIN         15563                         
+&QUEBRA QUEIXO
+AC   95  COFEVA       10    0                         
+&********* Tucurui ****************
+AC  275  JUSMED          6.10                                        JAN  1
+AC  275  JUSMED          6.95                                        FEV
+&---------------------------------------------------------
+& DEFINICAO DOS POSTOS DE VAZAO NATURAL 
+&---------------------------------------------------------                                                                                                                                    
+&HENRY BORDEN
+AC  119  NUMPOS      300                              
+&ITIQUIRA II
+AC  305  NUMPOS      300                              
+&Pereira Passos
+AC  133  NUMPOS      300                              
+&Billings
+AC  118  NUMPOS      301                              
+&SANTANA/S.CECILIA APONTANDO PARA SIMPLICIO
+AC  181  NUMJUS      129                              
+&FONTES A
+AC  183  NUMPOS      300                              
+&Nilo
+AC  131  NUMPOS      300                              
+&Vigario
+AC  182  NUMPOS      300                              
+&Fontes BC
+AC  184  NUMPOS      300                              
+&P.Afonso IV
+AC  175  NUMPOS      300                              
+&Simplicio
+AC  129  NUMPOS      129                              
+& SOBRADINHO - POSTO DE VAZAO C/ DEFASAGEM P/ TEMPO DE VIAGEM
+AC  169  NUMPOS      168                              
+& Correcao do volume de operacao do vertedor de  Lajes
+AC  124  VSVERT          200.                         
+& Descarga do reservatorio de Lajes p/ Fontes B-C
+AC  124  VMDESV          102.                         
+& Jusante de SOBRAGI (correcao do cadastro):
+AC  127  NUMJUS      129                              
+& Nivel do vertedor de Guarapiranga para controle de cheias (VALOR MENSAL)
+AC  117  VSVERT        144.14                         
+& Correcao de jusante de Guarapiranga
+AC  117  NUMJUS      108                              
+&Correcao: INCLUIR  desvio  de Billings para H.Borden
+AC  118  DESVIO      119    100.00                    
+& ITAPARICA - CONTABILIZAR A PRODUTIVIDADE DO CMP. MOXOTO P/ NEWAVE
+AC  172  JUSENA      176                              
+&& Para calculo da EARM no Paraiba considera-se Nilo a jusante de S.Cecilia
+AC  125  JUSENA      131                              
+&&Compatibilizacao com o calculo de energia NEWAVE
+AC  117  JUSENA      118                              
+&&Compatibilizacao com o calculo de energia NEWAVE
+AC  118  JUSENA      119                              
+& Nivel do vertedor de Santa Clara
+AC   71  VSVERT        169.00                         
+& Nivel do vertedor de Guarapiranga
+AC  117  VSVERT             1                         
+& Nivel do vertedor de Canargos
+AC    1  VSVERT        120.00                         
+& Nivel do vertedor de GPSOUZA                   
+AC  115  VSVERT         23.00                         
+&Nivel do vertedor de CAMARGOS
+AC    1  VSVERT        120.00                         
+& Nivel do vertedor de BATALHA                   
+AC   20  VSVERT        430.05                         
+&-------------------------------------------------                 
+& LIBERACAO DA VAZAO MINIMA HISTORICA:
+&-------------------------------------------------
+&
+& PARAIBUNA
+AC  121  VAZMIN        0                              
+& SANTA BRANCA
+AC  122  VAZMIN        0                              
+& CAMARGOS
+AC    1  VAZMIN        0                              
+& BAGUARI
+AC  141  VAZMIN        0                              
+&QUEIMADO
+AC  162  VAZMIN        0                              
+&JAGUARI
+AC  120  VAZMIN        0                              
+& ITUTINGA
+AC    2  VAZMIN        0                              
+& FUNIL-GRANDE
+AC    4  VAZMIN        0                              
+& S.CLARA (PR)
+AC   71  VAZMIN        0                              
+& TOCOS    
+AC  180  VAZMIN        0                              
+& FONTES A
+AC  183  VAZMIN        0                              
+& FONTES BC
+AC  184  VAZMIN        0                              
+& GUARAPIRANGA
+AC  117  VAZMIN        0                              
+& LAJES
+AC  124  VAZMIN        0                              
+& ROSAL
+AC  217  VAZMIN        0                              
+& SOBRAGI
+AC  127  VAZMIN        0                              
+& E. SOUZA
+AC  107  VAZMIN        0                              
+& S. CECILIA
+AC  125  VAZMIN        0                              
+& SANTANA
+AC  181  VAZMIN        0                              
+& I. POMBOS
+AC  130  VAZMIN        0                              
+& TRAICAO
+AC  108  VAZMIN        0                              
+& PEDREIRA
+AC  109  VAZMIN        0                              
+&BILLINGS
+AC  118  VAZMIN        0                              
+&S.GRANDE 
+AC  134  VAZMIN        0                              
+&GUAPORE
+AC  196  VAZMIN        0                              
+&P. AFONSO 123
+AC  174  VAZMIN        0                              
+&P. AFONSO IV
+AC  175  VAZMIN        0                              
+&MOXOTO
+AC  173  VAZMIN        0                              
+&ITAPEBI
+AC  154  VAZMIN        0                              
+&S. MESA
+AC  251  VAZMIN        0                              
+&ERNESTINA
+AC  110  VAZMIN        0                              
+&MONTE CLARO
+AC   98  VAZMIN        0                              
+&QUEBRA QUEIXO
+AC   95  VAZMIN        0                              
+&JAURU
+AC  195  VAZMIN        0                              
+&BARRA GRANDE
+AC   86  VAZMIN        0                              
+&JORDAO
+AC   73  VSVERT         109.0                         
+&JORDAO
+AC   73  VAZMIN        0                              
+&P.PEDRA
+AC  281  VAZMIN
+&Jaguari
+&Reducao da cota da soleira do vertedouro
+AC  120  VSVERT         443.0                         
+&SERRA DO FACAO
+AC   21  VAZMIN        0                              
+&MASCARENHAS
+AC  144  VAZMIN        0                              
+&RETIRO BAIXO
+AC  155  VAZMIN        0                              
+&AIMORES
+AC  143  VAZMIN        0                              
+&SERRA DA MESA
+AC  251  VSVERT         11150                         
+&TRES MARIAS
+AC  156  VSVERT          4250                         
+&-----------------------------------------------
+&   BLOCO DOS POSTOS PARA CALCULO DAS ENAS
+&-----------------------------------------------
+&TRÊS IRMAOS
+AC   43  NPOSNW       43                              
+&SOBRADINHO - Posto para acoplamento com a FCF
+AC  169  NPOSNW      169                              
+& - BARRA BONITA
+AC   37  NPOSNW       37                              
+& - BARIRI (A. S. L  IMA)
+AC   38  NPOSNW       38                              
+& - IBITINGA         
+AC   39  NPOSNW       39                              
+& - PROMISSAO        
+AC   40  NPOSNW       40                              
+& - NAVANHANDAVA     
+AC   42  NPOSNW       42                              
+& - JUPIA            
+AC   45  NPOSNW       45                              
+& - P. PRIMAVERA     
+AC   46  NPOSNW       46                              
+& - ITAIPU           
+AC   66  NPOSNW       66                              
+& - SEGREDO + DESVI  O
+AC   76  NPOSNW       75                              
+& - SIMPLICIO        
+AC  129  NPOSNW      126                              
+& - NILO PECANHA     
+AC  131  NPOSNW      131                              
+& - ILHA POMBOS      
+AC  130  NPOSNW      299                              
+& - FONTES           
+AC  183  NPOSNW      303                              
+& - P. PASSOS  
+AC  133  NPOSNW      306                              
+& - HENRY BORDEN     
+AC  119  NPOSNW      318                              
+& - BELO MONTE     
+AC  288  NPOSNW      292                              
+& - PIMENTAL     
+AC  314  NPOSNW      302                              
+&SANTANA
+AC  181  NPOSNW      304                              
+& LAJES
+AC  124  NPOSNW      132                              
+&GUARAPIRANGA
+AC  117  NPOSNW        3                              
+&BILLINGS
+AC  118  NPOSNW        4                              
+&PEDREIRA
+AC  109  NPOSNW        5                              
+&TRAICAO
+AC  108  NPOSNW       13                              
+& - SANTA CECILIA (RETIRADA DE SANTA CECILIA DA CONFIGURACAO PARA O CALCULO DA ENA)
+AC  125  NPOSNW       21                              
+& - TOCOS (RETIRADA DE TOCOS DA CONFIGURACAO PARA O CALCULO DA ENA)
+AC  180  NPOSNW       19                              
+&- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+&                     REPRESENTACAO BELO MONTE
+&- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+&B. MONTE COMPLEMENTAR
+AC  314  NUMPOS      288                              
+&B. MONTE PRINCIPAL                              
+AC  288  NUMPOS      300                              
+&Desvio de Belo Monte Complementar para Belo Monte Principal
+AC  314  DESVIO      288  9999999.                    
+&
+&------------------------------------------------------------------------------
+& Adequacao para usinas em que o vertimento possui influencia no canal de fuga
+&------------------------------------------------------------------------------
+AC    1  VERTJU    1                                  
+AC    2  VERTJU    1                                  
+AC    9  VERTJU    1                                  
+AC   11  VERTJU    1                                  
+AC   18  VERTJU    1                                  
+AC   24  VERTJU    1                                  
+AC   26  VERTJU    1                                  
+AC   27  VERTJU    1                                  
+AC   33  VERTJU    1                                  
+AC   46  VERTJU    1                                  
+AC   90  VERTJU    1                                  
+AC   97  VERTJU    1                                  
+AC   98  VERTJU    1                                  
+AC  103  VERTJU    1
+AC  111  VERTJU    1              
+AC  120  VERTJU    1                                  
+AC  121  VERTJU    1                                  
+AC  122  VERTJU    1                                  
+AC  127  VERTJU    1                                  
+AC  143  VERTJU    1                                  
+AC  162  VERTJU    1                                  
+AC  173  VERTJU    1                                  
+AC  217  VERTJU    1                                  
+AC  249  VERTJU    1                                  
+AC  252  VERTJU    1                                  
+AC  276  VERTJU    1                                  
+AC  281  VERTJU    1                                  
+AC  283  VERTJU    1                                  
+AC  284  VERTJU    1                                  
+AC  304  VERTJU    1                                  
+&- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+&                           TUCURUI
+&
+&Desligamento de 7 maquinas da fase 2, uma vez que reservatorio atingiu a cota de 62 m no dia 24/11/2019
+&O nivel do reservatorio atingiu a cota de 60.5 m no dia 04/12, levando ao desligamento das demais maquinas ligadas a fase 2
+&- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+AC  275  NUMCON        2                                             JAN  1
+AC  275  NUMMAQ        1    2                                        JAN  1
+AC  275  NUMMAQ        2   12                                        JAN  1
+AC  275  POTEFE        1      22.5                                   JAN  1
+AC  275  POTEFE        2     350.0                                   JAN  1
+&- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+&                                EXPANSAO 2º  MES                        
+&- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+&-285-JIRAU
+AC  285  NUMCON        1                                             JAN  1
+AC  285  NUMMAQ        1   50                                        JAN  1
+AC  285  POTEFE        1      75.0                                   JAN  1
+& ----------------------------------------------------------------------------
+&   DADOS PARA O PROGRAMA CONFIGURADOR DO ARQUIVO DE CENARIOS DE VAZOES:
+&   -  IDENTIFICADOR "& VAZOES" NO INICIO DO REGISTROS;
+&   -  DEVE SER MANTIDA A ORDEM DOS REGISTROS DE DADOS A SEGUIR:
+&-----------------------------------------------------------------------------
+&
+& VAZOES                              (COLUNAS: 40 A 70)
+& ARQ. DE VAZOES PREVISTAS - HIDROL => PREVS.RV0
+& HISTORICO DE VAZOES      - HIDROL => 2018 VAZOES.DAT
+& ARQ. DE POSTOS           - HIDROL => POSTOS.DAT
+& MES INICIAL DO ESTUDO             => 01   2020
+& MES FINAL DO ESTUDO               => 04   2020
+& ANO INICIAL DO ESTUDO             => 2020
+& NO. SEMANAS NO MES INIC. DO ESTUDO=> 0005 0000
+& NO. DIAS DO MES 2 NA ULT. SEMANA  => 00
+& ESTRUTURA DA ARVORE               => 8    1    1
+& UTILIZA AGREGACAO                 => 6
+& ORDEM MAXIMA PARP                 => 11
+& USA PROPAGACAO LINEAR             => 2
+& MATRIZ DE CARGA MENSAL            => 0001
+& ORDENACAO AUTOMATICA              => 0000
+& REPRES. AGREGACAO                 => 0001 
+& AJUSTE PARP A TODAS UHES          => 0001
+& UTILIZA INFORMACAO DE ENOS        => 0000
