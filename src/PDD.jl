@@ -78,7 +78,7 @@ module Main
     df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
     df_termicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
     df_hidreletricas          = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
-    df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[], MIN = Float64[], SEC = Float64[], MIN_TOT = Float64[], SEC_TOT = Float64[])
+    df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[], GAP = Float64[], MIN = Float64[], SEC = Float64[], MIN_TOT = Float64[], SEC_TOT = Float64[])
     df_cortes                 = DataFrame(iter = Int[], est = Int[], no = Int[],  usina = Int[], Indep = Float64[], Coef = Float64[])
     df_cortes_equivalentes    = DataFrame(iter = Int[], est = Int[], noUso = Int[],  usina = String[], Indep = Float64[], Coef = Float64[])
 
@@ -512,9 +512,9 @@ module Main
             #println("BK - Iter ", it, " Est ", est, " Tempo: ", minutes, " min ", seconds, " sec")
             println("Iteração: ", it, " ZINF: ", zinf, " ZSUP: ", valor_zsup, " GAP: ", gap, " Tempo: ", minutes, " min ", seconds, "secs", 
             " Tempo Total: ", minutes_acumulados, " min ", seconds_acumulados, "secs")
-            push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup, MIN = minutes, SEC = seconds, MIN_TOT = minutes_acumulados, SEC_TOT = seconds_acumulados))
+            push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup, GAP = gap, MIN = minutes, SEC = seconds, MIN_TOT = minutes_acumulados, SEC_TOT = seconds_acumulados))
             #if gap < 0.00001
-            if gap < 0.001
+            if gap < 0.01 || minutes_acumulados > 120 || it == caso.n_iter
                 println("CONVERGIU")
                 break
             end

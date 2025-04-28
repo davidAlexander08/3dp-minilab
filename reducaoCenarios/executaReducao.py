@@ -498,6 +498,7 @@ mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:125,    2:2,    3:2}
 mapa_aberturas_estagio = {1:25,    2:10,    3:2}
 mapa_aberturas_estagio = {1:300,    2:1,    3:1}
+mapa_aberturas_estagio = {1:5,    2:5,    3:20}
 #mapa_aberturas_estagio = {1:50,    2:5,    3:2}
 #mapa_aberturas_estagio = {1:8,    2:1,    3:1}
 #mapa_aberturas_estagio = {1:6,    2:2,    3:2}
@@ -517,7 +518,7 @@ df_arvore_original.to_csv("saidas\\arvore_estudo.csv", index=False)
 
 #####################PARAMETROS
 Plota = False
-perservaFolhas = False
+perservaFolhas = True
 #################################
 print(df_arvore_original)
 print("TOTAL POSTOS: ", len(df_vazoes_original["NOME_UHE"].unique()))
@@ -536,18 +537,18 @@ testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 
 
 #            #SIMETR, WEIGHT, QUAD, PACOTE
-binarios =  [False, False, False, False]
-df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-path_saida = "saidas\\"+"KMeansPente"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+#binarios =  [False, False, False, False]
+#df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+#    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+#path_saida = "saidas\\"+"KMeansPente"
+#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+#
+#texto = "Arvore "+"KMeansPente"
+#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+#printaArvore("KMeansPente", path_saida, df_arvore)
 
-texto = "Arvore "+"KMeansPente"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("KMeansPente", path_saida, df_arvore)
-exit(1)
 
 ######################################## COMPARACAO METODOS 
 print("###########################################################################")

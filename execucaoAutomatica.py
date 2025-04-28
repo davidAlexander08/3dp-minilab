@@ -37,13 +37,22 @@ mapa_caminho_avaliacao = {
 
 
 
-caminho_arvores = ["Familia_100\\A_25_50_100\\",
-                    "Familia_300\\A_25_150_300\\","Familia_300\\A_75_150_300\\"] #"Familia_100\\A_5_50_100\\",
+caminho_arvores = ["Deterministico\\",
+                    "Vassoura\\",
+                    "Outros\\A_2_4_8\\",
+                    "Outros\\A_2_10_50\\",
+                    "Outros\\A_3_9_45\\",
+                    "Outros\\A_5_25_125\\",
+                    "Outros\\A_50_50_50\\",
+                   ] 
 mapa_caminho_avaliacao = {
-    "Familia_100\\A_5_50_100\\":["BKAssimetrico\\"],
-    "Familia_100\\A_25_50_100\\":["BKAssimetrico\\"],
-    "Familia_300\\A_25_150_300\\":["BKAssimetrico\\"],
-    "Familia_300\\A_75_150_300\\":["BKAssimetrico\\"],
+    "Deterministico\\":[""],
+    "Vassoura\\":[""],
+    "Outros\\A_2_4_8\\":["BKAssimetrico\\"],
+    "Outros\\A_2_10_50\\":["BKAssimetrico\\"],
+    "Outros\\A_3_9_45\\":["BKAssimetrico\\"],
+    "Outros\\A_5_25_125\\":["BKAssimetrico\\"],
+    "Outros\\A_50_50_50\\":["BKAssimetrico\\"],
 }
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
