@@ -131,54 +131,66 @@ for caso in mapa_casos:
         dicionario_correlacao_original = {}
         dicionario_correlacao_reduzida = {}
         # Calculate correlation between all pairs of usinas
+        mapa_correl_orig_usi = {}
+        mapa_correl_red_usi = {}
         lista_correl_orig = []
         lista_correl_red = []
         for i, usi_x in enumerate(usinas):
+            mapa_correl_orig_usi[usi_x] = []
+            mapa_correl_red_usi[usi_x] = []
             for j, usi_y in enumerate(usinas):
-                if i < j:  # Ensure only the upper triangular part is considered
-                    try:
-                        
-                        corr_orig = weighted_correlation(dict_atributos_original[usi_x], dict_atributos_original[usi_y], prob_original)
-                        
-                        corr_red = weighted_correlation(dict_atributos_reduzida[usi_x], dict_atributos_reduzida[usi_y], prob_red)
-                        dicionario_correlacao_original[(usi_x, usi_y)] = corr_orig
-                        dicionario_correlacao_reduzida[(usi_x, usi_y)] = corr_red
-
-                        #if( abs(corr_orig - corr_red) > 0.1 or math.isnan(corr_orig) or math.isnan(corr_red)):
-                        #    
-                        lista_correl_orig.append(corr_orig)
-                        lista_correl_red.append(corr_red)
-                    except Exception as e:
-                        print(f"Error calculating correlation for {usi_x} and {usi_y}: {e}")
+                #if i < j:  # Ensure only the upper triangular part is considered
+                try:
+                    
+                    corr_orig = weighted_correlation(dict_atributos_original[usi_x], dict_atributos_original[usi_y], prob_original)
+                    
+                    corr_red = weighted_correlation(dict_atributos_reduzida[usi_x], dict_atributos_reduzida[usi_y], prob_red)
+                    dicionario_correlacao_original[(usi_x, usi_y)] = corr_orig
+                    dicionario_correlacao_reduzida[(usi_x, usi_y)] = corr_red
+                    mapa_correl_orig_usi[usi_x].append(corr_orig)
+                    mapa_correl_red_usi[usi_x].append(corr_red)
+                    #if( abs(corr_orig - corr_red) > 0.1 or math.isnan(corr_orig) or math.isnan(corr_red)):
+                    #    
+                    lista_correl_orig.append(corr_orig)
+                    lista_correl_red.append(corr_red)
+                except Exception as e:
+                    print(f"Error calculating correlation for {usi_x} and {usi_y}: {e}")
 
         print(len(lista_correl_orig))
         print(len(lista_correl_red))
         lista_correl_orig = [x for x in lista_correl_orig if not math.isnan(x)]
         lista_correl_red =  [x for x in lista_correl_red if not math.isnan(x)]
-        ## Compute R^2 using linear regression
-        #slope, intercept, r_value, p_value, std_err = linregress(lista_correl_orig, lista_correl_red)
-        ##print(slope)
-        ##print(intercept)
-        ##print(r_value)
-        ##print(r_value**2)
-        ##print(p_value)
-        ##print(std_err)
-        #r_squared = r_value**2
-        #print("R-squared 1:", r_squared)
-        #r_squared = r2_score(lista_correl_orig, lista_correl_red)
-        #print("R-squared 2:", r_squared)
 
-        ## Force regression through origin: y = a * x
-        #slope = np.sum(x * y) / np.sum(x * x)
-        #print("Slope:", slope)
-#
-        ## Predicted y values
-        #y_pred = slope * x
-#
-        ## Compute R^2 manually
-        #r_squared = r2_score(y, y_pred)
-        #print("R-squared:", r_squared)
-        # Your data
+        contador = 0
+        print("Caso: " + mapa_casos[caso] + " A "+analise[0]+" Est: "+str(analise[1]))
+        for i, usi_x in enumerate(usinas):
+            x = np.array(mapa_correl_orig_usi[usi_x])  # original correlation
+            y = np.array(mapa_correl_red_usi[usi_x])   # reduced correlation
+
+            x = [a for a in x if not math.isnan(a)]
+            y =  [a for a in y if not math.isnan(a)]
+
+            x = np.array(x)  # original correlation
+            y = np.array(y)   # reduced correlation
+
+            # Force the model y = a * x
+            slope = np.sum(x * y) / np.sum(x * x)
+            y_pred = slope * x
+            # Compute residual sum of squares (SQ_res)
+            SQ_res = np.sum((y - y_pred) ** 2)
+            # Compute total sum of squares (SQ_tot)
+            y_mean = np.mean(y)
+            SQ_tot = np.sum((y - y_mean) ** 2)
+            # Compute R²
+            r_squared = 1 - (SQ_res / SQ_tot)
+
+            r_squared = truncate_to_2_decimals(r_squared)
+            slope = truncate_to_2_decimals(slope)
+            if(slope < 0.9 or slope> 1.1):
+                contador+= 1
+                #print("Usi: ", usi_x, " R-squared (manual):", r_squared)
+                print("Usi: ", usi_x, " slope (manual):", slope)
+        print("N: ", contador, " usinas de: ", len(usinas), " perc: ", 100*(contador/len(usinas)), " falharam")
         x = np.array(lista_correl_orig)  # original correlation
         y = np.array(lista_correl_red)   # reduced correlation
 
@@ -191,94 +203,94 @@ for caso in mapa_casos:
         y_mean = np.mean(y)
         SQ_tot = np.sum((y - y_mean) ** 2)
         # Compute R²
-        r_squared = 1 - (SQ_res / SQ_tot) 
+        r_squared = 1 - (SQ_res / SQ_tot)
         threshold = 0.0015
 
 
-        print("R-squared (manual):", r_squared)
-        print("slope (manual):", slope)
+        #print("R-squared (manual):", r_squared)
+        #print("slope (manual):", slope)
         r_squared = truncate_to_2_decimals(r_squared)
         slope = truncate_to_2_decimals(slope)
         print("R-squared (manual):", r_squared)
         print("slope (manual):", slope)
-        print(len(lista_correl_orig))
-        print(len(lista_correl_red))
+        #print(len(lista_correl_orig))
+        #print(len(lista_correl_red))
         #print(lista_correl_orig)
         #print(lista_correl_red)
-        fig.add_trace(go.Scatter(
-            x=lista_correl_orig, 
-            y=lista_correl_red, 
-            mode='markers',
-            name=f' {mapa_casos[caso]} {str(analise[1])} (R² = {r_squared:.2f})',
-            showlegend=False,
-            marker=dict(size=10, color='blue')
-        ), row=linha, col=coluna)
-
-
-        fig.add_trace(go.Scatter(
-            x=[-0.5, 1], 
-            y=[slope * -0.5, slope * 1],  # or simply [0, slope]
-            mode='lines', 
-            line=dict(color='red', width=2),
-            showlegend=False
-        ), row=linha, col=coluna)
-
-        # Add R² annotation
-        #axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
-        axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
-        fig.add_annotation(
-            x=1.0,  # X position (relative to subplot domain)
-            y=-0.3,  # Y position (relative to subplot domain)
-            xref=f"x{axis_index}",  # Dynamic x-axis reference
-            yref=f"y{axis_index}",  # Dynamic y-axis reference
-            text=f"a = {slope:.2f}",
-            showarrow=False,
-            font=dict(size=20, color="black"),
-            align="right"
-        )
-
-        # Add R² annotation
-        #axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
-        axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
-        fig.add_annotation(
-            x=1.0,  # X position (relative to subplot domain)
-            y=0,  # Y position (relative to subplot domain)
-            xref=f"x{axis_index}",  # Dynamic x-axis reference
-            yref=f"y{axis_index}",  # Dynamic y-axis reference
-            text=f"R² = {r_squared:.2f}",
-            showarrow=False,
-            font=dict(size=20, color="black"),
-            align="right"
-        )
-
-
-        titulo =  "Caso: " + mapa_casos[caso] + " A "+analise[0]+" Est: "+str(analise[1])
-        fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
-        contador += 1
-        #print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
-        coluna = coluna + 1
-        if(coluna == 3):
-            coluna = 1
-            linha = linha + 1
-
-        print(f" Caso {mapa_casos[caso]} Est {analise[1]} R²: {r_squared:.2f} Slope:{slope}")
-            # Print the results
-            #print("ORIGINAL: ")
-            #print(dicionario_correlacao_original)
-            #print("REDUZIDA")
-            #print(dicionario_correlacao_reduzida)
-        # Customize layout
-        fig.update_layout(
-            title="Correlações Árvore Original x Construída",
-            title_font=dict(size=24, family="Arial", color="black"),
-            xaxis_title="Correl. Orig.",
-            yaxis_title="Correl. Red.",
-            font=dict(size=20), 
-            xaxis=dict(title_font=dict(size=20)),  
-            yaxis=dict(title_font=dict(size=20)),
-            showlegend=False
-        )
-    fig.write_html(camino_caso_orig+pasta_arvores+f"\\{mapa_casos[caso]}_correlacaoEspacialArvores_b0.html")
+        #fig.add_trace(go.Scatter(
+        #    x=lista_correl_orig, 
+        #    y=lista_correl_red, 
+        #    mode='markers',
+        #    name=f' {mapa_casos[caso]} {str(analise[1])} (R² = {r_squared:.2f})',
+        #    showlegend=False,
+        #    marker=dict(size=10, color='blue')
+        #), row=linha, col=coluna)
+#
+#
+        #fig.add_trace(go.Scatter(
+        #    x=[-0.5, 1], 
+        #    y=[slope * -0.5, slope * 1],  # or simply [0, slope]
+        #    mode='lines', 
+        #    line=dict(color='red', width=2),
+        #    showlegend=False
+        #), row=linha, col=coluna)
+#
+        ## Add R² annotation
+        ##axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
+        #axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
+        #fig.add_annotation(
+        #    x=1.0,  # X position (relative to subplot domain)
+        #    y=-0.3,  # Y position (relative to subplot domain)
+        #    xref=f"x{axis_index}",  # Dynamic x-axis reference
+        #    yref=f"y{axis_index}",  # Dynamic y-axis reference
+        #    text=f"a = {slope:.2f}",
+        #    showarrow=False,
+        #    font=dict(size=20, color="black"),
+        #    align="right"
+        #)
+#
+        ## Add R² annotation
+        ##axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
+        #axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
+        #fig.add_annotation(
+        #    x=1.0,  # X position (relative to subplot domain)
+        #    y=0,  # Y position (relative to subplot domain)
+        #    xref=f"x{axis_index}",  # Dynamic x-axis reference
+        #    yref=f"y{axis_index}",  # Dynamic y-axis reference
+        #    text=f"R² = {r_squared:.2f}",
+        #    showarrow=False,
+        #    font=dict(size=20, color="black"),
+        #    align="right"
+        #)
+#
+#
+        #titulo =  "Caso: " + mapa_casos[caso] + " A "+analise[0]+" Est: "+str(analise[1])
+        #fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
+        #contador += 1
+        ##print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
+        #coluna = coluna + 1
+        #if(coluna == 3):
+        #    coluna = 1
+        #    linha = linha + 1
+#
+        #print(f" Caso {mapa_casos[caso]} Est {analise[1]} R²: {r_squared:.2f} Slope:{slope}")
+        #    # Print the results
+        #    #print("ORIGINAL: ")
+        #    #print(dicionario_correlacao_original)
+        #    #print("REDUZIDA")
+        #    #print(dicionario_correlacao_reduzida)
+        ## Customize layout
+        #fig.update_layout(
+        #    title="Correlações Árvore Original x Construída",
+        #    title_font=dict(size=24, family="Arial", color="black"),
+        #    xaxis_title="Correl. Orig.",
+        #    yaxis_title="Correl. Red.",
+        #    font=dict(size=20), 
+        #    xaxis=dict(title_font=dict(size=20)),  
+        #    yaxis=dict(title_font=dict(size=20)),
+        #    showlegend=False
+        #)
+    #fig.write_html(camino_caso_orig+pasta_arvores+f"\\{mapa_casos[caso]}_correlacaoEspacialArvores_b0.html")
         # Print R² value
 
 

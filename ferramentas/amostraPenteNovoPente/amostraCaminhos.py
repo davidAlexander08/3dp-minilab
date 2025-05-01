@@ -40,7 +40,7 @@ def caminho_futuro_pente(no, df_arvore, lista_caminho):
 
 
 caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp\caso_mini\exercicioGevazp\4Estagios\3Aberturas\Pente_GVZP"
-caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\27_Aberturas_Equiprovavel\Pente_GVZP"
+caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_1D\27_Aberturas_Equiprovavel\Pente_GVZP"
 arvore = pd.read_csv(caminho+"\\arvore.csv")
 cenarios = pd.read_csv(caminho+"\\cenarios.csv")
 
@@ -48,7 +48,7 @@ cenarios = pd.read_csv(caminho+"\\cenarios.csv")
 
 
 caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp\caso_mini\exercicioGevazp\4Estagios\3Aberturas\PenteBase_16cen"
-caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\27_Aberturas_Equiprovavel\Pente_8cen\A_8cen_1"
+caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_1D\27_Aberturas_Equiprovavel\Pente_8cen\A_8cen_1"
 arvore_modelo = pd.read_csv(caminho_modelo+"\\arvore.csv")
 cenarios_modelo = pd.read_csv(caminho_modelo+"\\cenarios.csv")
 
@@ -64,9 +64,18 @@ for uhe in usinas:
 for per in [2]:
     lista_nodes_modelo = arvore_modelo.loc[(arvore_modelo["PER"] == per)]["NO"].unique()
     lista_nodes_originais = arvore.loc[(arvore["PER"] == per)]["NO"].unique()
+    print(lista_nodes_originais)
+    escolhidos = []
     for node in lista_nodes_modelo:
+        escolhido = random.choice(lista_nodes_originais)  # first pick
+        while escolhido in escolhidos:
+            escolhido = random.choice(lista_nodes_originais)  # re-pick if already used
+        escolhidos.append(escolhido)
+
+    for idx_mod, node in enumerate(lista_nodes_modelo):
         lista_caminho = []
-        escolhido = random.choice(lista_nodes_originais)
+        #escolhido = random.choice(lista_nodes_originais)
+        escolhido = escolhidos[idx_mod]
         lista_caminho.append(escolhido)
         caminho_futuro  = caminho_futuro_pente(escolhido,arvore, lista_caminho )
         lista_caminho_modelo = []

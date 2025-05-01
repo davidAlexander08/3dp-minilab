@@ -75,7 +75,7 @@ analises = ["A_125_2_2", "A_125_2_2", "A_50_5_2", "A_25_10_2"]
 #casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
 #casos = ["Arvore1"]
 lista_df_final = []
-usinas = df_vazoes["NOME_UHE"].unique()
+usinas = df_vazoes["NOME_UHE"].unique() 
 #print(usinas)
 #usinas = [17, 275, 266]
 
@@ -90,6 +90,9 @@ mapa_estagio_index ={
     3:1,
     2:2
 }
+def truncate_to_2_decimals(x):
+    return math.floor(x * 100) / 100
+
 for parTemporal in paresCorrelacaoTemporal:
     for caso in mapa_casos:
         fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
@@ -173,20 +176,41 @@ for parTemporal in paresCorrelacaoTemporal:
             print(len(listaCorrelacaoTemporalReduzida))
             listaCorrelacaoTemporalOriginal = [x for x in listaCorrelacaoTemporalOriginal if not math.isnan(x)]
             listaCorrelacaoTemporalReduzida =  [x for x in listaCorrelacaoTemporalReduzida if not math.isnan(x)]
-            slope, intercept, r_value, p_value, std_err = linregress(listaCorrelacaoTemporalOriginal, listaCorrelacaoTemporalReduzida)
+            #slope, intercept, r_value, p_value, std_err = linregress(listaCorrelacaoTemporalOriginal, listaCorrelacaoTemporalReduzida)
             #print(slope)
             #print(intercept)
             #print(r_value)
             #print(r_value**2)
             #print(p_value)
             #print(std_err)
-            r_squared = r_value**2
-            print("R-squared:", r_squared)
-            print(len(listaCorrelacaoTemporalOriginal))
-            print(len(listaCorrelacaoTemporalReduzida))
+            #r_squared = r_value**2
+            #print("R-squared:", r_squared)
+            #print(len(listaCorrelacaoTemporalOriginal))
+            #print(len(listaCorrelacaoTemporalReduzida))
             #print(listaCorrelacaoTemporalOriginal)
             #print(listaCorrelacaoTemporalReduzida)
-            
+            x = np.array(listaCorrelacaoTemporalOriginal)  # original correlation
+            y = np.array(listaCorrelacaoTemporalReduzida)   # reduced correlation
+
+            # Force the model y = a * x
+            slope = np.sum(x * y) / np.sum(x * x)
+            y_pred = slope * x
+            # Compute residual sum of squares (SQ_res)
+            SQ_res = np.sum((y - y_pred) ** 2)
+            # Compute total sum of squares (SQ_tot)
+            y_mean = np.mean(y)
+            SQ_tot = np.sum((y - y_mean) ** 2)
+            # Compute R²
+            r_squared = 1 - (SQ_res / SQ_tot) 
+
+            print("R-squared (manual):", r_squared)
+            print("slope (manual):", slope)
+            r_squared = truncate_to_2_decimals(r_squared)
+            slope = truncate_to_2_decimals(slope)
+            print("R-squared (manual):", r_squared)
+            print("slope (manual):", slope)
+
+
             fig.add_trace(go.Scatter(
                 x=listaCorrelacaoTemporalOriginal, 
                 y=listaCorrelacaoTemporalReduzida, 
@@ -208,8 +232,22 @@ for parTemporal in paresCorrelacaoTemporal:
             # Add R² annotation
             axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
             fig.add_annotation(
-                x=0.9,  # X position (relative to subplot domain)
-                y=0.1,  # Y position (relative to subplot domain)
+                x=1.0,  # X position (relative to subplot domain)
+                y=-0.3,  # Y position (relative to subplot domain)
+                xref=f"x{axis_index}",  # Dynamic x-axis reference
+                yref=f"y{axis_index}",  # Dynamic y-axis reference
+                text=f"a = {slope:.2f}",
+                showarrow=False,
+                font=dict(size=20, color="black"),
+                align="right"
+            )
+
+            # Add R² annotation
+            #axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
+            axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
+            fig.add_annotation(
+                x=1.0,  # X position (relative to subplot domain)
+                y=0,  # Y position (relative to subplot domain)
                 xref=f"x{axis_index}",  # Dynamic x-axis reference
                 yref=f"y{axis_index}",  # Dynamic y-axis reference
                 text=f"R² = {r_squared:.2f}",
@@ -217,7 +255,6 @@ for parTemporal in paresCorrelacaoTemporal:
                 font=dict(size=20, color="black"),
                 align="right"
             )
-
 
             titulo =  "Caso: " + mapa_casos[caso] + " A: " + analise
             fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 

@@ -40,14 +40,17 @@ function calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_a
     distancia_aninhada = Dict{Tuple{String, String}, Float64}()
     solucao_planoTransporte = Dict{Tuple{String, String}, Float64}()
     solucao_planoTransporteCondicional = Dict{Tuple{String, String}, Float64}()
+    probabilidade_condicional_no = Dict{Int32, Float64}()
     #for estagio in sort(estagios, rev=true)
     for estagio in estagios
         nos_originais_estagios = unique(df_arvore_original[df_arvore_original[:, "PER"] .== estagio, "NO"])
         nos_reduzido_estagio   = unique(df_arvore_reduzida[df_arvore_reduzida[:, "PER"] .== estagio, "NO"])
         for no_orig in nos_originais_estagios
+            probabilidade_condicional_no[no_orig] = 0
             for no_red in nos_reduzido_estagio
                 distancia_aninhada[("o" * string(no_orig), "r" * string(no_red))] = 0
                 solucao_planoTransporte[("o" * string(no_orig), "r" * string(no_red))] = 0
+                
                 #if(no_orig == 3)
                 #    println("o:", no_orig, " r: ", no_red, " val: ", solucao_planoTransporte[("o" * string(no_orig), "r" * string(no_red))])
                 #end
@@ -77,7 +80,25 @@ function calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_a
                 constraint_dict = Dict{String, JuMP.ConstraintRef}()
                 global m = Model(GLPK.Optimizer)
                 for no_filho_orig in filhos_originais
+                    #caminho_no_orig = retornaListaCaminho(no_filho_orig, df_arvore_original)
+                    #prob_cond = 1
+                    #lista_probs_caminho = []
+                    #for node in caminho_no_orig
+                    #    prob_no = (df_arvore_original[(df_arvore_original.NO .== node), "PROB"][1])
+                    #    push!(lista_probs_caminho, prob_no)
+                    #    prob_cond = prob_cond*prob_no
+                    #end
+
                     for no_filho_red in filhos_red
+                        #caminho_no_red = retornaListaCaminho(no_filho_red, df_arvore_reduzida)
+                        #prob_cond = 1
+                        #lista_probs_caminho = []
+                        #for node in caminho_no_red
+                        #    prob_no = (df_arvore_reduzida[(df_arvore_reduzida.NO .== node), "PROB"][1])
+                        #    push!(lista_probs_caminho, prob_no)
+                        #    prob_cond = prob_cond*prob_no
+                        #end
+
                         vazoes_no_filho_orig = df_cenarios_original[df_cenarios_original[:, "NO"] .== no_filho_orig, :]
                         vazoes_no_filho_red  = df_cenarios_reduzida[df_cenarios_reduzida[:, "NO"] .== no_filho_red, :]
                         #print("no_filho_orig: ", no_filho_orig, " no_filho_red: ", no_filho_red)
@@ -104,7 +125,7 @@ function calculaDistanciaAninhada(df_arvore_original, df_cenarios_original, df_a
                 end
 
                 #@objective(m, Min, sum( (distancia[("o" * string(no_filho_orig), "r" * string(no_filho_red))]^2 + distancia_aninhada[("o" * string(no_filho_orig), "r" * string(no_filho_red))]) * planoTransporte[("o" * string(no_filho_orig), "r" * string(no_filho_red))] for no_filho_orig in filhos_originais, no_filho_red in filhos_red))
-                @objective(m, Min, sum( (distancia[("o" * string(no_filho_orig), "r" * string(no_filho_red))] + distancia_aninhada[("o" * string(no_filho_orig), "r" * string(no_filho_red))]) * planoTransporte[("o" * string(no_filho_orig), "r" * string(no_filho_red))] for no_filho_orig in filhos_originais, no_filho_red in filhos_red))
+                @objective(m, Min, sum( (distancia[("o" * string(no_filho_orig), "r" * string(no_filho_red))] + (distancia_aninhada[("o" * string(no_filho_orig), "r" * string(no_filho_red))]) ) * planoTransporte[("o" * string(no_filho_orig), "r" * string(no_filho_red))] for no_filho_orig in filhos_originais, no_filho_red in filhos_red))
                 ## ADICIONAR RESTRICOES
                 for no_filho_orig in filhos_originais
                     #print("est: ", est, " no: ", no.codigo, " etapa: ", etapa)
@@ -427,20 +448,21 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
     end
     return (df_arvore_reduzida, df_cenarios_reduzida, distancia_aninhada, solucao_planoTransporteCondicional)
 end
-str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_1D/27_Aberturas_Equiprovavel"
+str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_10D/27_Aberturas_Equiprovavel"
 #str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo"
 #str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples/caso_mini_60"
 Path_orig = str_caso*"/Pente_GVZP"
+#Path_orig = str_caso*"/Pente"
 #Path_orig = str_caso*"/Arvore_GVZP"
 PATH_ARVORE_ORIGINAL = Path_orig*"/arvore.csv"
 df_arvore_original = CSV.read(PATH_ARVORE_ORIGINAL, DataFrame)
 PATH_CENARIOS_ORIGINAL = Path_orig*"/cenarios.csv"
 df_cenarios_original = CSV.read(PATH_CENARIOS_ORIGINAL, DataFrame)
 
-lista_paths_red = ["A_2_2_2", "A_4_2_1"]
+lista_paths_red = ["A_2_2_2", "A_2_3_4", "A_4_2_1"]
 lista_casos = ["BKAssimetrico", "KMeansAssimetricoProb"]
-lista_paths_red = ["Pente_8cen"]
-lista_casos = ["BKAssimetrico", "KMeansAssimetricoProb","KMeansPente", "A_8cen_1", "A_8cen_2", "Amostrado_1", "Amostrado_2", "Amostrado_C_1", "Amostrado_C_2"]
+#lista_paths_red = ["A_125_2_2","A_50_5_2", "A_25_10_2", "A_300_300_300"]
+#lista_casos = ["KMeansAssimetricoProb", "BKAssimetrico"]
 for path_red in lista_paths_red
     for caso in lista_casos
         global Path_red = str_caso*"/"*path_red*"/"*caso
@@ -466,8 +488,8 @@ end
 
 
 
-Path_red = str_caso*"/Pente"
 Path_red = str_caso*"/Pente_GVZP"
+#Path_red = str_caso*"/Pente_GVZP"
 PATH_ARVORE_REDUZIDA = Path_red*"/arvore.csv"
 df_arvore_reduzida = CSV.read(PATH_ARVORE_REDUZIDA, DataFrame)
 PATH_CENARIOS_REDUZIDA = Path_red*"/cenarios.csv"
