@@ -476,6 +476,8 @@ caso = "..\\Carmen\\exercicio_27cen_5D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 caso = "..\\Carmen\\exercicio_27cen_4D_Teste\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 caso = "..\\Carmen\\exercicio_27cen_3D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 caso = "..\\Carmen\\exercicio_27cen_1D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
+caso = "..\\Carmen\\exercicio_27cen_10D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
+caso = "..\\Carmen\\exercicio_27cen_20D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 #caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
@@ -497,8 +499,9 @@ mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:125,    2:2,    3:2}
 mapa_aberturas_estagio = {1:25,    2:10,    3:2}
-mapa_aberturas_estagio = {1:300,    2:1,    3:1}
-mapa_aberturas_estagio = {1:5,    2:5,    3:20}
+mapa_aberturas_estagio = {1:200,    2:1,    3:1}
+mapa_aberturas_estagio = {1:125,    2:1,    3:1}
+#mapa_aberturas_estagio = {1:2,    2:3,    3:4}
 #mapa_aberturas_estagio = {1:50,    2:5,    3:2}
 #mapa_aberturas_estagio = {1:8,    2:1,    3:1}
 #mapa_aberturas_estagio = {1:6,    2:2,    3:2}
@@ -518,7 +521,7 @@ df_arvore_original.to_csv("saidas\\arvore_estudo.csv", index=False)
 
 #####################PARAMETROS
 Plota = False
-perservaFolhas = True
+perservaFolhas = False
 #################################
 print(df_arvore_original)
 print("TOTAL POSTOS: ", len(df_vazoes_original["NOME_UHE"].unique()))
@@ -536,18 +539,18 @@ testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 
 
 
-#            #SIMETR, WEIGHT, QUAD, PACOTE
-#binarios =  [False, False, False, False]
-#df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-#    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-#path_saida = "saidas\\"+"KMeansPente"
-#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-#
-#texto = "Arvore "+"KMeansPente"
-#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-#printaArvore("KMeansPente", path_saida, df_arvore)
+##            #SIMETR, WEIGHT, QUAD, PACOTE
+binarios =  [False, False, False, False]
+df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+path_saida = "saidas\\"+"KMeansPente"
+df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+texto = "Arvore "+"KMeansPente"
+realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+printaArvore("KMeansPente", path_saida, df_arvore)
 
 
 ######################################## COMPARACAO METODOS 
@@ -564,7 +567,7 @@ realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
 testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
 printaArvore("BKAssimetrico", path_saida, df_arvore)
 
-
+exit(1)
 
 
 print("###########################################################################")

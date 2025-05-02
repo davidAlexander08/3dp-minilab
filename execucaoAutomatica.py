@@ -2,19 +2,21 @@ import json
 import subprocess
 
 caminho_arvores = [ "Pente_GVZP\\", "Pente_8cen\\", "A_2_2_2\\", "A_4_2_1\\" ] 
+caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
 mapa_caminho_avaliacao = {
     "Pente_GVZP\\":[""],
     "Pente_8cen\\":["BKAssimetrico\\", "KMeansPente\\"],
     "A_2_2_2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
     "A_2_3_4\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
     "A_4_2_1\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
+    "Rodada_Final\\A_125_125_125\\":["BKAssimetrico\\"],
     }
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
 
-caminho_caso = "Carmen\\exercicio_27cen_20D\\"
-caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
+#caminho_caso = "Carmen\\exercicio_27cen_20D\\"
+#caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "src\\PDD.jl"
 
