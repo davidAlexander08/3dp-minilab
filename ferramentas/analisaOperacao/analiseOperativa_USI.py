@@ -46,43 +46,50 @@ def weighted_quantile(values, quantiles, sample_weight=None):
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "avaliaArvoresRepresentativo\\"
+caminho_subarvores = "Demanda_Acima"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-casos = ["Pente",
+
+
+casos = [caminho_subarvores+"\\Pente",
         #"Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb", 
         #"Rodada_Final\\A_50_5_2\\KMeansAssimetricoProb", 
         #"Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb",
-        "Rodada_Final\\A_25_250_250\\KMeansAssimetricoProb",
+        caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_300_300_300\\BKAssimetrico",
         #"Rodada_Final\\A_200_200_200\\BKAssimetrico",
         #"Rodada_Final\\A_150_150_150\\BKAssimetrico",
-        "Rodada_Final\\A_125_125_125\\BKAssimetrico",
+        caminho_subarvores+"\\A_125_125_125\\BKAssimetrico",
         #"Rodada_Final\\A_100_100_100\\BKAssimetrico",
-        "Rodada_Final\\Deterministico",
-        "Rodada_Final\\Vassoura"
+        caminho_subarvores+"\\Deterministico",
+        caminho_subarvores+"\\Vassoura"
         ]
 mapa_nome_caso = {
-        "Pente":"Pente Original",
+        caminho_subarvores+"\\Pente":"Pente Original",
+        caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
+        caminho_subarvores+"\\A_125_125_125\\BKAssimetrico":"A_125_125_125",
+        caminho_subarvores+"\\Deterministico":"Deterministico",
+        caminho_subarvores+"\\Vassoura":"Vassoura",
+
         "Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb":"A_125_2_2", 
         "Rodada_Final\\A_50_5_2\\KMeansAssimetricoProb":"A_50_5_2",
         "Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb":"A_25_10_2",
         "Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb":"A_5_250_500",
         "Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb":"A_25_125_500",
         "Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
-        "Rodada_Final\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
         "Rodada_Final\\A_25_50_100\\KMeansAssimetricoProb":"A_25_50_100",
         "Rodada_Final\\A_300_300_300\\BKAssimetrico":"A_300_300_300",
         "Rodada_Final\\A_250_250_250\\BKAssimetrico":"A_250_250_250",
         "Rodada_Final\\A_200_200_200\\BKAssimetrico":"A_200_200_200",
         "Rodada_Final\\A_150_150_150\\BKAssimetrico":"A_150_150_150",
-        "Rodada_Final\\A_125_125_125\\BKAssimetrico":"A_125_125_125",
         "Rodada_Final\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
-        "Rodada_Final\\Deterministico":"Deterministico",
-        "Rodada_Final\\Vassoura":"Vassoura"
+
 }
+caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Demanda_Acima"
+
 grandezas = ["VERT","generation","AFL","VF","TURB","QDEF"]
 #grandezas = ["CMO"]
 mapa_grandezas = {
@@ -240,5 +247,5 @@ for grandeza in grandezas:
         yaxis=dict(title_font=dict(size=20)),
         showlegend=True
     )
-    fig.write_html(f"{nome_figura}.html")
+    fig.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminho_subarvores}\\{nome_figura}.html")
     #exit(1)

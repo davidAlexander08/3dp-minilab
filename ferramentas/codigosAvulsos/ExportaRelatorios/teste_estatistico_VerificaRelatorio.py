@@ -52,8 +52,8 @@ caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_
 ### VAZOES_FEIXES_INCR_SIN
 #arquivo = "avaliaArvores\\A_50_5_2_Teste\\estatisticasArvores"
 arquivo = "avaliaArvoresRepresentativo\\A_125_2_2\\estatisticasArvores"
-#arquivo = "avaliaArvoresRepresentativo\\A_50_5_2\\estatisticasArvores"
-#arquivo = "avaliaArvoresRepresentativo\\A_25_10_2\\estatisticasArvores"
+arquivo = "avaliaArvoresRepresentativo\\A_50_5_2\\estatisticasArvores"
+arquivo = "avaliaArvoresRepresentativo\\A_25_10_2\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_125_2_2_Teste\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
 #arquivo = "avaliaArvores\\A_25_10_2\\estatisticasArvores_25_10_2"

@@ -15,17 +15,25 @@ caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Dissertacao\\apresenta
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Deterministico_mediaProb\\saidas\\PDD\\oper\\df_cortes_equivalentes.csv"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Arvore_GVZP\\saidas\\PDD\\oper\\df_cortes_equivalentes.csv"
 #######
-caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Rodada_Final\Deterministico\saidas\PDD\oper"
-caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Rodada_Final\Vassoura\saidas\PDD\oper"
-caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Pente\saidas\PDD\oper"
-caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Rodada_Final\A_25_250_250\KMeansAssimetricoProb\saidas\PDD\oper"
-caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Rodada_Final\A_125_125_125\BKAssimetrico\saidas\PDD\oper"
+caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Demanda_Acima\Deterministico\saidas\PDD\oper"
+caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Demanda_Acima\Vassoura\saidas\PDD\oper"
+caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Demanda_Acima\Pente\saidas\PDD\oper"
+caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Demanda_Acima\A_25_250_250\KMeansAssimetricoProb\saidas\PDD\oper"
+caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Demanda_Acima\A_125_125_125\BKAssimetrico\saidas\PDD\oper"
+caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Demanda_Acima"
 casos = {}
 casos["Deterministico"] = caso1
 casos["Vassoura"] = caso2
 casos["Pente"] = caso3
 casos["A_25_250_250"] = caso4
 casos["A_125_125_125"] = caso5
+mapa_nome_caso = {
+        "Deterministico":"Determ.",
+        "Vassoura":"Vass.",
+        "Pente":"Pente",
+        "A_25_250_250":"25_250_250",
+        "A_125_125_125":"125_125_125",
+}
 cores = {
         "Deterministico":"green",
         "Vassoura":"purple",
@@ -134,13 +142,17 @@ for usina in mapaNome:#usinas:
                 #print(df_filtro)
                 #exit(1)
                 coefs = df_filtro["Coef"].tolist()
-                fig2.add_trace(go.Box(x=[caso]*len(coefs), 
+                fig2.add_trace(go.Box(
+                x=[mapa_nome_caso[caso]]*len(coefs), 
+                #x=[caso]*len(coefs), 
                 y=coefs, 
                 marker_color=cores[caso],  # or any valid color name or hex code like '#1f77b4'
                 boxpoints=False,
                 showlegend=True))
 
-                fig.add_trace(go.Box(x=[caso]*len(coefs), 
+                fig.add_trace(go.Box(
+                #x=[caso]*len(coefs), 
+                x=[mapa_nome_caso[caso]]*len(coefs), 
                 y=coefs, 
                 marker_color=cores[caso],  # or any valid color name or hex code like '#1f77b4'
                 boxpoints=False,
@@ -148,7 +160,7 @@ for usina in mapaNome:#usinas:
 
         titulo =  "Usina " + str(usina)
         titulo =  "Usina " + mapaNome[usina]
-        fig.layout.annotations[contador_titulo].update(text=titulo, font=dict(size=20)) 
+        fig.layout.annotations[contador_titulo].update(text=titulo, font=dict(size=40)) 
         contador_titulo += 1
         print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador_titulo)
         coluna = coluna + 1
@@ -159,10 +171,11 @@ for usina in mapaNome:#usinas:
         titulo = f"cortes_usina_{usina}_no_{no_usado}"
         fig2.update_layout(
             title=titulo,
+            title_font=dict(size=24, family="Arial", color="black"),        
             xaxis_title="Caso",
             yaxis_title="$/hm3",
             showlegend=False,
-            font=dict(size=15),  # General font (e.g., legend)
+            font=dict(size=25),  # General font (e.g., legend)
         )
         #fig2.write_html(f"htmls\\{titulo}.html", auto_open=True)  # Opens in browser
 
@@ -175,7 +188,7 @@ fig.update_layout(
         showlegend=False,
         font=dict(size=25),  # General font (e.g., legend)
 )
-fig.write_html(f"htmls\\{titulo}.html", auto_open=True)  # Opens in browser
+fig.write_html(f"{caminho_saida}\\{titulo}.html", auto_open=True)  # Opens in browser
 
 
         #df_filtro = df_cortes.loc[(df_cortes["usina"] == usina)  & (df_cortes["est"] == periodo)  & (df_cortes["noUso"] == no_usado) & (df_cortes["Indep"] != 0) ]
