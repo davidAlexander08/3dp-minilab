@@ -76,7 +76,8 @@ module Main
     df_intercambio            = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], SubmercadoDE = Int[], SubmercadoPARA = Int[], Valor = Float64[])
     df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
-    df_termicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[])
+    
+    df_termicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[], GerMin = Float64[], GerMax = Float64[])
     df_hidreletricas          = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[], GAP = Float64[], MIN = Float64[], SEC = Float64[], MIN_TOT = Float64[], SEC_TOT = Float64[])
     df_cortes                 = DataFrame(iter = Int[], est = Int[], no = Int[],  usina = Int[], Indep = Float64[], Coef = Float64[])
@@ -227,7 +228,7 @@ module Main
         for term in lista_utes
             @constraint(m, gt_vars[(no.codigo, term.nome, etapa)] >= 0)
             @constraint(m, gt_vars[(no.codigo, term.nome, etapa)] <= term.gmax) #linha, coluna
-            #@constraint(m, gt_vars[(no.codigo, term.nome, etapa)] >= term.gmin) #linha, coluna
+            @constraint(m, gt_vars[(no.codigo, term.nome, etapa)] >= term.gmin) #linha, coluna
         end
         for sbm in lista_submercados
             @constraint(  m, deficit_vars[(no.codigo, sbm.nome, etapa)] >= 0 ) 
@@ -274,7 +275,7 @@ module Main
             GeracaoTermicaTotal = 0
             for term in cadastroUsinasTermicasSubmercado[sbm.codigo]
                 geracao = JuMP.value(gt_vars[(no.codigo, term.nome, etapa)])
-                push!(df_termicas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 1) , custo = term.custo_geracao, custoTotal = round(geracao, digits = 1)*term.custo_geracao))
+                push!(df_termicas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 2) , custo = term.custo_geracao, custoTotal = round(geracao, digits = 1)*term.custo_geracao , GerMin = term.gmin, GerMax = term.gmax))
                 GeracaoTermicaTotal += geracao
                 GeracaoTermicaSIN += geracao
             end
@@ -305,16 +306,17 @@ module Main
                     end
                 end
 
-                push!(df_hidreletricas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = uhe.nome, usina = uhe.codigo, generation = geracao,
+                push!(df_hidreletricas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = uhe.nome, usina = uhe.codigo, generation = round(geracao, digits = 2),
                                 VI = Vi[(no.codigo,uhe.codigo, etapa)], 
-                                AFL = Afluencia,
-                                TURB = turbinamento, 
-                                VERT = vertimento, 
-                                VF = volumeFinal))
+                                AFL = round(Afluencia, digits = 2),
+                                TURB = round(turbinamento, digits = 2), 
+                                VERT = round(vertimento, digits = 2), 
+                                VF = round(volumeFinal, digits = 2)))
                 if(vazao_minima == 1)
+                    defluencia = turbinamento + vertimento
                     push!(df_folga_vazmin, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, 
-                    nome = uhe.nome, usina = uhe.codigo, Vazmin = vazao_minima_uhe, Qdef = turbinamento + vertimento, 
-                    FolgaPosit = folga_positiva_vazmin, FolgaNeg = folga_negativa_vazmin ))
+                    nome = uhe.nome, usina = uhe.codigo, Vazmin = vazao_minima_uhe, Qdef = round(defluencia, digits = 2), 
+                    FolgaPosit = round(folga_positiva_vazmin, digits = 2), FolgaNeg = round(folga_negativa_vazmin, digits = 2) ))
                 end
 
                 GeracaoHidreletricaTotal += geracao
@@ -704,7 +706,6 @@ module Main
     df_per_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[],  Submercado = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], CustoPresente = Float64[], CMO = Float64[])
     sbms = unique(df_balanco_energetico_SBM_sf.Submercado)
     for sbm in sbms
-        println("sbm: ", sbm)
         subsubset_1 = df_balanco_energetico_SBM_sf[(df_balanco_energetico_SBM_sf.Submercado .== sbm), :]
         for est_value in unique(subsubset_1.est)
             subset = subsubset_1[subsubset_1.est .== est_value, :]
@@ -745,4 +746,79 @@ module Main
     means_sbm = combine(df_per_balanco_energetico_SBM, names(df_per_balanco_energetico_SBM, Number) .=> mean)
     println(means_sbm)
     CSV.write(output_dir_oper*"/media_SBM.csv", means_sbm)
+
+
+    df_per_balanco_energetico_USIH = DataFrame(etapa = String[], iter = Int[],  usina = Int[], est = Int[], Submercado = Int[], nome = String[] , usinaJusante = String[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], QDEF = Float64[], VAZMIN = Float64[], VF = Float64[])
+    for uhe in lista_uhes
+        subsubset_1 = df_hidreletricas_sf[(df_hidreletricas_sf.usina .== uhe.codigo), :]
+        for est_value in unique(subsubset_1.est)
+            subset = subsubset_1[subsubset_1.est .== est_value, :]
+            for iteracao in unique(subset.iter)
+                subsubset = subset[(subset.iter .== iteracao), :]
+                Probgeneration = 0
+                ProbVI = 0
+                ProbAFL = 0
+                ProbTURB = 0
+                ProbVERT = 0
+                ProbVF = 0
+                for no in unique(subsubset.node)
+                    Probgeneration += (subsubset[(subsubset.node .== no), "generation"][1])*(mapaProbCondicionalNo[no])
+                    ProbVI += (subsubset[(subsubset.node .== no), "VI"][1])*(mapaProbCondicionalNo[no])
+                    ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
+                    ProbTURB += (subsubset[(subsubset.node .== no), "TURB"][1])*(mapaProbCondicionalNo[no])
+                    ProbVERT += (subsubset[(subsubset.node .== no), "VERT"][1])*(mapaProbCondicionalNo[no])
+                    ProbVF += (subsubset[(subsubset.node .== no), "VF"][1])*(mapaProbCondicionalNo[no])
+                    #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
+                end
+                prob_defluencia = ProbVERT+ProbTURB
+                vazao_minima_uhe = 0
+                if(vazao_minima == 1)
+                    matching_rows = dat_vazmin[dat_vazmin.USI .== uhe.nome, :vazmin]
+                    vazao_minima_uhe = isempty(matching_rows) ? NaN : first(matching_rows)
+                    if !isnan(vazao_minima_uhe)
+                        vazao_minima_uhe = vazao_minima_uhe
+                    else
+                        vazao_minima_uhe = 0
+                    end
+                end
+                submercado = (subset[(subset.est .== est_value), "Submercado"][1])
+                push!(df_per_balanco_energetico_USIH, (etapa = "SF", iter = iteracao, usina = uhe.codigo, est = est_value, Submercado = submercado,nome = uhe.nome, usinaJusante = uhe.jusante, generation = round(Probgeneration, digits = 0), VI = round(ProbVI, digits = 0), AFL = round(ProbAFL, digits = 0), TURB = round(ProbTURB,digits = 0), VERT = round(ProbVERT, digits= 0), QDEF = round(prob_defluencia, digits= 0), VAZMIN = round(vazao_minima_uhe, digits= 0), VF = round(ProbVF, digits = 0)))
+            end
+        end
+    end
+    df_per_balanco_energetico_USIH = sort(df_per_balanco_energetico_USIH, :iter)
+    CSV.write(output_dir_oper*"/balanco_energetico_final_UHE.csv", df_per_balanco_energetico_USIH)
+    show(IOContext(stdout, :compact => false), df_per_balanco_energetico_USIH)
+
+    means_uhe = combine(df_per_balanco_energetico_USIH, names(df_per_balanco_energetico_USIH, Number) .=> mean)
+    println(means_uhe)
+    CSV.write(output_dir_oper*"/media_UHE.csv", means_uhe)
+
+    df_per_balanco_energetico_USIT = DataFrame(etapa = String[], iter = Int[],  usina = Int[], est = Int[], Submercado = Int[], nome = String[], generation = Float64[], custo = Float64[], custoTotal = Float64[], GerMin = Float64[], GerMax = Float64[])
+    for ute in lista_utes
+        subsubset_1 = df_termicas_sf[(df_termicas_sf.usina .== ute.codigo), :]
+        for est_value in unique(subsubset_1.est)
+            subset = subsubset_1[subsubset_1.est .== est_value, :]
+            for iteracao in unique(subset.iter)
+                subsubset = subset[(subset.iter .== iteracao), :]
+                Probgeneration = 0
+                ProbcustoTotal = 0
+                for no in unique(subsubset.node)
+                    Probgeneration += (subsubset[(subsubset.node .== no), "generation"][1])*(mapaProbCondicionalNo[no])
+                    ProbcustoTotal += (subsubset[(subsubset.node .== no), "custoTotal"][1])*(mapaProbCondicionalNo[no])
+                    #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
+                end
+                submercado = (subset[(subset.est .== est_value), "Submercado"][1])
+                push!(df_per_balanco_energetico_USIT, (etapa = "SF", iter = iteracao, usina = ute.codigo, est = est_value, Submercado = submercado,nome = ute.nome, generation = round(Probgeneration, digits = 0), custo = ute.custo_geracao, custoTotal = round(ProbcustoTotal, digits= 0), GerMin = ute.gmin, GerMax = ute.gmax))
+            end
+        end
+    end
+    df_per_balanco_energetico_USIT = sort(df_per_balanco_energetico_USIT, :iter)
+    CSV.write(output_dir_oper*"/balanco_energetico_final_UTE.csv", df_per_balanco_energetico_USIT)
+    show(IOContext(stdout, :compact => false), df_per_balanco_energetico_USIT)
+
+    means_ute = combine(df_per_balanco_energetico_USIT, names(df_per_balanco_energetico_USIT, Number) .=> mean)
+    println(means_ute)
+    CSV.write(output_dir_oper*"/media_UTE.csv", means_ute)
+
 end

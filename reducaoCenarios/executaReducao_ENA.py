@@ -3,7 +3,8 @@ import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 from anytree import Node, RenderTree
-from clusterization.clusterization import reducaoArvoreClusterizacao
+#from clusterization.clusterization import reducaoArvoreClusterizacao
+from clusterization.clusterization_ENA import reducaoArvoreClusterizacaoENA
 from clusterization.reducaoPenteKmeans import reducaoArvoreClusterizacaoPente
 from neuralGas.neuralGas import reducaoArvoreNeuralGas
 from backwardReduction.simultaneousBackwardReduction import backwardReduction
@@ -481,7 +482,10 @@ caso = "..\\Carmen\\exercicio_27cen_20D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 #caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_5D\5D_3Aberturas_Equiprovavel\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
-caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente_ENA"
+
+
+caso_ENA = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente_ENA"
+caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente"
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
 mapa_aberturas_estagio = {1:4,    2:5,    3:15}
 mapa_aberturas_estagio = {1:25,    2:4,    3:3}
@@ -497,7 +501,7 @@ mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 mapa_aberturas_estagio = {1:4,    2:2, 3:3}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
 mapa_aberturas_estagio = {1:8,    2:1, 3:1}
-mapa_aberturas_estagio = {1:125,    2:2,    3:2}
+mapa_aberturas_estagio = {1:25,    2:10,    3:2}
 #mapa_aberturas_estagio = {1:25,    2:10,    3:2}
 #mapa_aberturas_estagio = {1:200,    2:1,    3:1}
 #mapa_aberturas_estagio = {1:75,    2:1,    3:1}
@@ -509,10 +513,15 @@ mapa_aberturas_estagio = {1:125,    2:2,    3:2}
 #mapa_aberturas_estagio = {1:2,    2:2, 3:6}
 #mapa_aberturas_estagio = {1:4,    2:2, 3:1}
 
-arquivo_vazoes = caso+"\\cenarios.csv"
 #arquivo_vazoes = caso+"\\cenarios_teste.csv"
+arquivo_vazoes = caso+"\\cenarios.csv"
 df_vazoes_original = pd.read_csv(arquivo_vazoes)
 df_vazoes_original.to_csv("saidas\\vazoes_estudo.csv", index=False)
+
+arquivo_vazoes = caso_ENA+"\\cenarios.csv"
+df_vazoes_ENASIN = pd.read_csv(arquivo_vazoes)
+df_vazoes_ENASIN.to_csv("saidas\\vazoes_estudo_ENA.csv", index=False)
+
 arquivo_estrutura_feixes = caso+"\\arvore.csv"
 #arquivo_estrutura_feixes = caso+"\\arvore_teste.csv"
 df_arvore_original = pd.read_csv(arquivo_estrutura_feixes)
@@ -531,10 +540,10 @@ print("mapa_reducao_estagio: ", mapa_reducao_estagio)
 
 
 ###########Realizacao de testes unitários
-texto = "Arvore Original"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore_original, texto)
-testeSimetriaFilhos(df_arvore_original, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
+#texto = "Arvore Original"
+#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore_original, texto)
+#testeSimetriaFilhos(df_arvore_original, texto)
+#testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 #printaArvore("Arvore Original", "saidas\\",df_arvore_original)
 
 
@@ -553,42 +562,19 @@ testeCorrespondenciaArvoreVazoes(df_arvore_original, df_vazoes_original, texto)
 #printaArvore("KMeansPente", path_saida, df_arvore)
 
 
-######################################## COMPARACAO METODOS 
-print("###########################################################################")
-### METODO -  BACKWARD REDUCTION ASSIMETRICO
-Simetrica = False
-df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
-path_saida = "saidas\\BKAssimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-texto = "Arvore Backward Reduction Assimetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("BKAssimetrico", path_saida, df_arvore)
-
-exit(1)
-
-
-print("###########################################################################")
-### METODO -  BACKWARD REDUCTION SIMETRICO
-Simetrica = True
-df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, Plota)
-path_saida = "saidas\\BKSimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-texto = "Arvore Backward Reduction Simetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeSimetriaFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("BKSimetrico", path_saida, df_arvore)
-
-
-
-
-
-
+######################################### COMPARACAO METODOS 
+#print("###########################################################################")
+#### METODO -  BACKWARD REDUCTION ASSIMETRICO
+#Simetrica = False
+#df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+#path_saida = "saidas\\BKAssimetrico"
+#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+#
+#texto = "Arvore Backward Reduction Assimetrico"
+#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+#printaArvore("BKAssimetrico", path_saida, df_arvore)
 
 
 #####################PARAMETROS PARA CLUSTERIZACAO
@@ -613,8 +599,11 @@ for chave in DicionarioListaKmeans:
 #def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, perservaFolhas, Weighted,
 # pacoteKmeans, quad, plotar = False):
 
-        df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+        #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+        #    False, perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+        df_arvore, df_vazoes = reducaoArvoreClusterizacaoENA(mapa_aberturas_estagio, df_vazoes_ENASIN.copy(), df_vazoes_original.copy(), df_arvore_original.copy(), 
             False, perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+            
         path_saida = "saidas\\"+chave
         df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
         df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
@@ -623,49 +612,49 @@ for chave in DicionarioListaKmeans:
         realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
         testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
         printaArvore(chave, path_saida, df_arvore)
-    if(binarios[0] == True):
-        # METODO CLUSTERIZACAO SIMETRICO
-        if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
-            print(chave+ " Pós Backward Reduction no Último Estágio")
-            #print(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())])
-            mapa_red_auxiliar = {}
-            for est in df_arvore_original["PER"].tolist():
-                mapa_red_auxiliar[est] = 0
-            mapa_red_auxiliar[max(df_arvore_original["PER"].tolist())] =  mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())]
-            
-            print("###########################################################################")
-            print(chave+" Backward Reduction no Último Estágio")
-            Simetrica = False
-            df_arvore, df_vazoes = backwardReduction(mapa_red_auxiliar, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, Plota)
-            print(df_arvore)
-            df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore.copy(), 
-                binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-            path_saida = "saidas\\"+chave
-            df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-            df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-            
-        else:
-            print("###########################################################################")
-            print(chave)
-            #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-            df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-            binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-            path_saida = "saidas\\"+chave
-            df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-            df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-        #print("###########################################################################")
-        #print(chave)
-        ##df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-        #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
-        #binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-        #path_saida = "saidas\\"+chave
-        #df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-        #df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-        texto = "Arvore "+chave
-        realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-        testeSimetriaFilhos(df_arvore, texto)
-        testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-        printaArvore(chave, path_saida, df_arvore)
+    #if(binarios[0] == True):
+    #    # METODO CLUSTERIZACAO SIMETRICO
+    #    if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
+    #        print(chave+ " Pós Backward Reduction no Último Estágio")
+    #        #print(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())])
+    #        mapa_red_auxiliar = {}
+    #        for est in df_arvore_original["PER"].tolist():
+    #            mapa_red_auxiliar[est] = 0
+    #        mapa_red_auxiliar[max(df_arvore_original["PER"].tolist())] =  mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())]
+    #        
+    #        print("###########################################################################")
+    #        print(chave+" Backward Reduction no Último Estágio")
+    #        Simetrica = False
+    #        df_arvore, df_vazoes = backwardReduction(mapa_red_auxiliar, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, Plota)
+    #        print(df_arvore)
+    #        df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore.copy(), 
+    #            binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+    #        path_saida = "saidas\\"+chave
+    #        df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+    #        df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+    #        
+    #    else:
+    #        print("###########################################################################")
+    #        print(chave)
+    #        #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+    #        df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+    #        binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+    #        path_saida = "saidas\\"+chave
+    #        df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+    #        df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+    #    #print("###########################################################################")
+    #    #print(chave)
+    #    ##df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+    #    #df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), 
+    #    #binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+    #    #path_saida = "saidas\\"+chave
+    #    #df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+    #    #df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+    #    texto = "Arvore "+chave
+    #    realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+    #    testeSimetriaFilhos(df_arvore, texto)
+    #    testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+    #    printaArvore(chave, path_saida, df_arvore)
 
 
 
@@ -674,32 +663,32 @@ for chave in DicionarioListaKmeans:
 
 
 
-print("###########################################################################")
-### METODO NEURAL GAS
-Simetrica = False
-df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
-path_saida = "saidas\\NeuralGas"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-texto = "Arvore Neural Gas"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("NeuralGas", path_saida, df_arvore)
-
-
-### TESTES UNITARIOS PARA GARANTIR CONSISTENCIA DAS ARVORES GERADAS
-#executaTestesReducaoArvoresGVZP()
-
-print("###########################################################################")
-### METODO NEURAL GAS
-Simetrica = True
-df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
-path_saida = "saidas\\NeuralGasSimetrico"
-df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-
-texto = "Arvore Neural Gas Simetrico"
-realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-printaArvore("NeuralGasSimetrico", path_saida, df_arvore)
+#print("###########################################################################")
+#### METODO NEURAL GAS
+#Simetrica = False
+#df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+#path_saida = "saidas\\NeuralGas"
+#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+#
+#texto = "Arvore Neural Gas"
+#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+#printaArvore("NeuralGas", path_saida, df_arvore)
+#
+#
+#### TESTES UNITARIOS PARA GARANTIR CONSISTENCIA DAS ARVORES GERADAS
+##executaTestesReducaoArvoresGVZP()
+#
+#print("###########################################################################")
+#### METODO NEURAL GAS
+#Simetrica = True
+#df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+#path_saida = "saidas\\NeuralGasSimetrico"
+#df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+#df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+#
+#texto = "Arvore Neural Gas Simetrico"
+#realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+#testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+#printaArvore("NeuralGasSimetrico", path_saida, df_arvore)

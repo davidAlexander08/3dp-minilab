@@ -220,10 +220,10 @@ for parTemporal in paresCorrelacaoTemporal:
                 marker=dict(size=10, color='blue')
             ), row=linha, col=coluna)
 
-            # Add line of best fit
+
             fig.add_trace(go.Scatter(
-                x=listaCorrelacaoTemporalOriginal, 
-                y=slope * np.array(listaCorrelacaoTemporalOriginal) + intercept, 
+                x=[-0.5, 1], 
+                y=[slope * -0.5, slope * 1],  # or simply [0, slope]
                 mode='lines', 
                 line=dict(color='red', width=2),
                 showlegend=False

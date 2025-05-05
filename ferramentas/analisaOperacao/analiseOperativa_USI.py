@@ -46,7 +46,7 @@ def weighted_quantile(values, quantiles, sample_weight=None):
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "avaliaArvoresRepresentativo\\"
-caminho_subarvores = "Demanda_Acima"
+caminho_subarvores = "GTMIN"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
 
 
@@ -56,13 +56,13 @@ casos = [caminho_subarvores+"\\Pente",
         #"Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb",
-        caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb",
+        caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_300_300_300\\BKAssimetrico",
         #"Rodada_Final\\A_200_200_200\\BKAssimetrico",
         #"Rodada_Final\\A_150_150_150\\BKAssimetrico",
-        caminho_subarvores+"\\A_125_125_125\\BKAssimetrico",
+        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico",
         #"Rodada_Final\\A_100_100_100\\BKAssimetrico",
         caminho_subarvores+"\\Deterministico",
         caminho_subarvores+"\\Vassoura"
@@ -70,7 +70,9 @@ casos = [caminho_subarvores+"\\Pente",
 mapa_nome_caso = {
         caminho_subarvores+"\\Pente":"Pente Original",
         caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
+        caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_125_125_125\\BKAssimetrico":"A_125_125_125",
+        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
         caminho_subarvores+"\\Deterministico":"Deterministico",
         caminho_subarvores+"\\Vassoura":"Vassoura",
 
@@ -133,9 +135,9 @@ mapaNomeUsinas = {
         #66:"ITAIPU",
         45:"JUPIA",
         169:"SOBRADINHO",
-        #172:"ITAPARICA",
+        172:"ITAPARICA",
         91:"MACHADINHO",
-        115:"GP SOUZA",
+        #115:"GP SOUZA",
         77:"SALTO SANTIAGO",
         275:"TUCURUI",
         227:"SINOP",

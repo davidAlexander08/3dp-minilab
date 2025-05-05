@@ -46,20 +46,20 @@ caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "avaliaArvoresRepresentativo\\"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-caminho_subarvores = "Demanda_Acima"
+caminho_subarvores = "GTMIN"
 casos = [caminho_subarvores+"\\Pente",
         #"Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb", 
         #"Rodada_Final\\A_50_5_2\\KMeansAssimetricoProb", 
         #"Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb",
-        caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb",
+        caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_300_300_300\\BKAssimetrico",
         #"Rodada_Final\\A_200_200_200\\BKAssimetrico",
         #"Rodada_Final\\A_150_150_150\\BKAssimetrico",
-        caminho_subarvores+"\\A_125_125_125\\BKAssimetrico",
+        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico",
         #"Rodada_Final\\A_100_100_100\\BKAssimetrico",
         caminho_subarvores+"\\Deterministico",
         caminho_subarvores+"\\Vassoura"
@@ -73,12 +73,14 @@ mapa_nome_caso = {
         "Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb":"A_25_125_500",
         "Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
+        caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         "Rodada_Final\\A_25_50_100\\KMeansAssimetricoProb":"A_25_50_100",
         "Rodada_Final\\A_300_300_300\\BKAssimetrico":"A_300_300_300",
         "Rodada_Final\\A_250_250_250\\BKAssimetrico":"A_250_250_250",
         "Rodada_Final\\A_200_200_200\\BKAssimetrico":"A_200_200_200",
         "Rodada_Final\\A_150_150_150\\BKAssimetrico":"A_150_150_150",
         caminho_subarvores+"\\A_125_125_125\\BKAssimetrico":"A_125_125_125",
+        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
         "Rodada_Final\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
         caminho_subarvores+"\\Deterministico":"Deterministico",
         caminho_subarvores+"\\Vassoura":"Vassoura"

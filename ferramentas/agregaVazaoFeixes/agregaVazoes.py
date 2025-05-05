@@ -4,25 +4,27 @@ from inewave.newave import Hidr
 import json
 
 ### VAZOES_FEIXES_INCR_SIN
-caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Mestrado\\caso_construcaoArvore_SIN_500cen\\"
-df_vazoes = pd.read_csv(caso+"vazao_feixes.csv")
-print(df_vazoes)
-lista_df = []
-df_aux = df_vazoes.loc[df_vazoes["NOME_UHE"] == df_vazoes["NOME_UHE"].iloc[0]].copy()
-df_aux["VAZAO"] = df_aux["VAZAO"]*0
-for uhe in df_vazoes["NOME_UHE"].unique():
-    df_uhe = df_vazoes.loc[(df_vazoes["NOME_UHE"] == uhe)].reset_index(drop = True)
-    df_aux["VAZAO"] += df_uhe["VAZAO"]
-df_vaz_incr_SIN = df_aux
-df_vaz_incr_SIN.to_csv("vazoes_feixes_incr_sin.csv", index = False)
-print("df_vaz_incr_SIN: ", df_vaz_incr_SIN)
+caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente\\"
+df_vazoes = pd.read_csv(caso+"cenarios.csv")
+#print(df_vazoes)
+#lista_df = []
+#df_aux = df_vazoes.loc[df_vazoes["NOME_UHE"] == df_vazoes["NOME_UHE"].iloc[0]].copy()
+#df_aux["VAZAO"] = df_aux["VAZAO"]*0
+#for uhe in df_vazoes["NOME_UHE"].unique():
+#    df_uhe = df_vazoes.loc[(df_vazoes["NOME_UHE"] == uhe)].reset_index(drop = True)
+#    df_aux["VAZAO"] += df_uhe["VAZAO"]
+#df_vaz_incr_SIN = df_aux
+#df_vaz_incr_SIN.to_csv("vazoes_feixes_incr_sin.csv", index = False)
+#print("df_vaz_incr_SIN: ", df_vaz_incr_SIN)
 ## TRANSFORMA EM ENA COM BASE EM UM DECK DE NEWAVE, UTILIZANDO O HIDR PARA VER A FUNCAO DE PRODUCAO A 65% E CONHECENDO A CASCATA
 ## POR MEIO DO ARQUIVO DE CASCATA DO NEWAVE
 ## VAZOES_FEIXES_ENA_SIN
 ### VAZOES_FEIXES_INCR_SIN
 
-df_confhd = Confhd.read("..\\transformaNewaveLab\\deck_newave_2020_01\\CONFHD.dat").usinas
-df_hidr = Hidr.read("..\\transformaNewaveLab\\deck_newave_2020_01\\HIDR.dat").cadastro
+#df_confhd = Confhd.read("..\\transformaNewaveLab\\deck_newave_2020_01\\CONFHD.dat").usinas
+df_confhd = Confhd.read("..\\transformaNewaveLab\\deck_newave_2020_01_reduzido_180325\\CONFHD.dat").usinas
+#df_hidr = Hidr.read("..\\transformaNewaveLab\\deck_newave_2020_01\\HIDR.dat").cadastro
+df_hidr = Hidr.read("..\\transformaNewaveLab\\deck_newave_2020_01_reduzido_180325\\HIDR.dat").cadastro
 df_hidr = df_hidr.reset_index()
 postos_considerados = df_vazoes["NOME_UHE"].unique()
 
@@ -79,7 +81,7 @@ top_uhe["VAZAO"] = top_uhe["VAZAO"].round(0)
 print(top_uhe)
 
 top_uhe.to_csv("top_ena.csv")
-exit(1)
+
 df_ena_result.to_csv("ena_feixes_incr.csv")
 
 
@@ -97,5 +99,5 @@ df_ena_sin.to_csv("ena_feixes_incr_sin.csv", index = False)
 
 print("df_vazoes: ", df_vazoes)
 print("df_ena_result: ", df_ena_result)
-print("df_vaz_incr_SIN: ", df_vaz_incr_SIN)
+#print("df_vaz_incr_SIN: ", df_vaz_incr_SIN)
 print("df_ena_sin: ", df_ena_sin)
