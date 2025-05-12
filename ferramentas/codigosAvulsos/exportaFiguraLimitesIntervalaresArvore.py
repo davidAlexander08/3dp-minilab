@@ -15,17 +15,25 @@ from inewave.newave import Confhd
 from inewave.newave import Hidr
 
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
-casos = ["BKAssimetrico", "KMeansAssimetricoProb", "KMeansSimetricoProbQuad", "NeuralGas"]
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_5D\\128_Aberturas_Equiprovavel\\Academicos\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\revisaoDebora\\"
+casos = ["BKAssimetrico", "KMeansAssimetricoProbPente", "KMeansSimetricoProbQuadPente", "NeuralGas"]
+casos = ["BKAssimetrico", "KMeansAssimetricoProbPente", "KMeansSimetricoProbQuadPente"]
+casos = ["BKAssimetrico", "KMeansPente"]
 
 mapaNomeCaso = {
     "BKAssimetrico":"Redução Regressiva",
-    "KMeansAssimetricoProb":"K-Means",
-    "KMeansSimetricoProbQuad":"K-Means Simétrico",
+    "KMeansAssimetricoProbPente":"K-Means",
+    "KMeansSimetricoProbQuadPente":"K-Means Simétrico",
     "NeuralGas":"Neural Gas",
+    "KMeansPente":"K-Means",
 }
 
 
 analises = [("A_125_2_2",3, "250"), ("A_125_2_2",2, "125"), ("A_50_5_2",2, "50"), ("A_25_10_2",2, "25") ]
+analises = [("A_4x4x2",4, "32"), ("A_4x4x2",3, "16"), ("A_4x4x2",2, "4")]
+analises = [("A_25x3x2",4, "150"), ("A_25x3x2",3, "75"), ("A_25x3x2",2, "25")]
+analises = [("A_100x1x1",4, "100"), ("A_100x1x1",3, "100"), ("A_100x1x1",2, "100")]
 
 for caso in casos:
     fig_mean = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
@@ -79,16 +87,6 @@ for caso in casos:
 
         fig_mean.add_trace(go.Scatter(
             x=lista_postos, 
-            y=lista_meanOriginal, 
-            mode='lines',
-            name=f'original',
-            legendgroup='original',        # <- Group lines in the same legend group
-            showlegend=show,
-            line=dict(color='blue')  # ← dashed red line
-        ), row=linha, col=coluna)
-
-        fig_mean.add_trace(go.Scatter(
-            x=lista_postos, 
             y=lista_meanReduzida, 
             mode='lines',
             name=f'reduzido',
@@ -96,6 +94,18 @@ for caso in casos:
             showlegend=show,
             line=dict(color='red')  # ← dashed red line
         ), row=linha, col=coluna)
+
+        fig_mean.add_trace(go.Scatter(
+            x=lista_postos, 
+            y=lista_meanOriginal, 
+            mode='lines',
+            name=f'original',
+            legendgroup='original',        # <- Group lines in the same legend group
+            showlegend=show,
+            line=dict(color='blue', dash='dot')  # ← dashed red line
+        ), row=linha, col=coluna)
+
+
 
 
         lista_varOriginal_plot = lista_varOriginal/lista_varOriginal
@@ -144,7 +154,8 @@ for caso in casos:
         ), row=linha, col=coluna)
 
 
-        titulo =  mapaNomeCaso[caso] + " Árvore: "+analise[0]+ " Est: "+ str(analise[1])+ " Cen. "+ analise[2] 
+        #titulo =  + " Árvore: "+analise[0]+ " Est: "+ str(analise[1])+ " Cen. "+ analise[2] 
+        titulo =  " Est: "+ str(analise[1])+ " No. de nós "+ analise[2] 
         fig_mean.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
         
         fig_var.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
@@ -157,20 +168,21 @@ for caso in casos:
             linha = linha + 1
         show = False
     fig_mean.update_layout(
-        title="Limites intervalares de média",
+        title="Limites intervalares de média "+mapaNomeCaso[caso] ,
         title_font=dict(size=24, family="Arial", color="black"),
         xaxis_title="Postos",
         yaxis_title="Média",
         font=dict(size=20), 
         xaxis=dict(title_font=dict(size=20)),  
         yaxis=dict(title_font=dict(size=20),range=[0.7, 1.2]),
-        yaxis2=dict(range=[0.7, 1.2]),     # subplot (1,2)
-        yaxis3=dict(range=[0.7, 1.2]),     # subplot (2,1)
-        yaxis4=dict(range=[0.7, 1.2]),      # subplot (2,2)
+        yaxis1=dict(range=[0.5, 1.3]),     # subplot (1,2)
+        yaxis2=dict(range=[0.5, 1.3]),     # subplot (1,2)
+        yaxis3=dict(range=[0.5, 1.3]),     # subplot (2,1)
+        yaxis4=dict(range=[0.5, 1.3]),      # subplot (2,2)
         showlegend=True
     )
     fig_var.update_layout(
-        title="Limites intervalares de variância",
+        title="Limites intervalares de variância "+mapaNomeCaso[caso] ,
         title_font=dict(size=24, family="Arial", color="black"),
         xaxis_title="Postos",
         yaxis_title="Variância",
@@ -178,9 +190,10 @@ for caso in casos:
         xaxis=dict(title_font=dict(size=20)),  
         yaxis=dict(title_font=dict(size=20)),
         #yaxis=dict(title_font=dict(size=20),range=[0.6, 1.1]),
-        #yaxis2=dict(range=[0.6, 1.1]),     # subplot (1,2)
-        #yaxis3=dict(range=[0.6, 1.1]),     # subplot (2,1)
-        #yaxis4=dict(range=[0.6, 1.1]),      # subplot (2,2)
+        yaxis1=dict(range=[0, 1.3]),     # subplot (1,2)
+        yaxis2=dict(range=[0, 1.3]),     # subplot (1,2)
+        yaxis3=dict(range=[0, 1.3]),     # subplot (2,1)
+        yaxis4=dict(range=[0, 1.3]),      # subplot (2,2)
         showlegend=True
     )
     fig_mean.write_html(f"{caminho}\\Caso_{caso}_{analise}_limitesIntervalaresMedia.html")

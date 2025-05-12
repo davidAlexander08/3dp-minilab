@@ -13,8 +13,8 @@ from sklearn.metrics import r2_score
 from plotly.subplots import make_subplots
 from inewave.newave import Confhd
 from inewave.newave import Hidr
-analise = "A_125_2_2"
-caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
+analise = "A_4x4x2"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_5D\\128_Aberturas_Equiprovavel\\Academicos\\"
 casos = ["BKAssimetrico", "KMeansAssimetricoProb", "KMeansSimetricoProbQuad", "NeuralGas"]
 df_estatistica = pd.read_csv(caminho + analise+"\\estatisticasArvores.csv", sep=';')
 fig_mean = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))

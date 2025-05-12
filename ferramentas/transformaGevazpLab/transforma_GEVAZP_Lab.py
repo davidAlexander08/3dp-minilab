@@ -19,6 +19,10 @@ pasta = "2D\\4Estagios\\A_8cen_2_2D\\"
 pasta = "3D\\4Estagios\\A_8cen_3_3D\\"
 pasta = "4D\\4Estagios\\A_8cen_4_4D\\"
 pasta = "20D\\4Estagios\\27_1_1\\"
+pasta = "5D\\4Estagios\\A_64_1_1\\"
+pasta = "10D\\4Estagios\\64_1_1\\"
+pasta = "1D\\4Estagios\\128_1_1\\"
+pasta = "5D\\4Estagios\\128_1_1_PFundo\\"
 #pasta = "2Aberturas\\"
 caminho_caso = caminho+pasta
 df_cenarios = pd.read_csv(caminho_caso+"fort.156", sep=";", skipinitialspace=True)
@@ -234,6 +238,7 @@ for idx_cen in caminhos_arvore:
     for idx, no_arvore in enumerate(caminho):
         pai = 1 if idx == 0 else contador_anterior
         probabilidade_no_2 = calculaProbCaminho(caminho, df_arvore_externa_gevazp_resultante) if(idx == 0) else 1
+        #probabilidade_no_2 = 0.0078125 if(idx == 0) else 1
         lista_df_pente.append(
             pd.DataFrame(
                 {

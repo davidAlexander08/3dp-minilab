@@ -392,18 +392,24 @@ def Myconstrained_kmeans(X, k, size_min, size_max, weights, Weighted , quad, max
 
 
 
-def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, pacoteKmeans, quad, plotar = False):
+def percorreArvoreClusterizando_ENA(no_analise, df_arvore, df_vazoes_ENA, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, pacoteKmeans, quad, plotar = False):
     filhos = getFilhos(no_analise, df_arvore)
     #print("no_analise: ", no_analise, " filhos: ", filhos)
     est = df_arvore.loc[(df_arvore["NO"] == no_analise)]["PER"].iloc[0]
+    postos_multi = df_vazoes["NOME_UHE"].unique()
+    postos_multi = sorted(postos_multi, reverse=False)
+
+    postos_ENA = df_vazoes_ENA["NOME_UHE"].unique()
+    postos_ENA = sorted(postos_ENA, reverse=False)
+    print("postos_ENA: ", postos_ENA)
     if(len(filhos) > mapa_clusters_estagio[est]):
-        matriz_valores = np.zeros((len(filhos), len(postos)))
+        matriz_valores = np.zeros((len(filhos), len(postos_ENA)))
         mapa_linha_no = {}
         mapa_linha_posto = {}
         weights =[]
         for linha, no in enumerate(filhos):  # FIXED: Use enumerate() to track row index
-            for coluna, posto in enumerate(postos):  # FIXED: Same for column index
-                vazao = df_vazoes[(df_vazoes["NOME_UHE"] == posto) & (df_vazoes["NO"] == no)]["VAZAO"].iloc[0]
+            for coluna, posto in enumerate(postos_ENA):  # FIXED: Same for column index
+                vazao = df_vazoes_ENA[(df_vazoes_ENA["NOME_UHE"] == posto) & (df_vazoes_ENA["NO"] == no)]["VAZAO"].iloc[0]
                 matriz_valores[linha, coluna] = vazao
                 mapa_linha_posto[posto] = coluna
             mapa_linha_no[linha] = no
@@ -411,6 +417,18 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                 df_arvore.loc[(df_arvore["NO"] == no)]["PROB"].iloc[0]
             )
         weights = np.array(weights)
+
+
+        matriz_valores_multi = np.zeros((len(filhos), len(postos_multi)))
+        mapa_linha_posto_multi = {}
+        for linha, no in enumerate(filhos):  # FIXED: Use enumerate() to track row index
+            for coluna, posto in enumerate(postos_multi):  # FIXED: Same for column index
+                vazao = df_vazoes[(df_vazoes["NOME_UHE"] == posto) & (df_vazoes["NO"] == no)]["VAZAO"].iloc[0]
+                matriz_valores_multi[linha, coluna] = vazao
+                mapa_linha_posto_multi[posto] = coluna
+
+
+
                 #print("no: ", no, " posto: ", posto, " Vazao: ", vazao)
         k = mapa_clusters_estagio[est]
         clusters = []
@@ -446,11 +464,7 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
                 #print("Executando Artesanal Assimetrico")
                 #kmeans = MyKMeans(n_clusters=k, random_state=42)
                 kmeans = MyKMeans(n_clusters=k, random_state=10)
-                kmeans = MyKMeans(n_clusters=k, random_state=12)
-                kmeans = MyKMeans(n_clusters=k, random_state=20)
-                kmeans = MyKMeans(n_clusters=k, random_state=13)
-                #kmeans = MyKMeans(n_clusters=k, random_state=39)
-                #print("entrou aqui")
+                kmeans = MyKMeans(n_clusters=k, random_state=10)
                 clusters= kmeans.fit_predict(matriz_valores, weights, Weighted, quad)
 
             centers_kmeans = kmeans.cluster_centers_
@@ -492,27 +506,9 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         #cluster_counts = np.bincount(clusters)
         #print(cluster_counts)
 
-        new_matrix = np.zeros((len(clusters), len(postos)))
+        #new_matrix = np.zeros((len(clusters), len(postos)))
         maior_no = max(df_arvore["NO"].unique())
         #print("matriz_valores: ", matriz_valores)
-        if(plotar):
-            ##### PRINT CLUSTERS
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=matriz_valores[:, mapa_linha_posto[275]],
-                y=matriz_valores[:, mapa_linha_posto[6]],
-                marker=dict(color='blue', size=8),
-                mode="markers",
-                name="TucuruixFurnas",
-                showlegend=False  
-            ))
-            
-            fig.update_layout(
-                title='Scater Plot Centroides',
-                xaxis_title='m3/s',
-                yaxis_title='m3/s'
-            )
-            text_out = "ClusterSimetrico" if Simetrica == True else "ClusterAssimetrico"
 
 
         #print("k: ", k)
@@ -527,7 +523,12 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print("lista_nos_cluster: ", lista_nos_cluster)
 
             matriz_cluster = matriz_valores[lista_linhas_matriz,:]
+            #print("matriz_cluster 1", matriz_cluster)
+            
+            matriz_cluster = matriz_valores_multi[lista_linhas_matriz,:]
 
+            #print("matriz_cluster 2", matriz_cluster)
+            #exit(1)
             #######################################
             #novas_realizacoes = np.round(matriz_cluster.mean(axis=0), 0).astype(int)  ####### CLUSTER NORMAL AVERAGE
             #################
@@ -547,15 +548,7 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             ########################################
 
             novas_realizacoes = np.sum(save_lines, axis=0)
-            if(plotar):
-                fig.add_trace(go.Scatter(
-                    x=[novas_realizacoes[mapa_linha_posto[275]]],
-                    y=[novas_realizacoes[mapa_linha_posto[6]]],
-                    mode="markers",
-                    marker=dict(color='red', size=8),
-                    name="TucuruixFurnas",
-                    showlegend=False  
-                ))
+
             
 
             df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
@@ -565,8 +558,9 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             per_novo_no = df_nos_excluidos["PER"].unique()[0]
             abertura = i+1
 
-            for coluna, posto in enumerate(postos):
-                df_vaz = pd.DataFrame({"NOME_UHE":[posto], "NO":[novo_no], "VAZAO":[novas_realizacoes[coluna]]})
+            #for coluna, posto in enumerate(postos):
+            for coluna, posto_multi in enumerate(postos_multi):
+                df_vaz = pd.DataFrame({"NOME_UHE":[posto_multi], "NO":[novo_no], "VAZAO":[novas_realizacoes[coluna]]})
                 df_vazoes = pd.concat([df_vazoes, df_vaz]).reset_index(drop = True)
 
             ### COMENTE ESSA LINHA PARA IMPRIMIR TAMBEM NO CADASTRO DE VAZOES OS NOS ELIMINADOS ALEM DO NO RESULTANTE
@@ -602,13 +596,12 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             #print(df_arvore)
     #if(no_analise == 1502):
         #exit(1)
-        if(plotar):
-            fig.write_html("saidas\\"+text_out+"\\Clusterizacao_"+str(est)+"_"+str(no_analise)+'.html', auto_open=False)
+
     return (df_arvore, df_vazoes)
 
 
 
-def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Simetrica, perservaFolhas, Weighted, pacoteKmeans, quad, plotar = False):
+def reducaoArvoreClusterizacaoENA(mapa_clusters_estagio, df_vazoes_ENA, df_vazoes, df_arvore, Simetrica, perservaFolhas, Weighted, pacoteKmeans, quad, plotar = False):
     
     print("perservaFolhas: ", perservaFolhas)
     print("Weighted: ", Weighted)
@@ -626,8 +619,7 @@ def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Sime
         print("Realizando Redução Assimetrica  - Clustering")
     estagios = df_arvore["PER"].unique()
     estagios = sorted(estagios, reverse=False)[:-1]#[1:]
-    postos = df_vazoes["NOME_UHE"].unique()
-    postos = sorted(postos, reverse=False)
+
 
     if(perservaFolhas):
         estagios.remove(max(estagios))
@@ -639,7 +631,7 @@ def reducaoArvoreClusterizacao(mapa_clusters_estagio, df_vazoes, df_arvore, Sime
         nos_estagio = df_arvore.loc[(df_arvore["PER"] == est)]["NO"].tolist()
         for no_cluster in nos_estagio:
             #def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, pacoteKmeans, quad, plotar = False):
-            df_arvore, df_vazoes = percorreArvoreClusterizando(no_cluster, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, pacoteKmeans, quad, plotar)
+            df_arvore, df_vazoes = percorreArvoreClusterizando_ENA(no_cluster, df_arvore, df_vazoes_ENA, df_vazoes, mapa_clusters_estagio, Simetrica, Weighted, pacoteKmeans, quad, plotar)
     df_arvore.loc[df_arvore["NO"] == 1, "NO_PAI"] = 0
     #df_arvore["NO_PAI"] = df_arvore["NO_PAI"].mask(df_arvore["NO"] == 1, 0)
     end_time = time.time()

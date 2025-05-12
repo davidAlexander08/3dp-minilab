@@ -75,7 +75,7 @@ str_caso = "Capitulo_5/caso_mini_300Cen_sorteio_8cen"
 str_caso = "Capitulo_5/caso_mini_300Cen_sorteio_8cen_toy"
 str_caso = "Capitulo_5/caso_mini_500Cen_sorteio_8cen_mensais"
 
-str_caso = "Dissertacao/exercicioDebora/caso_mini"
+
 
 
 str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
@@ -98,6 +98,8 @@ str_caso = "Capitulo_5/caso_mini_500Cen_cluster_semanais"
 #str_caso = "Carmen/exercicio_27cen_20D"
 #str_caso = "Carmen/exercicio_27cen_3D"
 ##str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
+#str_caso = "Dissertacao/exercicioDebora/caso_mini"
+#str_caso = "Carmen/exercicio_27cen_1D"
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
 
@@ -116,6 +118,18 @@ vazao_minima = dict["VAZAO_MINIMA"]
 penalidVazMin = dict["PENALIDADE_VAZAO_MINIMA"]
 volume_minimo = dict["VOLUME_MINIMO"]
 volume_espera = dict["VOLUME_ESPERA"]
+simfinal = dict["SIMFINAL"]
+if(simfinal == 1)
+    CAMINHO_CORTES = dict["CAMINHO_CORTES"]
+    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    dat_cortes_ext = CSV.read(CAMINHO_CORTES, DataFrame)
+    cortes_filtrados = filter(row -> row.est == 2, dat_cortes_ext)
+    mex_iter_est = maximum(cortes_filtrados.iter)
+    caso.n_iter = 1
+    #println(dat_cortes_ext)
+    println("mex_iter_est: ", mex_iter_est)
+    println("EXECUTANDO SIMULACAO FINAL")
+end
 
 arvore_externa = dict["ARVORE_EXTERNA"]
 caminho_arvore_externa = dict["CAMINHO_ARVORE_EXTERNA"]

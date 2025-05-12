@@ -41,36 +41,42 @@ def caminho_futuro_pente(no, df_arvore, lista_caminho):
 
 caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp\caso_mini\exercicioGevazp\4Estagios\3Aberturas\Pente_GVZP"
 caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_1D\27_Aberturas_Equiprovavel\Pente_GVZP"
+caminho = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Pente"
 arvore = pd.read_csv(caminho+"\\arvore.csv")
 cenarios = pd.read_csv(caminho+"\\cenarios.csv")
 
 
 
-
 caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp\caso_mini\exercicioGevazp\4Estagios\3Aberturas\PenteBase_16cen"
 caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_1D\27_Aberturas_Equiprovavel\Pente_8cen\A_8cen_1"
+caminho_modelo = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\Caso_SF\Cen1"
 arvore_modelo = pd.read_csv(caminho_modelo+"\\arvore.csv")
 cenarios_modelo = pd.read_csv(caminho_modelo+"\\cenarios.csv")
 
-print(arvore_modelo)
+
+print(cenarios_modelo)
 cenarios_modelo["VAZAO"] = cenarios_modelo["VAZAO"]*0
 periodos = arvore_modelo["PER"].unique()
 usinas = cenarios_modelo["NOME_UHE"].unique()
 
 for uhe in usinas:
-    vazao_no1 = cenarios.loc[(cenarios["NOME_UHE"] == uhe) & (cenarios["NO"] == 1)]["VAZAO"].iloc[0]
-    cenarios_modelo.loc[(cenarios_modelo["NOME_UHE"] == uhe) & (cenarios_modelo["NO"] == 1), "VAZAO"] = vazao_no1
+    #print(uhe)
+    vazao_no1 = cenarios.loc[(cenarios["NOME_UHE"] == uhe) & (cenarios["NO"] == 1)]["VAZAO"]
+    #print(vazao_no1)
+    vaza_no1 = vazao_no1.iloc[0]
+    cenarios_modelo.loc[(cenarios_modelo["NOME_UHE"] == uhe) & (cenarios_modelo["NO"] == 1), "VAZAO"] = vaza_no1
 
 for per in [2]:
     lista_nodes_modelo = arvore_modelo.loc[(arvore_modelo["PER"] == per)]["NO"].unique()
     lista_nodes_originais = arvore.loc[(arvore["PER"] == per)]["NO"].unique()
-    print(lista_nodes_originais)
+    #print(lista_nodes_originais)
     escolhidos = []
     for node in lista_nodes_modelo:
         escolhido = random.choice(lista_nodes_originais)  # first pick
         while escolhido in escolhidos:
             escolhido = random.choice(lista_nodes_originais)  # re-pick if already used
         escolhidos.append(escolhido)
+    print(escolhidos)
 
     for idx_mod, node in enumerate(lista_nodes_modelo):
         lista_caminho = []
@@ -82,7 +88,8 @@ for per in [2]:
         lista_caminho_modelo.append(node)
         caminho_futuro  = caminho_futuro_pente(node,arvore_modelo, lista_caminho_modelo )
         print("escolhido: ", escolhido, " lista_caminho_Original: ", lista_caminho)
-        print("escolhido: ", node, " lista_caminho_modelo: ", lista_caminho_modelo)
+        print("modelo: ", node, " lista_caminho_modelo: ", lista_caminho_modelo)
+
         for idx, elemento_original in enumerate(lista_caminho):
             df_vazoes_escolhido = cenarios.loc[(cenarios["NO"] == elemento_original)].reset_index(drop = True)
             for uhe in usinas:

@@ -14,12 +14,10 @@
     "VOLUME_ESPERA": 1,
     "ARVORE_EXTERNA": 1,
     "VAZAO_EXTERNA": 1,
-    "SIMFINAL": 1,
-    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/A_50x2x2/BKAssimetrico/saidas/PDD/oper/cortes_est.csv",
     "FIM_DE_MUNDO_VOLUMES": 0,
     "PERIODOS_FIM_DE_MUNDO": 0,
-    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Caso_SF/A_50x2x2RedRegress/Determ_14/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Caso_SF/A_50x2x2RedRegress/Determ_14/cenarios.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Demanda_Acima/Deterministico/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Demanda_Acima/Deterministico/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",
@@ -843,6 +841,15 @@
             "CODIGO": 153
         },
         {
+            "NOME": "DO ATLAN_CSA",
+            "GTMIN": 236.12,
+            "GTMAX": 255.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 65
+        },
+        {
             "NOME": "DO ATLANTICO",
             "GTMIN": 201.5,
             "GTMAX": 235.0,
@@ -850,6 +857,24 @@
             "BARRA": 1,
             "SUBMERCADO": 1,
             "CODIGO": 183
+        },
+        {
+            "NOME": "GNA I",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 236.73,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 137
+        },
+        {
+            "NOME": "GNA P. ACU 3",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 169.55,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 238
         },
         {
             "NOME": "GOIANIA II",
@@ -897,6 +922,15 @@
             "CODIGO": 15
         },
         {
+            "NOME": "MARLIM AZUL",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 85.01,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 236
+        },
+        {
             "NOME": "N.PIRATINING",
             "GTMIN": 0.0,
             "GTMAX": 572.0,
@@ -942,6 +976,15 @@
             "CODIGO": 174
         },
         {
+            "NOME": "ONCA PINTADA",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 91.75,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 229
+        },
+        {
             "NOME": "PALMEIRAS GO",
             "GTMIN": 0.0,
             "GTMAX": 176.0,
@@ -958,6 +1001,15 @@
             "BARRA": 1,
             "SUBMERCADO": 1,
             "CODIGO": 50
+        },
+        {
+            "NOME": "PREDILECTA",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 129.04,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 230
         },
         {
             "NOME": "R.SILVEIRA",
@@ -996,6 +1048,15 @@
             "CODIGO": 86
         },
         {
+            "NOME": "STA VITORIA",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 90.0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 146
+        },
+        {
             "NOME": "T.NORTE 2",
             "GTMIN": 0.0,
             "GTMAX": 340.0,
@@ -1003,6 +1064,15 @@
             "BARRA": 1,
             "SUBMERCADO": 1,
             "CODIGO": 194
+        },
+        {
+            "NOME": "TERMOIRAPE I",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 127.25,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 223
         },
         {
             "NOME": "TERMOMACAE",
@@ -1048,6 +1118,78 @@
             "BARRA": 1,
             "SUBMERCADO": 1,
             "CODIGO": 108
+        },
+        {
+            "NOME": "ARAUCARIA",
+            "GTMIN": 0.0,
+            "GTMAX": 485.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 48
+        },
+        {
+            "NOME": "ARGENTINA 1",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 43.02,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 37
+        },
+        {
+            "NOME": "ARGENTINA 1B",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 53.1,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 71
+        },
+        {
+            "NOME": "ARGENTINA 2A",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 53.1,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 38
+        },
+        {
+            "NOME": "ARGENTINA 2B",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 53.1,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 39
+        },
+        {
+            "NOME": "ARGENTINA 2C",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 53.1,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 40
+        },
+        {
+            "NOME": "ARGENTINA 2D",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 53.1,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 59
+        },
+        {
+            "NOME": "CAMBARA",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 164.31,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 237
         },
         {
             "NOME": "CANDIOTA 3",
@@ -1183,6 +1325,15 @@
             "BARRA": 1,
             "SUBMERCADO": 3,
             "CODIGO": 113
+        },
+        {
+            "NOME": "CAMACARI MII",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 1663.47,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 235
         },
         {
             "NOME": "CAMACARI PI",
@@ -1338,6 +1489,15 @@
             "CODIGO": 163
         },
         {
+            "NOME": "P. SERGIPE I",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 206.57,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 224
+        },
+        {
             "NOME": "PAU FERRO I",
             "GTMIN": 0.0,
             "GTMAX": 94.0,
@@ -1345,6 +1505,15 @@
             "BARRA": 1,
             "SUBMERCADO": 3,
             "CODIGO": 160
+        },
+        {
+            "NOME": "PECEM II",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 1680.74,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 162
         },
         {
             "NOME": "PERNAMBU_III",
@@ -1500,6 +1669,15 @@
             "CODIGO": 201
         },
         {
+            "NOME": "C. ROCHA",
+            "GTMIN": 67.0,
+            "GTMAX": 85.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 203
+        },
+        {
             "NOME": "FLORES LT1",
             "GTMIN": 0.0,
             "GTMAX": 40.0,
@@ -1545,6 +1723,24 @@
             "CODIGO": 317
         },
         {
+            "NOME": "JARAQUI",
+            "GTMIN": 62.99,
+            "GTMAX": 75.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 204
+        },
+        {
+            "NOME": "MANAUARA",
+            "GTMIN": 64.5,
+            "GTMAX": 67.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 205
+        },
+        {
             "NOME": "MARANHAO III",
             "GTMIN": 0.0,
             "GTMAX": 519.0,
@@ -1554,6 +1750,24 @@
             "CODIGO": 212
         },
         {
+            "NOME": "MARAN IV L22",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 144.03,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 436
+        },
+        {
+            "NOME": "MARAN IV L7",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 131.23,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 437
+        },
+        {
             "NOME": "MARANHAO IV",
             "GTMIN": 0.0,
             "GTMAX": 338.0,
@@ -1561,6 +1775,24 @@
             "BARRA": 1,
             "SUBMERCADO": 4,
             "CODIGO": 36
+        },
+        {
+            "NOME": "MARAN V L22",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 144.03,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 421
+        },
+        {
+            "NOME": "MARAN V L7",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 131.23,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 422
         },
         {
             "NOME": "MARANHAO V",
@@ -1599,6 +1831,24 @@
             "CODIGO": 141
         },
         {
+            "NOME": "N.VEN 2 L22",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 223.13,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 446
+        },
+        {
+            "NOME": "N.VEN 2 L7",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 223.51,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 447
+        },
+        {
             "NOME": "N.VENECIA 2",
             "GTMIN": 0.0,
             "GTMAX": 178.0,
@@ -1606,6 +1856,15 @@
             "BARRA": 1,
             "SUBMERCADO": 4,
             "CODIGO": 46
+        },
+        {
+            "NOME": "O. CANOAS 1",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 273.1,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 228
         },
         {
             "NOME": "PARNAIBA IV",
@@ -1617,6 +1876,24 @@
             "CODIGO": 116
         },
         {
+            "NOME": "PARNAIBA V",
+            "GTMIN": 0.0,
+            "GTMAX": 0.0,
+            "CUSTO_GERACAO": 104.85,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 239
+        },
+        {
+            "NOME": "PONTA NEGRA",
+            "GTMIN": 64.0,
+            "GTMAX": 66.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 207
+        },
+        {
             "NOME": "PORTO ITAQUI",
             "GTMIN": 0.0,
             "GTMAX": 360.0,
@@ -1624,6 +1901,15 @@
             "BARRA": 1,
             "SUBMERCADO": 4,
             "CODIGO": 176
+        },
+        {
+            "NOME": "TAMBAQUI",
+            "GTMIN": 63.0,
+            "GTMAX": 93.0,
+            "CUSTO_GERACAO": 0.0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 209
         }
     ],
     "SUBMERCADOs": [

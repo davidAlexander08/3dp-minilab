@@ -20,27 +20,38 @@ caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_c
 caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Pente\saidas\PDD\oper"
 caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\A_25_125_250\KMeansAssimetricoProb\saidas\PDD\oper"
 caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\A_100_100_100\BKAssimetrico\saidas\PDD\oper"
+
 caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\GTMIN"
+
+caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Deterministico\saidas\PDD\oper"
+caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\Vassoura\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Pente\saidas\PDD\oper"
+caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\A_100x1x1_42_20\KMeansPente\saidas\PDD\oper"
+caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\revisaoDebora"
+
 casos = {}
 casos["Deterministico"] = caso1
 casos["Vassoura"] = caso2
 casos["Pente"] = caso3
-casos["A_25_125_250"] = caso4
-casos["A_100_100_100"] = caso5
-mapa_nome_caso = {
-        "Deterministico":"Determ.",
-        "Vassoura":"Vass.",
-        "Pente":"Pente",
-        "A_25_125_250":"A_25_125_250",
-        "A_100_100_100":"A_100_100_100",
-}
+casos["A_25x3x2"] = caso4
+casos["A_100x1x1"] = caso5
 cores = {
         "Deterministico":"green",
         "Vassoura":"purple",
         "Pente":"black",
-        "A_25_125_250":"red",
-        "A_100_100_100":"blue"
+        "A_25x3x2":"red",
+        "A_100x1x1":"blue"
 }
+
+mapa_nome_caso = {
+        "Deterministico":"Determ.",
+        "Vassoura":"Vass.",
+        "Pente":"Pente",
+        "A_25x3x2":"A_25x3x2",
+        "A_100x1x1":"A_100x1x1",
+}
+
 
 usina = 6
 periodo = 1

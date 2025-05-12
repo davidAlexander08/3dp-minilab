@@ -306,7 +306,7 @@ def caminho_futuro_pente(no, df_arvore, lista_caminho):
 
 def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_estagio, postos, Simetrica, Weighted, pacoteKmeans, quad, plotar = False):
     filhos = getFilhos(no_analise, df_arvore)
-    print("no_analise: ", no_analise, " filhos: ", filhos)
+    #print("no_analise: ", no_analise, " filhos: ", filhos)
     est = df_arvore.loc[(df_arvore["NO"] == no_analise)]["PER"].iloc[0]
     estagios = df_arvore["PER"].unique()
     estagios = list(estagios)
@@ -322,7 +322,7 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         lista_caminho = []
         lista_caminho.append(no)
         caminho_futuro_pente(no, df_arvore, lista_caminho)
-        print(lista_caminho)
+        #print(lista_caminho)
         
         coluna = 0
         for col_1, no_avaliacao in enumerate(lista_caminho):
@@ -337,10 +337,10 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         prob_weight = df_arvore.loc[(df_arvore["NO"] == no)]["PROB"].iloc[0]
         weights.append(prob_weight)
         mapaMatrixes_Weights[linha] = prob_weight
-    print(matriz_valores)
+    #print(matriz_valores)
 
     weights = np.array(weights)
-    print("weights: ", weights)
+    #print("weights: ", weights)
     k = mapa_clusters_estagio[est]
     clusters = []
     
@@ -351,7 +351,10 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
     else:
         #print("Executando Artesanal Assimetrico")
         #kmeans = MyKMeans(n_clusters=k, random_state=42)
-        kmeans = MyKMeans(n_clusters=k, random_state=42)
+        kmeans = MyKMeans(n_clusters=k, random_state=96)
+        #kmeans = MyKMeans(n_clusters=k, random_state=42)
+        #kmeans = MyKMeans(n_clusters=k, random_state=55)
+        #kmeans = MyKMeans(n_clusters=k, random_state=84)
         clusters= kmeans.fit_predict(matriz_valores, weights, Weighted, quad)
 
         centers_kmeans = kmeans.cluster_centers_
@@ -391,8 +394,8 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         #print("lista_nos_cluster: ", lista_nos_cluster)
 
         matriz_cluster = matriz_valores[lista_linhas_matriz,:]
-        print(lista_linhas_matriz)
-        print(matriz_cluster)
+        #print(lista_linhas_matriz)
+        #print(matriz_cluster)
 
         ########## CLUSTER WEIGHTED AVERAGE
         save_lines = matriz_cluster*0
@@ -410,14 +413,14 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
         ########################################
 
         novas_realizacoes = np.sum(save_lines, axis=0)
-        print("novas_realizacoes: ", novas_realizacoes)
+        #print("novas_realizacoes: ", novas_realizacoes)
 
         lista_exclusao = []
         for no_cluster in lista_nos_cluster:
             lista_caminho = []
             lista_caminho.append(no_cluster)
             caminho_futuro_pente(no_cluster, df_arvore, lista_caminho)
-            print(lista_caminho)
+            #print(lista_caminho)
             lista_exclusao = lista_exclusao + lista_caminho
         df_nos_excluidos = df_arvore[df_arvore["NO"].isin(lista_nos_cluster)].reset_index(drop = True)
         df_arvore = df_arvore[~df_arvore["NO"].isin(lista_exclusao)]
@@ -437,8 +440,8 @@ def percorreArvoreClusterizando(no_analise, df_arvore, df_vazoes, mapa_clusters_
             no_aux += 1
         ### COMENTE ESSA LINHA PARA IMPRIMIR TAMBEM NO CADASTRO DE VAZOES OS NOS ELIMINADOS ALEM DO NO RESULTANTE
         df_vazoes = df_vazoes[~df_vazoes["NO"].isin(lista_exclusao)] 
-        print(lista_nos_novos)
-        print("soma_probs: ", soma_probs)
+        #print(lista_nos_novos)
+        #print("soma_probs: ", soma_probs)
         
         for index, no_criado in enumerate(lista_nos_novos):
             if(index == 0):

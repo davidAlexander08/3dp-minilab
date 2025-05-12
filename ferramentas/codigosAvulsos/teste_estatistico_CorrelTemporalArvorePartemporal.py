@@ -78,7 +78,8 @@ mapa_casos = {
     #"NeuralGas":"NeuralGas"
 }
 analises = ["A_125_2_2", "A_125_2_2", "A_50_5_2", "A_25_10_2"]
-analises = ["A_100x1x1"]
+analise = "A_25x3x2"
+analise = "A_100x1x1"
 #casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
 #casos = ["Arvore1"]
 lista_df_final = []
@@ -99,82 +100,80 @@ mapa_estagio_index ={
 }
 def truncate_to_2_decimals(x):
     return math.floor(x * 100) / 100
-
-for parTemporal in paresCorrelacaoTemporal:
-    for caso in mapa_casos:
-        fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
-        linha = 1
-        coluna = 1
-        contador = 0
-        for analise in analises:
-            caminho_red = camino_caso_orig+"\\"+tipo+"\\"+pasta_adicional_casos+"\\"+analise+"\\"+caso+"\\"
-            df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
-            df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
-            df_orig_est = df_arvore_original.loc[(df_arvore_original["PER"] == estagio_folhas)].reset_index(drop = True)
-            df_red_est = df_arvore_reduzida.loc[(df_arvore_reduzida["PER"] == estagio_folhas)].reset_index(drop = True)
-            probabilidadeOriginal = []
-            probabilidadeReduzida = []
-            dicionarioNosEstagioCaminhosOriginal = {}
-            dicionarioNosEstagioCaminhosReduzida = {}
+for caso in mapa_casos: 
+    fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+    linha = 1
+    coluna = 1
+    contador = 0
+    for parTemporal in paresCorrelacaoTemporal:
+        caminho_red = camino_caso_orig+"\\"+tipo+"\\"+pasta_adicional_casos+"\\"+analise+"\\"+caso+"\\"
+        df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
+        df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
+        df_orig_est = df_arvore_original.loc[(df_arvore_original["PER"] == estagio_folhas)].reset_index(drop = True)
+        df_red_est = df_arvore_reduzida.loc[(df_arvore_reduzida["PER"] == estagio_folhas)].reset_index(drop = True)
+        probabilidadeOriginal = []
+        probabilidadeReduzida = []
+        dicionarioNosEstagioCaminhosOriginal = {}
+        dicionarioNosEstagioCaminhosReduzida = {}
+        for est in parTemporal:
+            dicionarioNosEstagioCaminhosOriginal[est] = []
+            dicionarioNosEstagioCaminhosReduzida[est] = []
+        for no in df_orig_est["NO"].unique():
+            prob = 1
+            lista_caminho = retorna_lista_caminho(no, df_arvore_original)[:-1]
             for est in parTemporal:
-                dicionarioNosEstagioCaminhosOriginal[est] = []
-                dicionarioNosEstagioCaminhosReduzida[est] = []
-            for no in df_orig_est["NO"].unique():
-                prob = 1
-                lista_caminho = retorna_lista_caminho(no, df_arvore_original)[:-1]
-                for est in parTemporal:
-                    dicionarioNosEstagioCaminhosOriginal[est].append(lista_caminho[mapa_estagio_index[est]])
-                for elemento in lista_caminho:
-                    prob_elemento = df_arvore_original.loc[(df_arvore_original["NO"] == elemento)]["PROB"].iloc[0]
-                    prob = prob*prob_elemento
-                probabilidadeOriginal.append(prob)
-            
-            for no in df_red_est["NO"].unique():
-                prob = 1
-                lista_caminho = retorna_lista_caminho(no, df_arvore_reduzida)[:-1]
-                for est in parTemporal:
-                    dicionarioNosEstagioCaminhosReduzida[est].append(lista_caminho[mapa_estagio_index[est]])
-                for elemento in lista_caminho:
-                    prob_elemento = df_arvore_reduzida.loc[(df_arvore_reduzida["NO"] == elemento)]["PROB"].iloc[0]
-                    prob = prob*prob_elemento
-                probabilidadeReduzida.append(prob) 
+                dicionarioNosEstagioCaminhosOriginal[est].append(lista_caminho[mapa_estagio_index[est]])
+            for elemento in lista_caminho:
+                prob_elemento = df_arvore_original.loc[(df_arvore_original["NO"] == elemento)]["PROB"].iloc[0]
+                prob = prob*prob_elemento
+            probabilidadeOriginal.append(prob)
+        
+        for no in df_red_est["NO"].unique():
+            prob = 1
+            lista_caminho = retorna_lista_caminho(no, df_arvore_reduzida)[:-1]
+            for est in parTemporal:
+                dicionarioNosEstagioCaminhosReduzida[est].append(lista_caminho[mapa_estagio_index[est]])
+            for elemento in lista_caminho:
+                prob_elemento = df_arvore_reduzida.loc[(df_arvore_reduzida["NO"] == elemento)]["PROB"].iloc[0]
+                prob = prob*prob_elemento
+            probabilidadeReduzida.append(prob) 
 
-            probabilidadeOriginal = np.array(probabilidadeOriginal)
-            probabilidadeReduzida = np.array(probabilidadeReduzida)
+        probabilidadeOriginal = np.array(probabilidadeOriginal)
+        probabilidadeReduzida = np.array(probabilidadeReduzida)
 
-            listaCorrelacaoTemporalOriginal = []
-            listaCorrelacaoTemporalReduzida = []
-            for usi in usinas:
-                dicionarioVetorRealizacoesOriginal = {}
-                dicionarioVetorRealizacoesReduzida = {}
-                for est in parTemporal:
-                    dicionarioVetorRealizacoesOriginal[est] = []
-                    dicionarioVetorRealizacoesReduzida[est] = []
+        listaCorrelacaoTemporalOriginal = []
+        listaCorrelacaoTemporalReduzida = []
+        for usi in usinas:
+            dicionarioVetorRealizacoesOriginal = {}
+            dicionarioVetorRealizacoesReduzida = {}
+            for est in parTemporal:
+                dicionarioVetorRealizacoesOriginal[est] = []
+                dicionarioVetorRealizacoesReduzida[est] = []
 
-                for est in parTemporal:
-                    for no in dicionarioNosEstagioCaminhosOriginal[est]:
-                        vazao = df_vazoes.loc[(df_vazoes["NOME_UHE"] == usi) & (df_vazoes["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
-                        dicionarioVetorRealizacoesOriginal[est].append(vazao)            
-                    for no in dicionarioNosEstagioCaminhosReduzida[est]:
-                        vazao = df_vazoes_reduzida.loc[(df_vazoes_reduzida["NOME_UHE"] == usi) & (df_vazoes_reduzida["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
-                        dicionarioVetorRealizacoesReduzida[est].append(vazao)
+            for est in parTemporal:
+                for no in dicionarioNosEstagioCaminhosOriginal[est]:
+                    vazao = df_vazoes.loc[(df_vazoes["NOME_UHE"] == usi) & (df_vazoes["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
+                    dicionarioVetorRealizacoesOriginal[est].append(vazao)            
+                for no in dicionarioNosEstagioCaminhosReduzida[est]:
+                    vazao = df_vazoes_reduzida.loc[(df_vazoes_reduzida["NOME_UHE"] == usi) & (df_vazoes_reduzida["NO"] == no)].reset_index(drop = True)["VAZAO"].iloc[0]
+                    dicionarioVetorRealizacoesReduzida[est].append(vazao)
 
-                #print(dicionarioVetorRealizacoesOriginal)
-                #print(dicionarioVetorRealizacoesReduzida[parTemporal[0]])
-                #print(dicionarioVetorRealizacoesReduzida[parTemporal[1]])
-                try: 
-                    corr_orig = weighted_correlation(dicionarioVetorRealizacoesOriginal[parTemporal[0]], 
-                                                    dicionarioVetorRealizacoesOriginal[parTemporal[1]], 
-                                                    probabilidadeOriginal)
-                    corr_red = weighted_correlation(dicionarioVetorRealizacoesReduzida[parTemporal[0]], 
-                                                    dicionarioVetorRealizacoesReduzida[parTemporal[1]], 
-                                                    probabilidadeReduzida)
-                    #print("corr_orig: ", corr_orig)
-                    #print("corr_red: ", corr_red)
-                    listaCorrelacaoTemporalOriginal.append(corr_orig)
-                    listaCorrelacaoTemporalReduzida.append(corr_red)
-                except:
-                    print(f"Não foi possível calcular a correlação tempora para usina {usi} para o par {parTemporal}")
+            #print(dicionarioVetorRealizacoesOriginal)
+            #print(dicionarioVetorRealizacoesReduzida[parTemporal[0]])
+            #print(dicionarioVetorRealizacoesReduzida[parTemporal[1]])
+            try: 
+                corr_orig = weighted_correlation(dicionarioVetorRealizacoesOriginal[parTemporal[0]], 
+                                                dicionarioVetorRealizacoesOriginal[parTemporal[1]], 
+                                                probabilidadeOriginal)
+                corr_red = weighted_correlation(dicionarioVetorRealizacoesReduzida[parTemporal[0]], 
+                                                dicionarioVetorRealizacoesReduzida[parTemporal[1]], 
+                                                probabilidadeReduzida)
+                #print("corr_orig: ", corr_orig)
+                #print("corr_red: ", corr_red)
+                listaCorrelacaoTemporalOriginal.append(corr_orig)
+                listaCorrelacaoTemporalReduzida.append(corr_red)
+            except:
+                print(f"Não foi possível calcular a correlação tempora para usina {usi} para o par {parTemporal}")
 
             #print("listaCorrelacaoTemporalOriginal: ", listaCorrelacaoTemporalOriginal)
             #print("listaCorrelacaoTemporalReduzida: ",listaCorrelacaoTemporalReduzida)
@@ -279,18 +278,18 @@ for parTemporal in paresCorrelacaoTemporal:
             #print("REDUZIDA")
             #print(dicionario_correlacao_reduzida)
         # Customize layout
-        fig.update_layout(
-            title=f"Correlação Temporal Estagios {parTemporal[0]} {parTemporal[1]} Árvore Original x Construída",
-            title_font=dict(size=24, family="Arial", color="black"),
-            xaxis_title="Correl. Orig.",
-            yaxis_title="Correl. Red.",
-            font=dict(size=20), 
-            xaxis=dict(title_font=dict(size=20)),  
-            yaxis=dict(title_font=dict(size=20)),
-            showlegend=False
-        )
-        fig.write_html(f"{camino_caso_orig}\\{tipo}\\{caso}_{parTemporal[0]}_{parTemporal[1]}_correlacaoEspacialArvores.html")
-        # Print R² value
+    fig.update_layout(
+        title=f"Correlação Temporal Estagios {parTemporal[0]} {parTemporal[1]} Árvore Original x Construída",
+        title_font=dict(size=24, family="Arial", color="black"),
+        xaxis_title="Correl. Orig.",
+        yaxis_title="Correl. Red.",
+        font=dict(size=20), 
+        xaxis=dict(title_font=dict(size=20)),  
+        yaxis=dict(title_font=dict(size=20)),
+        showlegend=False
+    )
+    fig.write_html(f"{camino_caso_orig}\\{tipo}\\{caso}_{parTemporal[0]}_{parTemporal[1]}_correlacaoEspacialArvores.html")
+    # Print R² value
 
 
 

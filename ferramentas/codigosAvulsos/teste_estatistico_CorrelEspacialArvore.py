@@ -55,22 +55,30 @@ def weighted_correlation(data_x, data_y, weights):
     correlation = covariance / np.sqrt(var_x * var_y)
     return correlation
 
-
 camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
 pasta_arvores = "\\avaliaArvoresRepresentativo"
+pasta_adicional_casos = "revisaoDebora\\"
+#pasta_arvores = "\\avaliaArvoresSIN"
 caminho_pente = "\\Pente"
 df_arvore_original = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\arvore.csv")
 df_vazoes = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\cenarios.csv")
 
-analises = [("A_125_2_2",3), ("A_125_2_2",2), ("A_50_5_2",2), ("A_25_10_2",2) ]
+analises = [("A_125_2_2_Teste",3), ("A_125_2_2_Teste",2), ("A_50_5_2_Teste",2), ("A_25_10_2_Teste",2) ]
+analises = [("A_25x3x2",4), ("A_25x3x2",3), ("A_25x3x2",2)]
+analises = [("A_100x1x1",4), ("A_100x1x1",3), ("A_100x1x1",2)]
 mapa_casos = {
     "BKAssimetrico":"Redução Regressiva",
-    "KMeansAssimetricoProb":"K-Means Assimetrico", 
-    "KMeansSimetricoProbQuad":"K-Means Simetrico", 
-    "NeuralGas":"NeuralGas"
+    "KMeansPente":"K-Means",
+    #"KMeansAssimetricoProb":"K-Means Assimetrico", 
+    #"KMeansAssimetricoProbPente":"K-Means", 
+    #"KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
+    #"KMeansSimetricoProbQuad":"K-Means Simetrico", 
+    #"NeuralGas":"NeuralGas"
 }
-casos = ["BKAssimetrico", "KMeansAssimetricoProb", "KMeansSimetricoProbQuad", "NeuralGas"]
-#casos = ["Arvore6"]
+
+analises = [("A_100x1x1",4), ("A_100x1x1",3), ("A_100x1x1",2)]
+
+
 lista_df_final = []
 usinas = df_vazoes["NOME_UHE"].unique()
 
@@ -88,8 +96,8 @@ for caso in mapa_casos:
     contador = 0
     for analise in analises:
         caminho_red = camino_caso_orig+"\\"+analise[0]+"\\"+caso+"\\"
-        df_arvore_reduzida = pd.read_csv(camino_caso_orig+pasta_arvores+"\\"+analise[0]+"\\"+caso+"\\arvore.csv")
-        df_vazoes_reduzida = pd.read_csv(camino_caso_orig+pasta_arvores+"\\"+analise[0]+"\\"+caso+"\\cenarios.csv")
+        df_arvore_reduzida = pd.read_csv(camino_caso_orig+pasta_arvores+"\\"+pasta_adicional_casos+analise[0]+"\\"+caso+"\\arvore.csv")
+        df_vazoes_reduzida = pd.read_csv(camino_caso_orig+pasta_arvores+"\\"+pasta_adicional_casos+analise[0]+"\\"+caso+"\\cenarios.csv")
 
         prob_original = []
         prob_red = []

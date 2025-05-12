@@ -46,13 +46,14 @@ def calcula_prodt_acum_65(codigo_usi, df_confhd, df_hidr):
     return prodt
 
 
-caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_10D\\128_Aberturas_Equiprovavel\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_300Cen_sorteio\\"
 ### VAZOES_FEIXES_INCR_SIN
 #arquivo = "avaliaArvores\\A_50_5_2_Teste\\estatisticasArvores"
-arquivo = "avaliaArvoresSIN\\A_50_5_2_Teste\\estatisticasArvores"
-#arquivo = "avaliaArvoresRepresentativo\\Reducao_ENA\\A_50_250_500\\estatisticasArvores"
+#arquivo = "avaliaArvoresSIN\\A_50_5_2_Teste\\estatisticasArvores"
+#arquivo = "avaliaArvoresRepresentativo\\Reducao_ENA\\A_25_250_500\\estatisticasArvores"
 #arquivo = "avaliaArvoresRepresentativo\\Reducao_ENA\\A_25_250_500\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_125_2_2_Teste\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_50_5_2\\estatisticasArvores_50_5_2"
@@ -60,7 +61,9 @@ arquivo = "avaliaArvoresSIN\\A_50_5_2_Teste\\estatisticasArvores"
 #arquivo = "avaliaArvores\\A_5_50_2\\estatisticasArvores_5_50_2"
 #arquivo = "avaliaArvores\\A_125_2_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
 #arquivo = "avaliaArvores\\A_50_5_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
-#arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
+arquivo = "Academicos\\A_4x4x2\\estatisticasArvores"
+arquivo = "revisaoDebora\\A_25x3x2\\estatisticasArvores"
 #df = pd.read_csv("estatisticasArvores.csv", sep=";")
 df = pd.read_csv(caminho+arquivo+".csv", sep=";")
 df = df.dropna().reset_index(drop = True)
@@ -74,7 +77,7 @@ casos = df["CASO"].unique()
 estagios = df["EST"].unique()
 postos = df["POSTO"].unique()
 
-df_vazoes = pd.read_csv(caminho+"cenarios.csv")
+df_vazoes = pd.read_csv(caminho+"GTMIN\\Pente\\cenarios.csv")
 caminho_deck = "deck_newave_2020_01"
 #caminho_deck = "deck_newave_2020_01_reduzido_180325"
 #caminho_deck = "deck_newave_2020_01_reduzido_180325_postosAlterados"
@@ -292,6 +295,7 @@ for tipo_falha in dicionarioFalhas:
                             "EST":[est],
                             "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
                             "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                            "TNP":[round(len(posto_aoMenosUmaFalha),2)],
                             "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
                         }
                     )
@@ -326,6 +330,8 @@ for tipo_falha in dicionarioFalhasGerais:
                             "EST":[est],
                             "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
                             "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                            "TNP":[round(len(posto_aoMenosUmaFalha),2)],
+
                             "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
                         }
                     )
@@ -350,6 +356,8 @@ for tipo_falha in dicionarioFalhasGerais:
                         "FALHA":[tipo_falha],
                         "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
                         "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                        "TNP":[round(len(posto_aoMenosUmaFalha),2)],
+
                         "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
                     }
                 )
@@ -388,6 +396,8 @@ for tipo_falha in dicionarioFalhasGlobais:
                             "EST":[est],
                             "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
                             "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                            "TNP":[round(len(posto_aoMenosUmaFalha),2)],
+
                             "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
                         }
                     )
@@ -412,6 +422,8 @@ for tipo_falha in dicionarioFalhasGlobais:
                         "FALHA":[tipo_falha],
                         "TESTE":["FALHOU_AO_MENOS_UMTESTE"],
                         "NPOSTOS":[round(len(posto_aoMenosUmaFalha)/len(postos),2)*100],
+                        "TNP":[round(len(posto_aoMenosUmaFalha),2)],
+
                         "PERC.ENA":[representacaoNaEnaDOSIN(posto_aoMenosUmaFalha, df_ena_result_mean)]
                     }
                 )

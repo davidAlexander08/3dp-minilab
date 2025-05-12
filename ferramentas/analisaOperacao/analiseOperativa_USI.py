@@ -48,7 +48,7 @@ caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "avaliaArvoresRepresentativo\\"
 caminho_subarvores = "GTMIN"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-
+caminhosaida = "revisaoDebora"
 
 casos = [caminho_subarvores+"\\Pente",
         #"Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb", 
@@ -56,7 +56,9 @@ casos = [caminho_subarvores+"\\Pente",
         #"Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb",
-        caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb",
+        #caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb",
+        "revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPenteSemente200K12",
+
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
         #"Rodada_Final\\A_300_300_300\\BKAssimetrico",
@@ -72,10 +74,10 @@ mapa_nome_caso = {
         caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
         caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_125_125_125\\BKAssimetrico":"A_125_125_125",
-        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
+        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico":"A_100x1x1",
         caminho_subarvores+"\\Deterministico":"Deterministico",
         caminho_subarvores+"\\Vassoura":"Vassoura",
-
+        "revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPenteSemente200K12":"A_25x3x2",
         "Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb":"A_125_2_2", 
         "Rodada_Final\\A_50_5_2\\KMeansAssimetricoProb":"A_50_5_2",
         "Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb":"A_25_10_2",
@@ -87,7 +89,7 @@ mapa_nome_caso = {
         "Rodada_Final\\A_250_250_250\\BKAssimetrico":"A_250_250_250",
         "Rodada_Final\\A_200_200_200\\BKAssimetrico":"A_200_200_200",
         "Rodada_Final\\A_150_150_150\\BKAssimetrico":"A_150_150_150",
-        "Rodada_Final\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
+        "Rodada_Final\\A_100_100_100\\BKAssimetrico":"A_100x1x1",
 
 }
 caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Demanda_Acima"
@@ -137,7 +139,7 @@ mapaNomeUsinas = {
         169:"SOBRADINHO",
         172:"ITAPARICA",
         91:"MACHADINHO",
-        #115:"GP SOUZA",
+        #115:"GP SOUZA", 
         77:"SALTO SANTIAGO",
         275:"TUCURUI",
         227:"SINOP",
@@ -249,5 +251,5 @@ for grandeza in grandezas:
         yaxis=dict(title_font=dict(size=20)),
         showlegend=True
     )
-    fig.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminho_subarvores}\\{nome_figura}.html")
+    fig.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\{nome_figura}.html")
     #exit(1)
