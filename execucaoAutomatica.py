@@ -1,22 +1,6 @@
 import json
 import subprocess
 
-caminho_arvores = [ "Pente_GVZP\\", "Pente_8cen\\", "A_2_2_2\\", "A_4_2_1\\" ] 
-#caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
-mapa_caminho_avaliacao = {
-    "Pente_GVZP\\":[""],
-    "Pente_8cen\\":["BKAssimetrico\\", "KMeansPente\\"],
-    "A_2_2_2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
-    "A_2_3_4\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
-    "A_4_2_1\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
-    "Rodada_Final\\A_125_125_125\\":["BKAssimetrico\\"],
-    }
-caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
-caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
-
-caminho_caso = "Carmen\\exercicio_27cen_20D\\"
-caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
 
 ##########################################
 caminho_arvores = ["Pente_GVZP\\","16Folhas\\A_2x2x4\\", "16Folhas\\A_4x2x2\\", "16Folhas\\A_16_1_1\\",
@@ -24,7 +8,7 @@ caminho_arvores = ["Pente_GVZP\\","16Folhas\\A_2x2x4\\", "16Folhas\\A_4x2x2\\", 
                    ] 
 # 
 #"64Folhas\\A_8x4x2\\", "64Folhas\\A_4x4x4\\", "64Folhas\\A_2x4x8\\",
-
+ 
 mapa_caminho_avaliacao = {
     "Pente_GVZP\\":[""],
     "64Folhas\\A_8x4x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
@@ -51,6 +35,31 @@ caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Carmen\\exercicio_27cen_1D\\"
 caminho_caso_arvores = "64_Aberturas_Equiprovavel\\"
 
+
+
+
+
+
+
+##########################################################################
+
+caminho_arvores = [ "Deterministico\\", "Vassoura\\"]#"Pente_GVZP\\",  "A_4x2x1\\","A_2x2x2\\", "A_8x1x1\\", "A_2x3x4\\", ] # 
+#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
+#caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
+mapa_caminho_avaliacao = {
+    "Pente_GVZP\\":[""],
+    "Deterministico\\":[""],
+    "Vassoura\\":[""],
+    #"A_2x2x2\\":["KMeansSimetricoProbQuadPente\\"],
+    #"A_2x3x4\\":["KMeansSimetricoProbQuadPente\\"],
+    "A_2x3x4\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "A_4x2x1\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\"],
+    #"A_4x2x1\\":["KMeansSimetricoProbQuadPente\\"],
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Carmen\\exercicio_27cen_36D\\"
+caminho_caso_arvores = "128_Aberturas_Equiprovavel\\"
+caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
 ##########################################
 caminho_arvores = ["revisaoDebora\\A_100x1x1_42_20\\", "revisaoDebora\\A_100x1x1_55_20\\", "revisaoDebora\\A_100x1x1_55_137\\", 
                     "revisaoDebora\\A_100x1x1_84_137\\", "revisaoDebora\\A_100x1x1_254_20\\" ] 
@@ -68,6 +77,33 @@ caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
 
+
+
+##########################################################################
+
+caminho_arvores = ["Pente_GVZP\\",  "Academicos\\A_4x4x2\\","Academicos\\A_2x2x8\\", "Academicos\\A_8x2x2\\", "Academicos\\A_4x6x3\\", "Academicos\\A_32x1x1\\"] #  
+#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
+#caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
+mapa_caminho_avaliacao = {
+    "Pente_GVZP\\":[""],
+    "Academicos\\A_32x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
+    "Academicos\\A_4x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
+    #"A_2x2x2\\":["KMeansSimetricoProbQuadPente\\"],
+    #"A_2x3x4\\":["KMeansSimetricoProbQuadPente\\"],
+    "Academicos\\A_2x2x8\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
+    "Academicos\\A_8x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
+    "Academicos\\A_4x6x3\\":["KMeansAssimetricoProbPente\\"],
+    #"A_4x2x1\\":["KMeansSimetricoProbQuadPente\\"],
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Academico\\exercicio_1D\\"
+caminho_caso_arvores = "128_Aberturas_Equiprovavel_FimMundo\\"
+#caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
+
+
+
+
+
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "src\\PDD.jl"
 
@@ -83,6 +119,7 @@ for caminho_arvore in caminho_arvores:
             config = json.load(file)
         config["CAMINHO_ARVORE_EXTERNA"] = new_arvore_path
         config["CAMINHO_VAZAO_EXTERNA"] = new_cenarios_path
+        config["SIMFINAL"] = 0
         with open(json_path, "w") as file:
             json.dump(config, file, indent=4)
         print("✅ JSON updated!")

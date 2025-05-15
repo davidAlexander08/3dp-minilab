@@ -1,0 +1,1375 @@
+{
+    "MAX_ITERACOES": 100,
+    "ESTAGIOS": 4,
+    "ARVORE": [
+        1,
+        1
+    ],
+    "REDE": 0,
+    "LIMITES_INTERCAMBIO": 0,
+    "VAZAO_MINIMA": 0,
+    "PENALIDADE_VAZAO_MINIMA": 5000,
+    "VOLUME_MINIMO": 0,
+    "VOLUME_ESPERA": 0,
+    "ARVORE_EXTERNA": 1,
+    "VAZAO_EXTERNA": 1,
+    "FIM_DE_MUNDO_VOLUMES": 0,
+    "PERIODOS_FIM_DE_MUNDO": 0,
+    "SIMFINAL": 0,
+    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/A_50x2x2/BKAssimetrico/saidas/PDD/oper/cortes_est.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_20D/128_Aberturas_Equiprovavel/A_32x1x1/KMeansPente/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_20D/128_Aberturas_Equiprovavel/A_32x1x1/KMeansPente/cenarios.csv",
+    "UHEs": [
+        {
+            "NOME": "6",
+            "POSTO": 6,
+            "JUSANTE": "8",
+            "GHMIN": 0,
+            "GHMAX": 1312,
+            "TURBMAX": 1692,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 17217,
+            "PRODT": 0.78,
+            "VOLUME_INICIAL": 2281,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 6
+        },
+        {
+            "NOME": "8",
+            "POSTO": 8,
+            "JUSANTE": "11",
+            "GHMIN": 0,
+            "GHMAX": 1104,
+            "TURBMAX": 2028,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.54,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 8
+        },
+        {
+            "NOME": "11",
+            "POSTO": 11,
+            "JUSANTE": "12",
+            "GHMIN": 0,
+            "GHMAX": 380,
+            "TURBMAX": 1584,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.25,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 11
+        },
+        {
+            "NOME": "12",
+            "POSTO": 12,
+            "JUSANTE": "17",
+            "GHMIN": 0,
+            "GHMAX": 328,
+            "TURBMAX": 1988,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.2,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 12
+        },
+        {
+            "NOME": "17",
+            "POSTO": 17,
+            "JUSANTE": "18",
+            "GHMIN": 0,
+            "GHMAX": 1488,
+            "TURBMAX": 2944,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 5260,
+            "PRODT": 0.48,
+            "VOLUME_INICIAL": 1216,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 17
+        },
+        {
+            "NOME": "18",
+            "POSTO": 18,
+            "JUSANTE": "34",
+            "GHMIN": 0,
+            "GHMAX": 1396,
+            "TURBMAX": 2958,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 5169,
+            "PRODT": 0.45,
+            "VOLUME_INICIAL": 1225,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 18
+        },
+        {
+            "NOME": "34",
+            "POSTO": 34,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 3444,
+            "TURBMAX": 9399,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 12828,
+            "PRODT": 0.35,
+            "VOLUME_INICIAL": 8740,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 34
+        },
+        {
+            "NOME": "156",
+            "POSTO": 156,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 396,
+            "TURBMAX": 924,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 15278,
+            "PRODT": 0.4,
+            "VOLUME_INICIAL": 8711,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 156
+        },
+        {
+            "NOME": "227",
+            "POSTO": 227,
+            "JUSANTE": "229",
+            "GHMIN": 0,
+            "GHMAX": 401,
+            "TURBMAX": 1600,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 2059,
+            "PRODT": 0.22,
+            "VOLUME_INICIAL": 1028,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 227
+        },
+        {
+            "NOME": "229",
+            "POSTO": 229,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 1820,
+            "TURBMAX": 3860,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.49,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 229
+        },
+        {
+            "NOME": "251",
+            "POSTO": 270,
+            "JUSANTE": "257",
+            "GHMIN": 0,
+            "GHMAX": 1275,
+            "TURBMAX": 1191,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 43250,
+            "PRODT": 0.97,
+            "VOLUME_INICIAL": 4069,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 251
+        },
+        {
+            "NOME": "257",
+            "POSTO": 257,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 498,
+            "TURBMAX": 2073,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 529,
+            "PRODT": 0.23,
+            "VOLUME_INICIAL": 97,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 257
+        },
+        {
+            "NOME": "285",
+            "POSTO": 285,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 3750,
+            "TURBMAX": 26900,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 1497,
+            "PRODT": 0.12,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 285
+        },
+        {
+            "NOME": "47",
+            "POSTO": 47,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 100,
+            "TURBMAX": 364,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 3165,
+            "PRODT": 0.27,
+            "VOLUME_INICIAL": 911,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 47
+        },
+        {
+            "NOME": "74",
+            "POSTO": 74,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 1676,
+            "TURBMAX": 1376,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 3805,
+            "PRODT": 1.03,
+            "VOLUME_INICIAL": 791,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 74
+        },
+        {
+            "NOME": "91",
+            "POSTO": 217,
+            "JUSANTE": "93",
+            "GHMIN": 0,
+            "GHMAX": 1140,
+            "TURBMAX": 1311,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 1057,
+            "PRODT": 0.86,
+            "VOLUME_INICIAL": 187,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 91
+        },
+        {
+            "NOME": "93",
+            "POSTO": 93,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 226,
+            "TURBMAX": 102,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 1404,
+            "PRODT": 2.26,
+            "VOLUME_INICIAL": 416,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 93
+        },
+        {
+            "NOME": "275",
+            "POSTO": 275,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 8535,
+            "TURBMAX": 14626,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 38982,
+            "PRODT": 0.52,
+            "VOLUME_INICIAL": 6728,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 275
+        }
+    ],
+    "UTEs": [
+        {
+            "NOME": "ANGRA 1",
+            "GTMIN": 201.74,
+            "GTMAX": 640.0,
+            "CUSTO_GERACAO": 31.17,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 1
+        },
+        {
+            "NOME": "ANGRA 2",
+            "GTMIN": 1329.2,
+            "GTMAX": 1350.0,
+            "CUSTO_GERACAO": 20.12,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 13
+        },
+        {
+            "NOME": "BAIXADA FLU",
+            "GTMIN": 0.0,
+            "GTMAX": 530.0,
+            "CUSTO_GERACAO": 88.98,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 211
+        },
+        {
+            "NOME": "CUBATAO",
+            "GTMIN": 86.4,
+            "GTMAX": 216.0,
+            "CUSTO_GERACAO": 326.8,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 97
+        },
+        {
+            "NOME": "CUIABA G CC",
+            "GTMIN": 0.0,
+            "GTMAX": 529.0,
+            "CUSTO_GERACAO": 511.77,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 12
+        },
+        {
+            "NOME": "DAIA",
+            "GTMIN": 0.0,
+            "GTMAX": 44.0,
+            "CUSTO_GERACAO": 1162.38,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 153
+        },
+        {
+            "NOME": "DO ATLANTICO",
+            "GTMIN": 201.5,
+            "GTMAX": 235.0,
+            "CUSTO_GERACAO": 188.16,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 183
+        },
+        {
+            "NOME": "GOIANIA II",
+            "GTMIN": 0.0,
+            "GTMAX": 140.0,
+            "CUSTO_GERACAO": 1218.35,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 155
+        },
+        {
+            "NOME": "IBIRITE",
+            "GTMIN": 0.0,
+            "GTMAX": 226.0,
+            "CUSTO_GERACAO": 261.3,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 63
+        },
+        {
+            "NOME": "IGARAPE",
+            "GTMIN": 0.0,
+            "GTMAX": 131.0,
+            "CUSTO_GERACAO": 939.55,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 2
+        },
+        {
+            "NOME": "JUIZ DE FORA",
+            "GTMIN": 0.0,
+            "GTMAX": 87.0,
+            "CUSTO_GERACAO": 283.74,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 54
+        },
+        {
+            "NOME": "LINHARES",
+            "GTMIN": 199.16,
+            "GTMAX": 204.0,
+            "CUSTO_GERACAO": 210.76,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 15
+        },
+        {
+            "NOME": "N.PIRATINING",
+            "GTMIN": 0.0,
+            "GTMAX": 572.0,
+            "CUSTO_GERACAO": 548.04,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 110
+        },
+        {
+            "NOME": "NORTEFLU-1",
+            "GTMIN": 399.99,
+            "GTMAX": 400.0,
+            "CUSTO_GERACAO": 66.85,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 171
+        },
+        {
+            "NOME": "NORTEFLU-2",
+            "GTMIN": 0.0,
+            "GTMAX": 100.0,
+            "CUSTO_GERACAO": 77.48,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 172
+        },
+        {
+            "NOME": "NORTEFLU-3",
+            "GTMIN": 0.0,
+            "GTMAX": 200.0,
+            "CUSTO_GERACAO": 147.95,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 173
+        },
+        {
+            "NOME": "NORTEFLU-4",
+            "GTMIN": 0.0,
+            "GTMAX": 127.0,
+            "CUSTO_GERACAO": 434.07,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 174
+        },
+        {
+            "NOME": "PALMEIRAS GO",
+            "GTMIN": 0.0,
+            "GTMAX": 176.0,
+            "CUSTO_GERACAO": 923.83,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 182
+        },
+        {
+            "NOME": "PIRAT.12 G",
+            "GTMIN": 0.0,
+            "GTMAX": 200.0,
+            "CUSTO_GERACAO": 470.34,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 50
+        },
+        {
+            "NOME": "R.SILVEIRA",
+            "GTMIN": 0.0,
+            "GTMAX": 25.0,
+            "CUSTO_GERACAO": 978.1,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 9
+        },
+        {
+            "NOME": "SEROPEDICA",
+            "GTMIN": 127.35,
+            "GTMAX": 386.0,
+            "CUSTO_GERACAO": 354.24,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 62
+        },
+        {
+            "NOME": "ST.CRUZ 34",
+            "GTMIN": 0.0,
+            "GTMAX": 436.0,
+            "CUSTO_GERACAO": 310.41,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 4
+        },
+        {
+            "NOME": "ST.CRUZ NOVA",
+            "GTMIN": 0.0,
+            "GTMAX": 500.0,
+            "CUSTO_GERACAO": 140.96,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 86
+        },
+        {
+            "NOME": "T.NORTE 2",
+            "GTMIN": 0.0,
+            "GTMAX": 340.0,
+            "CUSTO_GERACAO": 910.86,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 194
+        },
+        {
+            "NOME": "TERMOMACAE",
+            "GTMIN": 0.0,
+            "GTMAX": 929.0,
+            "CUSTO_GERACAO": 591.17,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 90
+        },
+        {
+            "NOME": "TERMORIO",
+            "GTMIN": 127.35,
+            "GTMAX": 1036.0,
+            "CUSTO_GERACAO": 256.97,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 47
+        },
+        {
+            "NOME": "TRES LAGOAS",
+            "GTMIN": 0.0,
+            "GTMAX": 350.0,
+            "CUSTO_GERACAO": 216.44,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 68
+        },
+        {
+            "NOME": "VIANA",
+            "GTMIN": 0.0,
+            "GTMAX": 175.0,
+            "CUSTO_GERACAO": 707.41,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 49
+        },
+        {
+            "NOME": "XAVANTES",
+            "GTMIN": 0.0,
+            "GTMAX": 54.0,
+            "CUSTO_GERACAO": 1671.57,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 108
+        },
+        {
+            "NOME": "CANDIOTA 3",
+            "GTMIN": 210.0,
+            "GTMAX": 350.0,
+            "CUSTO_GERACAO": 84.68,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 156
+        },
+        {
+            "NOME": "CANOAS",
+            "GTMIN": 0.0,
+            "GTMAX": 249.0,
+            "CUSTO_GERACAO": 698.14,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 64
+        },
+        {
+            "NOME": "CISFRAMA",
+            "GTMIN": 0.0,
+            "GTMAX": 4.0,
+            "CUSTO_GERACAO": 303.11,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 169
+        },
+        {
+            "NOME": "FIGUEIRA",
+            "GTMIN": 0.0,
+            "GTMAX": 20.0,
+            "CUSTO_GERACAO": 330.64,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 28
+        },
+        {
+            "NOME": "J.LACERDA A1",
+            "GTMIN": 60.0,
+            "GTMAX": 100.0,
+            "CUSTO_GERACAO": 254.97,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 26
+        },
+        {
+            "NOME": "J.LACERDA A2",
+            "GTMIN": 106.34,
+            "GTMAX": 132.0,
+            "CUSTO_GERACAO": 235.35,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 27
+        },
+        {
+            "NOME": "J.LACERDA B",
+            "GTMIN": 208.64,
+            "GTMAX": 262.0,
+            "CUSTO_GERACAO": 228.12,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 25
+        },
+        {
+            "NOME": "J.LACERDA C",
+            "GTMIN": 306.46,
+            "GTMAX": 363.0,
+            "CUSTO_GERACAO": 193.62,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 24
+        },
+        {
+            "NOME": "PAMPA SUL",
+            "GTMIN": 170.0,
+            "GTMAX": 345.0,
+            "CUSTO_GERACAO": 53.4,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 107
+        },
+        {
+            "NOME": "SAO SEPE",
+            "GTMIN": 0.0,
+            "GTMAX": 8.0,
+            "CUSTO_GERACAO": 74.49,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 149
+        },
+        {
+            "NOME": "URUGUAIANA",
+            "GTMIN": 0.0,
+            "GTMAX": 640.0,
+            "CUSTO_GERACAO": 486.2,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 35
+        },
+        {
+            "NOME": "ALTOS",
+            "GTMIN": 0.0,
+            "GTMAX": 13.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 109
+        },
+        {
+            "NOME": "ARACATI",
+            "GTMIN": 0.0,
+            "GTMAX": 11.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 111
+        },
+        {
+            "NOME": "BAHIA I",
+            "GTMIN": 0.0,
+            "GTMAX": 31.0,
+            "CUSTO_GERACAO": 729.37,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 112
+        },
+        {
+            "NOME": "BATURITE",
+            "GTMIN": 0.0,
+            "GTMAX": 11.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 113
+        },
+        {
+            "NOME": "CAMACARI PI",
+            "GTMIN": 0.0,
+            "GTMAX": 150.0,
+            "CUSTO_GERACAO": 1165.8,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 166
+        },
+        {
+            "NOME": "CAMPINA GDE",
+            "GTMIN": 0.0,
+            "GTMAX": 169.0,
+            "CUSTO_GERACAO": 707.42,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 52
+        },
+        {
+            "NOME": "CAMPO MAIOR",
+            "GTMIN": 0.0,
+            "GTMAX": 13.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 117
+        },
+        {
+            "NOME": "CAUCAIA",
+            "GTMIN": 0.0,
+            "GTMAX": 15.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 119
+        },
+        {
+            "NOME": "CRATO",
+            "GTMIN": 0.0,
+            "GTMAX": 13.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 121
+        },
+        {
+            "NOME": "ENGUIA PECEM",
+            "GTMIN": 0.0,
+            "GTMAX": 15.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 125
+        },
+        {
+            "NOME": "FORTALEZA",
+            "GTMIN": 0.0,
+            "GTMAX": 327.0,
+            "CUSTO_GERACAO": 180.57,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 42
+        },
+        {
+            "NOME": "GLOBAL I",
+            "GTMIN": 0.0,
+            "GTMAX": 149.0,
+            "CUSTO_GERACAO": 802.28,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 53
+        },
+        {
+            "NOME": "GLOBAL II",
+            "GTMIN": 0.0,
+            "GTMAX": 149.0,
+            "CUSTO_GERACAO": 802.28,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 55
+        },
+        {
+            "NOME": "IGUATU",
+            "GTMIN": 0.0,
+            "GTMAX": 15.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 127
+        },
+        {
+            "NOME": "JUAZEIRO N",
+            "GTMIN": 0.0,
+            "GTMAX": 15.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 133
+        },
+        {
+            "NOME": "MARACANAU I",
+            "GTMIN": 0.0,
+            "GTMAX": 168.0,
+            "CUSTO_GERACAO": 685.04,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 57
+        },
+        {
+            "NOME": "MARAMBAIA",
+            "GTMIN": 0.0,
+            "GTMAX": 13.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 135
+        },
+        {
+            "NOME": "MURICY",
+            "GTMIN": 0.0,
+            "GTMAX": 147.0,
+            "CUSTO_GERACAO": 1165.8,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 164
+        },
+        {
+            "NOME": "NAZARIA",
+            "GTMIN": 0.0,
+            "GTMAX": 13.0,
+            "CUSTO_GERACAO": 1009.78,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 138
+        },
+        {
+            "NOME": "P. PECEM I",
+            "GTMIN": 0.0,
+            "GTMAX": 720.0,
+            "CUSTO_GERACAO": 155.97,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 167
+        },
+        {
+            "NOME": "P. PECEM II",
+            "GTMIN": 0.0,
+            "GTMAX": 365.0,
+            "CUSTO_GERACAO": 166.97,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 163
+        },
+        {
+            "NOME": "PAU FERRO I",
+            "GTMIN": 0.0,
+            "GTMAX": 94.0,
+            "CUSTO_GERACAO": 1378.14,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 160
+        },
+        {
+            "NOME": "PERNAMBU_III",
+            "GTMIN": 0.0,
+            "GTMAX": 201.0,
+            "CUSTO_GERACAO": 604.97,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 98
+        },
+        {
+            "NOME": "PETROLINA",
+            "GTMIN": 0.0,
+            "GTMAX": 136.0,
+            "CUSTO_GERACAO": 1279.05,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 144
+        },
+        {
+            "NOME": "POTIGUAR",
+            "GTMIN": 0.0,
+            "GTMAX": 53.0,
+            "CUSTO_GERACAO": 1221.88,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 151
+        },
+        {
+            "NOME": "POTIGUAR III",
+            "GTMIN": 0.0,
+            "GTMAX": 66.0,
+            "CUSTO_GERACAO": 1221.87,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 161
+        },
+        {
+            "NOME": "PROSPERIDADE",
+            "GTMIN": 0.0,
+            "GTMAX": 28.0,
+            "CUSTO_GERACAO": 159.37,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 147
+        },
+        {
+            "NOME": "SUAPE II",
+            "GTMIN": 0.0,
+            "GTMAX": 381.0,
+            "CUSTO_GERACAO": 715.95,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 170
+        },
+        {
+            "NOME": "SYKUE I",
+            "GTMIN": 0.0,
+            "GTMAX": 30.0,
+            "CUSTO_GERACAO": 510.12,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 221
+        },
+        {
+            "NOME": "TERMOBAHIA",
+            "GTMIN": 0.0,
+            "GTMAX": 186.0,
+            "CUSTO_GERACAO": 281.23,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 43
+        },
+        {
+            "NOME": "TERMOCABO",
+            "GTMIN": 0.0,
+            "GTMAX": 50.0,
+            "CUSTO_GERACAO": 698.86,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 152
+        },
+        {
+            "NOME": "TERMOCAMACAR",
+            "GTMIN": 0.0,
+            "GTMAX": 120.0,
+            "CUSTO_GERACAO": 345.02,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 74
+        },
+        {
+            "NOME": "TERMOCEARA",
+            "GTMIN": 0.0,
+            "GTMAX": 223.0,
+            "CUSTO_GERACAO": 368.23,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 58
+        },
+        {
+            "NOME": "TERMOMANAUS",
+            "GTMIN": 0.0,
+            "GTMAX": 143.0,
+            "CUSTO_GERACAO": 1378.14,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 159
+        },
+        {
+            "NOME": "TERMONE",
+            "GTMIN": 0.0,
+            "GTMAX": 171.0,
+            "CUSTO_GERACAO": 703.54,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 67
+        },
+        {
+            "NOME": "TERMOPB",
+            "GTMIN": 0.0,
+            "GTMAX": 171.0,
+            "CUSTO_GERACAO": 703.54,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 69
+        },
+        {
+            "NOME": "TERMOPE",
+            "GTMIN": 348.8,
+            "GTMAX": 533.0,
+            "CUSTO_GERACAO": 138.51,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 96
+        },
+        {
+            "NOME": "VALE DO ACU",
+            "GTMIN": 0.0,
+            "GTMAX": 368.0,
+            "CUSTO_GERACAO": 281.61,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 83
+        },
+        {
+            "NOME": "APARECIDA",
+            "GTMIN": 75.0,
+            "GTMAX": 166.0,
+            "CUSTO_GERACAO": 67.61,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 201
+        },
+        {
+            "NOME": "FLORES LT1",
+            "GTMIN": 0.0,
+            "GTMAX": 40.0,
+            "CUSTO_GERACAO": 969.35,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 318
+        },
+        {
+            "NOME": "FLORES LT2",
+            "GTMIN": 0.0,
+            "GTMAX": 40.0,
+            "CUSTO_GERACAO": 984.9,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 319
+        },
+        {
+            "NOME": "GERAMAR I",
+            "GTMIN": 0.0,
+            "GTMAX": 166.0,
+            "CUSTO_GERACAO": 707.39,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 73
+        },
+        {
+            "NOME": "GERAMAR II",
+            "GTMIN": 0.0,
+            "GTMAX": 166.0,
+            "CUSTO_GERACAO": 707.39,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 70
+        },
+        {
+            "NOME": "IRANDUBA",
+            "GTMIN": 0.0,
+            "GTMAX": 25.0,
+            "CUSTO_GERACAO": 955.63,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 317
+        },
+        {
+            "NOME": "MARANHAO III",
+            "GTMIN": 0.0,
+            "GTMAX": 519.0,
+            "CUSTO_GERACAO": 82.48,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 212
+        },
+        {
+            "NOME": "MARANHAO IV",
+            "GTMIN": 0.0,
+            "GTMAX": 338.0,
+            "CUSTO_GERACAO": 131.23,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 36
+        },
+        {
+            "NOME": "MARANHAO V",
+            "GTMIN": 0.0,
+            "GTMAX": 338.0,
+            "CUSTO_GERACAO": 131.23,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 21
+        },
+        {
+            "NOME": "MAUA 3",
+            "GTMIN": 264.0,
+            "GTMAX": 591.0,
+            "CUSTO_GERACAO": 67.61,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 140
+        },
+        {
+            "NOME": "MAUA B3",
+            "GTMIN": 0.0,
+            "GTMAX": 110.0,
+            "CUSTO_GERACAO": 411.92,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 206
+        },
+        {
+            "NOME": "MAUA B4",
+            "GTMIN": 0.0,
+            "GTMAX": 150.0,
+            "CUSTO_GERACAO": 575.0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 141
+        },
+        {
+            "NOME": "N.VENECIA 2",
+            "GTMIN": 0.0,
+            "GTMAX": 178.0,
+            "CUSTO_GERACAO": 223.51,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 46
+        },
+        {
+            "NOME": "PARNAIBA IV",
+            "GTMIN": 0.0,
+            "GTMAX": 56.0,
+            "CUSTO_GERACAO": 151.69,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 116
+        },
+        {
+            "NOME": "PORTO ITAQUI",
+            "GTMIN": 0.0,
+            "GTMAX": 360.0,
+            "CUSTO_GERACAO": 161.5,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 176
+        }
+    ],
+    "SUBMERCADOs": [
+        {
+            "NOME": "SUDESTE",
+            "CODIGO": 1,
+            "CUSTO_DEFICIT": 5000.0,
+            "DEMANDA": [
+                50000,
+                50000,
+                50000,
+                50000
+            ]
+        }
+    ],
+    "BARRAS": [
+        {
+            "NOME": "BARRA01",
+            "CODIGO": 1,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 2,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA02",
+            "CODIGO": 2,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA03",
+            "CODIGO": 3,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA04",
+            "CODIGO": 4,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "AREA": 1
+        },
+        {
+            "NOME": "BARRA05",
+            "CODIGO": 5,
+            "GERACAO": [
+                0,
+                0,
+                0
+            ],
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "TIPO": 1,
+            "CARGA": [
+                50000,
+                70000,
+                70000,
+                95000,
+                0
+            ],
+            "AREA": 1
+        }
+    ],
+    "LINHAS": [
+        {
+            "DE": 1,
+            "PARA": 2,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                50,
+                100,
+                100,
+                10,
+                10
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 1,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                50,
+                50,
+                50,
+                500,
+                500
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 2,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                200,
+                100,
+                100,
+                500,
+                500
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 4,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                200,
+                100,
+                100,
+                500,
+                500
+            ]
+        },
+        {
+            "DE": 3,
+            "PARA": 5,
+            "N_CIRCUITOS": 1,
+            "REATANCIA": 0.1,
+            "ESTADODEOPERACAO": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "DEFASADOR": 0,
+            "CAPACIDADE": [
+                200,
+                100,
+                100,
+                500,
+                500
+            ]
+        }
+    ]
+}

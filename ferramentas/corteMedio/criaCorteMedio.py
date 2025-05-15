@@ -17,20 +17,15 @@ def retorna_lista_caminho(no, df_arvore):
         no_inicial = pai
     return lista
 
-
 caminho_caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
-caso_arvore = "revisaoDebora\\A_50x2x2_S39_255\\KMeansAssimetricoProbPente\\"
-caso_arvore = "GTMIN\\Pente\\"
-caso_arvore = "revisaoDebora\\A_100x1x1_42_20\\KMeansPente\\"
-caso_arvore = "revisaoDebora\\Detrm\\KMeansPente\\"
-caso_arvore = "revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPente\\"
-caso_arvore = "revisaoDebora\\A_25x3x2\\KMeansSimetricoProbQuadPente\\"
-
-caso_arvore = "GTMIN\\A_100_100_100\\BKAssimetrico\\"
-caso_arvore = "GTMIN\\A_100_100_100\\KMeansPente\\"
-caso_arvore = "GTMIN\\A_100_100_100\\KMeansPente\\"
+caminho_caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\27_Aberturas_Equiprovavel\\"
+caminho_caso = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_1D\\128_Aberturas_Equiprovavel\\"
 caso_arvore = "revisaoDebora\\A_25x3x2\\BKAssimetrico\\"
-caso_arvore = "revisaoDebora\\A_50x2x2_S39_255\\KMeansAssimetricoProbPente\\"
+
+caso_arvore = "A_4x2x1\\KMeansAssimetricoProbPente\\"
+caso_arvore = "A_8x1x1\\BKAssimetrico\\"
+caso_arvore = "Vassoura\\"
+caso_arvore = "Pente_GVZP\\"
 
 saidas = "saidas\\PDD\\oper\\"
 arquivo = "df_cortes_equivalentes.csv"

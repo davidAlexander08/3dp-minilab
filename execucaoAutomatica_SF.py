@@ -3,13 +3,10 @@ import subprocess
 
 
 ##########################################
-caminho_arvores = ["Caso_SF\\A_50x2x2KMeans\\", "Caso_SF\\A_50x2x2RedRegress\\", ] 
-#"Caso_SF\\A_25x3x2\\", 
-#"Caso_SF\\A_25x3x2Simetrico\\", 
-#"Caso_SF\\A_100x1x1\\"
-#"Caso_SF\\Determ\\",  
-#"Caso_SF\\Vassoura\\", 
-#"Caso_SF\\A_25x3x2RedRegress\\", 
+caminho_arvores = [ "Caso_SF\\A_100x1x1\\","Caso_SF\\A_100x1x1_Kmeans\\","Caso_SF\\Vassoura\\", "Caso_SF\\A_25x3x2RedRegress\\", "Caso_SF\\A_25x3x2Simetrico\\", "Caso_SF\\A_25x3x2\\", "Caso_SF\\Determ\\",  ] #
+#
+#
+#
 
 mapa_caminho_cortes ={
     "Caso_SF\\A_25x3x2\\": "revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
@@ -23,20 +20,46 @@ mapa_caminho_cortes ={
     "Caso_SF\\Vassoura\\": "revisaoDebora\\Vassoura\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
 }
 mapa_caminho_avaliacao = {
-    "Caso_SF\\A_25x3x2\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\A_25x3x2Simetrico\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\A_25x3x2RedRegress\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\A_50x2x2KMeans\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\A_50x2x2RedRegress\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\A_100x1x1\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\A_100x1x1_Kmeans\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\Determ\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
-    "Caso_SF\\Vassoura\\":["Cen2\\", "Cen3\\","Cen4\\","Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_25x3x2\\":          ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_25x3x2Simetrico\\": ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_25x3x2RedRegress\\":["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_50x2x2KMeans\\":    ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_50x2x2RedRegress\\":["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_100x1x1\\":         ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\A_100x1x1_Kmeans\\":  ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\Determ\\":            ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    "Caso_SF\\Vassoura\\":          ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\",],
+    }
+mapa_caminho_avaliacao = {
+    "Caso_SF\\A_25x3x2\\":["Pente\\"],
+    "Caso_SF\\A_25x3x2Simetrico\\":["Pente\\"],
+    "Caso_SF\\A_25x3x2RedRegress\\":["Pente\\"],
+    "Caso_SF\\A_50x2x2KMeans\\":["Pente\\"],
+    "Caso_SF\\A_50x2x2RedRegress\\":["Pente\\"],
+    "Caso_SF\\A_100x1x1\\":["Pente\\"],
+    "Caso_SF\\A_100x1x1_Kmeans\\":["Pente\\"],
+    "Caso_SF\\Determ\\":["Pente\\"],
+    "Caso_SF\\Vassoura\\":["Pente\\"],
     }
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
-
+#######################################################################################################################################################################
+###########################################
+#caminho_arvores = [  "Caso_SF\\A_4x2x1\\", "Caso_SF\\Vassoura\\", "Caso_SF\\A_8x1x1\\"] #"Caso_SF\\A_25x3x2\\",
+#mapa_caminho_cortes ={
+#    "Caso_SF\\A_4x2x1\\": "A_4x2x1\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
+#    "Caso_SF\\A_8x1x1\\":   "A_8x1x1\\BKAssimetrico\\saidas\\PDD\\oper\\",
+#    "Caso_SF\\Vassoura\\":  "Vassoura\\saidas\\PDD\\oper\\",
+#}
+#mapa_caminho_avaliacao = {
+#    "Caso_SF\\A_4x2x1\\": ["Pente_GVZP\\"],#"Deterministico\\","Determ_06\\","Determ_08\\","Determ_12\\",
+#    "Caso_SF\\A_8x1x1\\": ["Pente_GVZP\\"],#"Deterministico\\","Determ_06\\","Determ_08\\","Determ_12\\",
+#    "Caso_SF\\Vassoura\\":["Pente_GVZP\\"],#"Deterministico\\","Determ_06\\","Determ_08\\","Determ_12\\",
+#    }
+#caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+#caminho_caso = "Carmen\\exercicio_27cen_36D\\"
+#caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
 
     
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
@@ -53,9 +76,11 @@ for caminho_arvore in caminho_arvores:
         
         print("EXECUTANDO: ",new_arvore_path )
         print("EXECUTANDO SF: ",cortes_externos_path )
+        
         # Step 1: Load and update JSON
         with open(json_path, "r") as file:
             config = json.load(file)
+        config["SIMFINAL"] = 1
         config["CAMINHO_ARVORE_EXTERNA"] = new_arvore_path
         config["CAMINHO_VAZAO_EXTERNA"] = new_cenarios_path
         config["CAMINHO_CORTES"] = cortes_externos_path

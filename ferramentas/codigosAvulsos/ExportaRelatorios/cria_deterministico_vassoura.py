@@ -17,7 +17,11 @@ from inewave.newave import Hidr
 
 
 caso_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Outros"
+#C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_5D\128_Aberturas_Equiprovavel\Pente_GVZP
 caminho_pente = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
+caminho_pente = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_5D\\128_Aberturas_Equiprovavel\\Pente_GVZP"
+caminho_pente = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
+caso_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\27_Aberturas_Equiprovavel"
 df_vazoes = pd.read_csv(caminho_pente+"\\cenarios.csv", sep = ",")
 print(df_vazoes)
 

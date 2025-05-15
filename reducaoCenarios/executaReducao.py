@@ -453,16 +453,6 @@ def executaTestesReducaoArvoresGVZP():
 #exit(1)
 
 
-
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\2Aberturas\\Pente_GVZP"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\2Aberturas\\Pente"
-caso = "..\\..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_Equiprovavel\\Pente_GVZP"
-caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Pente_GVZP"
-caso = "..\\Capitulo_5\\caso_mini_300Cen"
-caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio"
-caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen"
-caso = "..\\Capitulo_5\\caso_mini_300Cen_sorteio_8cen_toy"
 caso = "..\\Capitulo_5\\caso_mini_500Cen_sorteio_mensais"
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Dissertacao\apresentacaoCarmen_Gevazp_V2\caso_mini\exercicioGevazp\TesteCarmen\Pente_GVZP_6A_Eq"
 caso = r"C:\Users\testa\Documents\git\3dp-minilab\Carmen\exercicio_27cen_1D\1D_3Aberturas_Equiprovavel\Pente_GVZP"
@@ -496,7 +486,8 @@ mapa_aberturas_estagio_pente = {1:8, 2:1, 3:1}
 caminho_saida = "..\\Carmen\\exercicio_27cen_5D\\64_Aberturas_Equiprovavel\\8Folhas\\A_8x1x1"
 
 
-caso = "..\\Carmen\\exercicio_27cen_5D\\128_Aberturas_Equiprovavel_Pfundo\\Pente_GVZP"
+
+caso = "..\\Carmen\\exercicio_27cen_20D\\128_Aberturas_Equiprovavel_Pfundo\\Pente_GVZP"
 reducoes = [
     ({1:2, 2:2, 3:8}, 32, "revisaoDebora\\A_2x2x8"),
     ({1:4, 2:4, 3:2}, 32, "revisaoDebora\\A_4x4x2"),
@@ -510,7 +501,7 @@ caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresen
 reducoes = [
     #({1:25, 2:4, 3:2}, 200, "revisaoDebora\\A_25x4x2_13_96"),
     #({1:1, 2:1, 3:1}, 1, "revisaoDebora\\Detrm"),
-    ({1:25, 2:3, 3:2}, 150, "revisaoDebora\\A_25x3x2"),
+    ({1:25, 2:3, 3:2}, 150, "exercicio_27cen_20D\\A_25x3x2"),
     #({1:50, 2:2, 3:2}, 200, "revisaoDebora\\A_50x2x2_S39_255"),
     #({1:100, 2:1, 3:1}, 100, "revisaoDebora\\A_100x1x1_254_20"),
     #({1:100, 2:2, 3:1}, 200, "revisaoDebora\\A_100x2x1"),
@@ -518,17 +509,37 @@ reducoes = [
     #({1:1, 2:1, 3:300}, 300, "revisaoDebora\\Vassoura"),
 ]
 
+#caminho_base = "..\\Carmen\\exercicio_27cen_10D\\27_Aberturas_Equiprovavel_2\\"
+
+reducoes = [
+    ({1:2, 2:2, 3:2}, 8, "A_2x2x2"),
+    ({1:4, 2:2, 3:1}, 8, "A_4x2x1"),
+    ({1:8, 2:1, 3:1}, 8, "A_8x1x1"),
+    ({1:2, 2:3, 3:4}, 24, "A_2x3x4"),
+]
+
+caso = "Pente_GVZP"
+caminho_base = "..\\Carmen\\exercicio_27cen_5D\\128_Aberturas_Equiprovavel_13052025\\"
+reducoes = [
+    ({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
+    ({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    ({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
+    ({1:32, 2:1, 3:1}, 32, "A_32x1x1"),
+    ({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
+]
+
+
 for red in reducoes:
     mapa_aberturas_estagio = red[0]
     mapa_aberturas_estagio_pente = {1:red[1], 2:1, 3:1}
     #caminho_saida = "..\\Carmen\\exercicio_27cen_5D\\128_Aberturas_Equiprovavel_Pfundo\\"+red[2]
-    caminho_saida = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"+red[2]
+    caminho_saida = caminho_base+red[2]
 
-    arquivo_vazoes = caso+"\\cenarios.csv"
+    arquivo_vazoes = caminho_base+caso+"\\cenarios.csv"
     #arquivo_vazoes = caso+"\\cenarios_teste.csv"
     df_vazoes_original = pd.read_csv(arquivo_vazoes)
     df_vazoes_original.to_csv("saidas\\vazoes_estudo.csv", index=False)
-    arquivo_estrutura_feixes = caso+"\\arvore.csv"
+    arquivo_estrutura_feixes = caminho_base+caso+"\\arvore.csv"
     #arquivo_estrutura_feixes = caso+"\\arvore_teste.csv"
     df_arvore_original = pd.read_csv(arquivo_estrutura_feixes)
     df_arvore_original.to_csv("saidas\\arvore_estudo.csv", index=False)
@@ -553,23 +564,23 @@ for red in reducoes:
     #printaArvore("Arvore Original", "saidas\\",df_arvore_original)
 
 
-    #if(red[1] != 0):
-    #    ###            #SIMETR, WEIGHT, QUAD, PACOTE
-    #    binarios_pente =  [False, False, False, False]
-    #    df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio_pente, df_vazoes_original.copy(), df_arvore_original.copy(), 
-    #        binarios_pente[0], perservaFolhas, binarios_pente[1], binarios_pente[3], binarios_pente[2], Plota)
-    #    path_saida = caminho_saida+"\\KMeansPente"
-    #    os.makedirs(path_saida, exist_ok=True)
-    #    df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-    #    df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-    #
+    if(red[1] != 0):
+        ###            #SIMETR, WEIGHT, QUAD, PACOTE
+        binarios_pente =  [False, False, False, False]
+        df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio_pente, df_vazoes_original.copy(), df_arvore_original.copy(), 
+            binarios_pente[0], perservaFolhas, binarios_pente[1], binarios_pente[3], binarios_pente[2], Plota)
+        path_saida = caminho_saida+"\\KMeansPente"
+        os.makedirs(path_saida, exist_ok=True)
+        df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+        df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+    
     #exit(1)
     #texto = "Arvore "+"KMeansPente"
     #realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
     #testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
     #printaArvore("KMeansPente", path_saida, df_arvore)
-
-
+#
+#
     ######################################### COMPARACAO METODOS 
     print("###########################################################################")
     ### METODO -  BACKWARD REDUCTION ASSIMETRICO
@@ -580,12 +591,12 @@ for red in reducoes:
     os.makedirs(path_saida, exist_ok=True)
     df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
     df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-#
-    texto = "Arvore Backward Reduction Assimetrico"
-    realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-    testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-    printaArvore("BKAssimetrico", path_saida, df_arvore)
-    exit(1)
+##
+    #texto = "Arvore Backward Reduction Assimetrico"
+    #realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+    #testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+    #printaArvore("BKAssimetrico", path_saida, df_arvore)
+    #exit(1)
 
 
     #print("###########################################################################")
@@ -605,7 +616,7 @@ for red in reducoes:
     #printaArvore("BKSimetrico", path_saida, df_arvore)
 
 
-
+    perservaFolhas = True
 
     #####################PARAMETROS PARA CLUSTERIZACAO
     DicionarioListaKmeans = {          #SIMETR, WEIGHT, QUAD, PACOTE
@@ -750,20 +761,22 @@ for red in reducoes:
 #
 #
 #
-#    print("###########################################################################")
-#    ### METODO NEURAL GAS
-#    Simetrica = False
-#    df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
-#    path_saida = "saidas\\NeuralGas"
-#    path_saida = caminho_saida+"\\NeuralGas"
-#    os.makedirs(path_saida, exist_ok=True)
-#    df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-#    df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
-#
-#    texto = "Arvore Neural Gas"
-#    realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-#    testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-#    printaArvore("NeuralGas", path_saida, df_arvore)
+
+    perservaFolhas = False
+    print("###########################################################################")
+    ### METODO NEURAL GAS
+    Simetrica = False
+    df_arvore, df_vazoes = reducaoArvoreNeuralGas(mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+    path_saida = "saidas\\NeuralGas"
+    path_saida = caminho_saida+"\\NeuralGas"
+    os.makedirs(path_saida, exist_ok=True)
+    df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+    df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+
+    texto = "Arvore Neural Gas"
+    realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+    testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+    printaArvore("NeuralGas", path_saida, df_arvore)
 
 
     ### TESTES UNITARIOS PARA GARANTIR CONSISTENCIA DAS ARVORES GERADAS

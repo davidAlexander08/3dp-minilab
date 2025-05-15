@@ -9,74 +9,6 @@ using LightGraphs
 using SparseArrays
 using DataStructures
 
-str_caso = "caso_decomp_deterministico_3Barras_1UTE_1UHE_3EST"
-str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE"
-str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE_PENTE_2_CEN"
-str_caso = "caso_decomp_deterministico_24Barras_3EST"
-
-str_caso = "caso_sanidade_6Barras_2meses_2UHE_2UTE_ARVORE_2ABR"
-str_caso = "caso_decomp_deterministico_5est_2UHE_2UTE"
-str_caso = "Teste_Fluxo_IEEE_14_Barras"
-str_caso = "Teste_Fluxo_IEEE_30_Barras"
-str_caso = "Teste_Fluxo_IEEE_57_Barras"
-str_caso = "Teste_Fluxo_IEEE_118_Barras"
-str_caso = "red_arv_nested_decomposition/3aberturas"
-str_caso = "red_arv_decomposition/2aberturas_ARI"
-str_caso = "red_arv_decomposition/2aberturas_ARO"
-
-str_caso = "red_arv_fast_and_forward/2aberturas_ini"
-str_caso = "red_arv_fast_and_forward/2aberturas_ffs"
-str_caso = "red_arv_fast_and_forward/2aberturas_op1"
-str_caso = "red_arv_fast_and_forward/2aberturas_op2"
-str_caso = "red_arv_fast_and_forward/2aberturas_op3"
-
-str_caso = "casos/marcato/caso_marcato_deterministico"
-
-#str_caso = "red_arv_backReduction/2aberturas_ini"
-#str_caso = "red_arv_backReduction/2aberturas_ini_Cen1"
-#str_caso = "red_arv_backReduction/2aberturas_ini_Cen3"
-#str_caso = "red_arv_backReduction/2aberturas_ini_Cen4"
-#str_caso = "red_arv_backReduction/2aberturas_ini_Cen5"
-#str_caso = "red_arv_backReduction/2aberturas_ini_Cen2_BK"
-
-#str_caso = "Mestrado/2aberturas_ini"
-#str_caso = "Mestrado/caso_construcaoArvore"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_50cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_2000cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_1000cen_testeOtim"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_500cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_50cen"
-str_caso = "Mestrado/caso_construcaoArvore_SIN"
-str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido"
-str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido"
-str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_arvore_Externa"
-str_caso = "casos/Mestrado/caso_construcaoArvore_SIN"
-str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior"
-
-str_caso = "Dissertacao/caso_construcaoArvore_SIN_reduzido_maior_TesteConversor"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_reduzido_2cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_2cen_2est"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_2cen_2est"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_2cen_2est"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_mini_2cen_2est"
-#str_caso = "Mestrado/caso_construcaoArvore_SIN_mini_mini_min_mini_2cen_2est_det"
-#str_caso = "Teste_Fluxo_IEEE_5_Barras"
-str_caso = "Dissertacao/caso_teste_submercados"
-str_caso = "Dissertacao/apresentacaoCarmen/caso_mini"
-#str_caso = "Dissertacao/teste_simples_3est_2A/caso_mini"
-
-
-str_caso = "Capitulo_5/caso_mini"
-str_caso = "Capitulo_5/caso_mini_300Cen"
-str_caso = "Capitulo_5/caso_mini_300Cen_sorteio"
-str_caso = "Capitulo_5/caso_mini_300Cen_sorteio_8cen"
-str_caso = "Capitulo_5/caso_mini_300Cen_sorteio_8cen_toy"
-str_caso = "Capitulo_5/caso_mini_500Cen_sorteio_8cen_mensais"
-
-
-
 
 str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
 #str_caso = "Carmen/caso_mini"
@@ -96,6 +28,10 @@ str_caso = "Capitulo_5/caso_mini_500Cen_cluster_semanais"
 #str_caso = "Carmen/exercicio_27cen_1D"
 #str_caso = "Carmen/exercicio_27cen_10D"
 #str_caso = "Carmen/exercicio_27cen_20D"
+#str_caso = "Academico/exercicio_5D"
+str_caso = "Academico/exercicio_1D"
+#str_caso = "Academico/exercicio_1D_Debora"
+#str_caso = "Carmen/exercicio_27cen_36D"
 #str_caso = "Carmen/exercicio_27cen_3D"
 ##str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
 #str_caso = "Dissertacao/exercicioDebora/caso_mini"
@@ -129,6 +65,19 @@ if(simfinal == 1)
     #println(dat_cortes_ext)
     println("mex_iter_est: ", mex_iter_est)
     println("EXECUTANDO SIMULACAO FINAL")
+end
+
+
+############ CORTES DA FCF EXTERNA PARA FIM DE MUNDO DO PRIMEIRO ESTÀGIO DOS CORTES
+cortes_externos_fim_de_mundo = dict["CORTES_EXTERNOS"]
+caminho_cortes_externos_fim_de_mundo = dict["CAMINHO_CORTES_EXTERNOS"]
+if(cortes_externos_fim_de_mundo == 1)
+    PATH_CORTES_EXTERNOS_FIM_MUNDO = caminho_cortes_externos_fim_de_mundo
+    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    dat_cortes_externos_fim_mundo = CSV.read(PATH_CORTES_EXTERNOS_FIM_MUNDO, DataFrame)
+    cortes_filtrados = filter(row -> row.est == 1, dat_cortes_externos_fim_mundo)
+    mex_iter_est_cortes_externos = maximum(cortes_filtrados.iter)
+    println("ENTORU AQUI, MAXITER: ", mex_iter_est_cortes_externos)
 end
 
 arvore_externa = dict["ARVORE_EXTERNA"]
@@ -209,9 +158,16 @@ for sbm in submercados
 end
 
 
-############# PERIODOS ADICIONAIS PARA EVITAR FIM DE MUNDO
+############# META DE ARMAZENAMENTO DO FIM DE MUNDO
 periodos_fim_de_mundo = dict["PERIODOS_FIM_DE_MUNDO"]
-fim_de_mundo_Vi_equal_Vf = dict["FIM_DE_MUNDO_VOLUMES"]
+restricaoVolumeFimMundo = dict["FIM_DE_MUNDO_VOLUMES"]
+if(restricaoVolumeFimMundo == 1)
+    PATH_RESTR_META_VOLUME = str_caso*"/restr_meta_armazenamento.csv"
+    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    dat_meta_armazenamento = CSV.read(PATH_RESTR_META_VOLUME, DataFrame)
+    #print(dat_volmin)
+end
+
 
 
 
@@ -331,6 +287,46 @@ for uhe in lista_uhes
     end
 end
 #println(mapa_montantesUsina)
+#mapa_nome_UHE
+mapaUsinaProdtAcum = Dict{String, Float64}()
+for uhe in lista_uhes
+    if !haskey(mapa_montantesUsina, uhe.nome)
+        mapa_montantesUsina[uhe.nome] = String[]  # Initialize an empty array if it doesn't exist
+    end
+    #println("UHE: ", uhe.nome)
+
+    lista_cascata = String[]
+
+    jusante = uhe.jusante
+    usina = uhe
+
+    while jusante != ""
+        for usi_jus in lista_uhes
+            if usi_jus.codigo == parse(Int, usina.jusante)
+                #println("UHE JUS: ", usi_jus.nome)
+                push!(lista_cascata, usi_jus.nome)
+                usina = usi_jus
+                jusante = usina.jusante
+                break
+            end
+        end
+    end
+    prodt_acum = uhe.prodt
+    for usi_cascata in lista_cascata
+        #println("UHE: ", usi_cascata, " PRODT: ", mapa_nome_UHE[usi_cascata].prodt)
+        prodt_acum += mapa_nome_UHE[usi_cascata].prodt
+    end
+    mapaUsinaProdtAcum[uhe.nome] = prodt_acum
+    #println("UHE: ", uhe.nome, " PRODACUM: ", prodt_acum)
+end
+#exit(1)
+
+
+
+
+
+
+
 
 df_eco_hidro  = DataFrame(codigo = Int[], nome = String[], posto = Int[], Jusante = String[], Submercado = Int[], PotInst = Int[], 
 EngolMax = Int[], VolMin = Int[], VolMax = Int[], Prodt = Float64[], VolIni = Int[])

@@ -37,6 +37,7 @@ df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], Abertura = [] , PER = Int[], P
 function printa_nos(no)
     for elemento in no.filhos
         #println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
+        println(dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"])
         probabilidade = dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"][1]
         push!(df_arvore, (NO_PAI = elemento.pai.codigo, NO = elemento.codigo, Abertura = elemento.index, PER = elemento.periodo,  PROB = probabilidade))
         printa_nos(elemento)

@@ -46,66 +46,39 @@ caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "avaliaArvoresRepresentativo\\"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-caminho_subarvores = "GTMIN"
-caminhosaida = "revisaoDebora"
-casos = [caminho_subarvores+"\\Pente", 
-        #"Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb", 
-        #"Rodada_Final\\A_50_5_2\\KMeansAssimetricoProb", 
-        #"Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb",
-        #"Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb",
-        #"Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb",
+caminho_subarvores = "Caso_SF"
+caminhosaida = "Caso_SF"
+casos = {#caminho_subarvores+"\\Pente", 
         #caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb",
-        #"revisaoDebora\\A_25x4x2_13_96\\KMeansAssimetricoProbPente",
-        #"revisaoDebora\\A_25x4x2_75_33\\KMeansAssimetricoProbPente",
-        #"revisaoDebora\\A_25x4x2_254_20\\KMeansAssimetricoProbPente",
-        #"revisaoDebora\\A_25x4x2_267_547\\KMeansAssimetricoProbPente",
-        #caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProb",
-        #caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha",
-        #caminho_subarvores+"\\A_25_75_150_Teste\\KMeansAssimetricoProbPenteFolha",
-        "revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPenteSemente200K12",
-        #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
-        #"Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb",
-        #"Rodada_Final\\A_300_300_300\\BKAssimetrico",
-        #"Rodada_Final\\A_200_200_200\\BKAssimetrico",
-        #"Rodada_Final\\A_150_150_150\\BKAssimetrico",
-        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico",
+        #"revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPenteSemente200K12",
+        #caminho_subarvores+"\\A_100_100_100\\BKAssimetrico",
         #"revisaoDebora\\A_100x1x1_42_20\\KMeansPente",
         #"Rodada_Final\\A_100_100_100\\BKAssimetrico",
-        caminho_subarvores+"\\Deterministico",
-        caminho_subarvores+"\\Vassoura"
-        ]
+        #caminho_subarvores+"\\Deterministico",
+        #caminho_subarvores+"\\Vassoura"
+        caminho_subarvores+"\\A_25x3x2\\Pente":"red",
+        caminho_subarvores+"\\A_25x3x2Simetrico\\Pente":"pink",
+        caminho_subarvores+"\\A_25x3x2RedRegress\\Pente":"darkyellow",
+        caminho_subarvores+"\\A_100x1x1\\Pente":"blue",
+        caminho_subarvores+"\\A_100x1x1_Kmeans\\Pente":"lightblue",
+        caminho_subarvores+"\\Vassoura\\Pente":"purple",
+        caminho_subarvores+"\\Determ\\Pente":"green",
+        }
 mapa_nome_caso = {
         caminho_subarvores+"\\Pente":"Pente Original",
-        "Rodada_Final\\A_125_2_2\\KMeansAssimetricoProb":"A_125_2_2", 
-        "Rodada_Final\\A_50_5_2\\KMeansAssimetricoProb":"A_50_5_2",
-        "Rodada_Final\\A_25_10_2\\KMeansAssimetricoProb":"A_25_10_2",
-        "Rodada_Final\\A_5_250_500\\KMeansAssimetricoProb":"A_5_250_500",
-        "Rodada_Final\\A_25_125_500\\KMeansAssimetricoProb":"A_25_125_500",
-        "Rodada_Final\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
         caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProb":"A_25_125_250_Teste",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
-        caminho_subarvores+"\\A_25_75_150_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_75_150_Teste",
-        "Rodada_Final\\A_25_50_100\\KMeansAssimetricoProb":"A_25_50_100",
-        "Rodada_Final\\A_300_300_300\\BKAssimetrico":"A_300_300_300",
-        "Rodada_Final\\A_250_250_250\\BKAssimetrico":"A_250_250_250",
-        "Rodada_Final\\A_200_200_200\\BKAssimetrico":"A_200_200_200",
-        "Rodada_Final\\A_150_150_150\\BKAssimetrico":"A_150_150_150",
-        caminho_subarvores+"\\A_125_125_125\\BKAssimetrico":"A_125_125_125",
-        caminho_subarvores+"\\A_100_100_100\\BKAssimetrico":"A_100x1x1",
-        "Rodada_Final\\A_100_100_100\\BKAssimetrico":"A_100_100_100",
-        "revisaoDebora\\A_25x4x2_13_96\\KMeansAssimetricoProbPente":"A_25x4x2_13_96",
-        "revisaoDebora\\A_25x4x2_75_33\\KMeansAssimetricoProbPente":"A_25x4x2_75_33",
-        "revisaoDebora\\A_25x4x2_254_20\\KMeansAssimetricoProbPente":"A_25x4x2_254_20",
-        "revisaoDebora\\A_25x4x2_267_547\\KMeansAssimetricoProbPente":"A_25x4x2_267_547",
-        "revisaoDebora\\A_100x1x1_42_20\\KMeansAssimetricoProbPente":"A_100x1x1",
-        "revisaoDebora\\A_25x3x2\\KMeansAssimetricoProbPenteSemente200K12":"A_25x3x2",
+        caminho_subarvores+"\\A_25x3x2\\Pente":"A_25x3x2",
+        caminho_subarvores+"\\A_25x3x2Simetrico\\Pente":"A_25x3x2Simetrico",
+        caminho_subarvores+"\\A_100x1x1\\Pente":"A_100x1x1",
         caminho_subarvores+"\\Deterministico":"Deterministico",
-        caminho_subarvores+"\\Vassoura":"Vassoura"
+        caminho_subarvores+"\\Vassoura\\Pente":"Vassoura"
+        caminho_subarvores+"\\Determ\\Pente":"Determ"
 }
-grandezas = ["GT", "GH", "CustoPresente", "CustoFuturo", "VolArm","AFL","CMO","VERT"]
+grandezas = ["Earm", "GT", "GH", "CustoPresente", "CustoFuturo", "VolArm","AFL","CMO","VERT"]
 #grandezas = ["VERT"]
 #grandezas = ["CMO"]
 mapa_grandezas = {
@@ -117,6 +90,7 @@ mapa_grandezas = {
     "AFL":" Afluencia",
     "CMO":" Custo Marginal de Operação",
     "VERT":" Vertimento",
+    "Earm":"Energia Armazenada"
 }
 mapa_arquivos = {
     "GT":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
@@ -126,7 +100,8 @@ mapa_arquivos = {
     "VolArm":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
     "AFL":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
     "CMO":["balanco_energetico_final_sbm.csv","balanco_energetico_SBM_sf.csv"],
-    "VERT":["hidreletricas_sf.csv",""]
+    "VERT":["hidreletricas_sf.csv",""],
+    "Earm":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
 }
 mapa_unidades = {
     "GT":"MW",
@@ -136,7 +111,8 @@ mapa_unidades = {
     "VolArm":"hm3",
     "AFL":"m3/s",
     "CMO":"R$/MW",
-    "VERT":"m3/s"
+    "VERT":"m3/s",
+    "Earm":"MW"
 }
 colors = ["black", "red", "blue", "green", "purple", "orange", "pink", "yellow", "lightblue",
          "salmon", "darkred", "darkblue", "darkgreen","lightgreen", ""]
@@ -265,7 +241,8 @@ for grandeza in grandezas:
             mode='lines', 
             name = mapa_nome_caso[caso],
             legendgroup  = mapa_nome_caso[caso],
-            line=dict(color=colors[contador], width=2),
+            #line=dict(color=colors[contador], width=2),
+            line=dict(color=casos[caso], width=2),
             showlegend=True
         ), row=linha, col=coluna)
         fig.add_trace(go.Scatter(
@@ -274,7 +251,8 @@ for grandeza in grandezas:
             mode='lines', 
             name = "p25",
             legendgroup  = "p25",
-            line=dict(color=colors[contador], width=2, dash='dot'),
+            #line=dict(color=colors[contador], width=2, dash='dot'),
+            line=dict(color=casos[caso], width=2, dash='dot'),
             showlegend=mostra_legendaLimites
         ), row=linha, col=coluna)
         fig.add_trace(go.Scatter(
@@ -283,7 +261,8 @@ for grandeza in grandezas:
             mode='lines', 
             name = "p75",
             legendgroup  = "p75",
-            line=dict(color=colors[contador], width=2, dash='dash'),
+            #line=dict(color=colors[contador], width=2, dash='dash'),
+            line=dict(color=casos[caso], width=2, dash='dash'),
             showlegend=mostra_legendaLimites
         ), row=linha, col=coluna)
         contador += 1

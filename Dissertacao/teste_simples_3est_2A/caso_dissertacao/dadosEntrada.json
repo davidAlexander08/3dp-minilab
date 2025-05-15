@@ -1,0 +1,63 @@
+{
+    "MAX_ITERACOES": 5,
+    "ESTAGIOS": 3,
+    "ARVORE":[2,  2],
+    "REDE":0,
+    "LIMITES_INTERCAMBIO":0,
+    "VAZAO_MINIMA":0,
+    "PENALIDADE_VAZAO_MINIMA":5000,
+    "VOLUME_MINIMO":0,
+    "VOLUME_ESPERA":0,
+    "ARVORE_EXTERNA":1,
+    "VAZAO_EXTERNA":1,
+    "CAMINHO_ARVORE_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples_3est_2A/caso_dissertacao/Pente/pente_gevazp.csv",
+    "CAMINHO_VAZAO_EXTERNA":"C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples_3est_2A/caso_dissertacao/Pente/cenarios_pente_gevazp.csv",
+    "UHEs": [
+        {
+            "NOME": "6",
+            "POSTO": 6,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 100000,
+            "TURBMAX": 1700,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 10000,
+            "PRODT": 1,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO":1,
+            "CODIGO": 6
+        }
+    ],
+    "UTEs":[
+        {
+            "NOME":"ANGRA1",
+            "GTMIN": 0.0,
+            "GTMAX": 20.0,
+            "CUSTO_GERACAO": 10.0,
+            "BARRA":2,
+            "SUBMERCADO":1,
+            "CODIGO":1
+        }
+    ],
+    "SUBMERCADOs":[
+        {
+            "NOME":"SUDESTE",
+            "CODIGO":1,
+            "CUSTO_DEFICIT": 1000.0,
+            "DEMANDA": [30,30, 30,30]
+        }
+    ],
+    "BARRAS":[{"NOME":"BARRA01", "CODIGO":1, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":2, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA02", "CODIGO":2, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA03", "CODIGO":3, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA04", "CODIGO":4, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[0,0,0,0,0], "AREA":1},
+              {"NOME":"BARRA05", "CODIGO":5, "GERACAO":[0,0,0], "ESTADODEOPERACAO":[1,1,1,1], "TIPO":1, "CARGA":[50000,70000,70000,95000,0], "AREA":1}],
+
+    "LINHAS":[{"DE":1, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,100 ,100 ,10 ,10 ]},
+              {"DE":3, "PARA":1, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[50,50,50,500,500]},
+              {"DE":3, "PARA":2, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]},
+              {"DE":3, "PARA":4, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]},
+              {"DE":3, "PARA":5, "N_CIRCUITOS":1, "REATANCIA":0.10, "ESTADODEOPERACAO":[1,1,1,1,1], "DEFASADOR": 0,"CAPACIDADE":[200,100,100,500,500]}
+            ]
+}
