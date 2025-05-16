@@ -58,11 +58,11 @@ casos = {#caminho_subarvores+"\\Pente",
         #caminho_subarvores+"\\Vassoura"
         caminho_subarvores+"\\A_25x3x2\\Pente":"red",
         caminho_subarvores+"\\A_25x3x2Simetrico\\Pente":"pink",
-        caminho_subarvores+"\\A_25x3x2RedRegress\\Pente":"darkyellow",
+        #caminho_subarvores+"\\A_25x3x2RedRegress\\Pente":"gold",
         caminho_subarvores+"\\A_100x1x1\\Pente":"blue",
-        caminho_subarvores+"\\A_100x1x1_Kmeans\\Pente":"lightblue",
+        #caminho_subarvores+"\\A_100x1x1_Kmeans\\Pente":"lightblue",
         caminho_subarvores+"\\Vassoura\\Pente":"purple",
-        caminho_subarvores+"\\Determ\\Pente":"green",
+        #caminho_subarvores+"\\Determ\\Pente":"green",
         }
 mapa_nome_caso = {
         caminho_subarvores+"\\Pente":"Pente Original",
@@ -72,18 +72,21 @@ mapa_nome_caso = {
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         caminho_subarvores+"\\A_25x3x2\\Pente":"A_25x3x2",
+        caminho_subarvores+"\\A_25x3x2RedRegress\\Pente":"A_25x3x2RedRegress",
         caminho_subarvores+"\\A_25x3x2Simetrico\\Pente":"A_25x3x2Simetrico",
         caminho_subarvores+"\\A_100x1x1\\Pente":"A_100x1x1",
+        caminho_subarvores+"\\A_100x1x1_Kmeans\\Pente":"A_100x1x1_Kmeans",
         caminho_subarvores+"\\Deterministico":"Deterministico",
-        caminho_subarvores+"\\Vassoura\\Pente":"Vassoura"
+        caminho_subarvores+"\\Vassoura\\Pente":"Vassoura",
         caminho_subarvores+"\\Determ\\Pente":"Determ"
 }
-grandezas = ["Earm", "GT", "GH", "CustoPresente", "CustoFuturo", "VolArm","AFL","CMO","VERT"]
+grandezas = ["Deficit","Earm", "GT", "GH", "CustoPresente", "CustoFuturo", "VolArm","AFL","CMO","VERT"]
 #grandezas = ["VERT"]
 #grandezas = ["CMO"]
 mapa_grandezas = {
     "GT":" Geração Térmica",
     "GH":" Geração Hidrelétrica",
+    "Deficit":" Déficit",
     "CustoPresente":" Custo Presente",
     "CustoFuturo":" Custo Futuro",
     "VolArm":" Volume Armazenado Final",
@@ -94,6 +97,7 @@ mapa_grandezas = {
 }
 mapa_arquivos = {
     "GT":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
+    "Deficit":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
     "GH":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
     "CustoPresente":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
     "CustoFuturo":["balanco_energetico_final.csv","balanco_energetico_SIN_sf.csv"],
@@ -106,11 +110,12 @@ mapa_arquivos = {
 mapa_unidades = {
     "GT":"MW",
     "GH":"MW",
-    "CustoPresente":"MW",
-    "CustoFuturo":"MW",
+    "Deficit":"MW",
+    "CustoPresente":"R$",
+    "CustoFuturo":"R$",
     "VolArm":"hm3",
     "AFL":"m3/s",
-    "CMO":"R$/MW",
+    "CMO":"R$/MWh",
     "VERT":"m3/s",
     "Earm":"MW"
 }
@@ -119,6 +124,9 @@ colors = ["black", "red", "blue", "green", "purple", "orange", "pink", "yellow",
 arquivo = "balanco_energetico_final.csv"
 for grandeza in grandezas:
     fig = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+    fig2 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+    fig3 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+    fig4 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
     linha = 1
     coluna = 1
     contador = 0
@@ -129,7 +137,6 @@ for grandeza in grandezas:
 
 
         if(grandeza == "VERT"):
-            
             #df = pd.read_csv(caminho_base+caminho_deck+caminho_arvores+caso+caminho_resultados+arquivo)
             df_cen_usi = pd.read_csv(caminho_base+caminho_deck+caminho_arvores+caso+caminho_resultados+arquivo)
             df_arvore = pd.read_csv(caminho_base+caminho_deck+caminho_arvores+caso+"\\arvore.csv")
@@ -195,15 +202,41 @@ for grandeza in grandezas:
             #df = df.loc[(df["Submercado"] == 3)]
             #df_cen = df_cen.loc[(df_cen["Submercado"] == 3)]
 
+        fig3.add_trace(go.Bar(
+            x=[mapa_nome_caso[caso]],
+            y=[df[grandeza].sum()],  # or simply [0, slope]
+            #y=lista_media,  # or simply [0, slope]
+            name = mapa_nome_caso[caso],
+            legendgroup  = mapa_nome_caso[caso],
+            #line=dict(color=colors[contador], width=2),
+            marker_color=casos[caso],
+            opacity=0.6,
+            showlegend=True
+        ), row=linha, col=coluna)        
+        fig4.add_trace(go.Bar(
+            x=[mapa_nome_caso[caso]],
+            y=[df[grandeza].mean()],  # or simply [0, slope]
+            #y=lista_media,  # or simply [0, slope]
+            name = mapa_nome_caso[caso],
+            legendgroup  = mapa_nome_caso[caso],
+            #line=dict(color=colors[contador], width=2),
+            marker_color=casos[caso],
+            opacity=0.6,
+            showlegend=True
+        ), row=linha, col=coluna)      
 
-
+        dados_x = []
+        dados_y = []
         estagios = df_cen["est"].unique()
         lista_p25_est = []
         lista_p75_est = []
         lista_media = []
         for est in estagios:
+            print("est: ", est)
             df_arvore_est = df_arvore.loc[(df_arvore["PER"] == est)]
             df_cen_est = df_cen.loc[(df_cen["est"] == est)]
+            dados_x = dados_x + [est]*len(df_cen_est[grandeza].tolist())
+            dados_y = dados_y + df_cen_est[grandeza].tolist()
             df_cen_est["PROB_COND"] = 0
             for node in df_arvore_est["NO"].unique():
                 prob_cond = 1
@@ -217,23 +250,40 @@ for grandeza in grandezas:
             #print(df_cen_est)            
             p25 = df_cen_est[grandeza].quantile(0.25)
             p75 = df_cen_est[grandeza].quantile(0.75)
-            print(f"P25 (25th percentile): {p25}")
-            print(f"P75 (75th percentile): {p75}")
+            #print(f"P25 (25th percentile): {p25}")
+            #print(f"P75 (75th percentile): {p75}")
             p25, p75 = weighted_quantile(df_cen_est[grandeza], [0.25, 0.75], sample_weight=df_cen_est["PROB_COND"])
-            print(f"P25 (25th percentile): {p25}")
-            print(f"P75 (75th percentile): {p75}")
+            #print(f"P25 (25th percentile): {p25}")
+            #print(f"P75 (75th percentile): {p75}")
             media = df_cen_est[grandeza].quantile(0.75)
             #print(df_cen_est)
             #print(caso)
             lista_p25_est.append(p25)
             lista_p75_est.append(p75)
             lista_media.append(media)
-            somaProb = df_cen_est["prob"].sum()
-            print("caso: ", caso, " est: ", est, " somaProb: ", somaProb)
-        print("lista_p25_est: ", lista_p25_est)
-        print("lista_p75_est: ", lista_p75_est)
+            #somaProb = df_cen_est["prob"].sum()
+            #print("caso: ", caso, " est: ", est, " somaProb: ", somaProb)
+        #print("lista_p25_est: ", lista_p25_est)
+        #print("lista_p75_est: ", lista_p75_est)
+        print(len(dados_x))
+        print(len(dados_y))
+        #exit(1)
         #print(df_cen)
-        
+
+        fig2.add_trace(go.Box(
+            x=dados_x,
+            y=dados_y,  # or simply [0, slope]
+            #y=lista_media,  # or simply [0, slope]
+            name = mapa_nome_caso[caso],
+            legendgroup  = mapa_nome_caso[caso],
+            #line=dict(color=colors[contador], width=2),
+            marker_color = casos[caso],
+            boxpoints="suspectedoutliers",
+            showlegend=True,
+        ), row=linha, col=coluna)
+
+
+
         fig.add_trace(go.Scatter(
             x=df["est"], 
             y=df[grandeza],  # or simply [0, slope]
@@ -283,4 +333,42 @@ for grandeza in grandezas:
         showlegend=True
     )
     fig.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\{nome_figura}.html")
+    fig2.update_layout(
+        title=titulo,
+        title_font=dict(size=30, family="Arial", color="black"),
+        xaxis_title="estágios",
+        yaxis_title=mapa_unidades[grandeza],
+        font=dict(size=30), 
+        xaxis=dict(title_font=dict(size=30)),  
+        yaxis=dict(title_font=dict(size=30)),
+        boxmode='group',
+        showlegend=True
+    )
+    fig2.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\BOX_{nome_figura}.html")
+
+    fig3.update_layout(
+        title="Valores Totais "+titulo,
+        title_font=dict(size=30, family="Arial", color="black"),
+        xaxis_title="casos",
+        yaxis_title=mapa_unidades[grandeza],
+        font=dict(size=30), 
+        xaxis=dict(title_font=dict(size=30)),  
+        yaxis=dict(title_font=dict(size=30)),
+        showlegend=True
+    )
+    fig3.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\BAR_Sum_{nome_figura}.html")
+
+    
+    fig4.update_layout(
+        title="Valores Médios "+titulo,
+        title_font=dict(size=30, family="Arial", color="black"),
+        xaxis_title="casos",
+        yaxis_title=mapa_unidades[grandeza],
+        font=dict(size=30), 
+        xaxis=dict(title_font=dict(size=30)),  
+        yaxis=dict(title_font=dict(size=30)),
+        showlegend=True
+    )
+    fig4.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\BAR_Mean_{nome_figura}.html")
+    #exit(1)
     #exit(1)

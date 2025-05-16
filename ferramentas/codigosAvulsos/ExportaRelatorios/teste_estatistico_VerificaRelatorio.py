@@ -48,11 +48,11 @@ def calcula_prodt_acum_65(codigo_usi, df_confhd, df_hidr):
 
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_10D\\128_Aberturas_Equiprovavel\\"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
-caminho  = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\128_Aberturas_Equiprovavel"
+#caminho  = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\128_Aberturas_Equiprovavel"
 arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
 arquivo = "Academicos\\A_4x4x2\\estatisticasArvores"
 arquivo = "revisaoDebora\\A_25x3x2\\estatisticasArvores"
-arquivo = "\\A_4x4x2\\estatisticasArvores"
+#arquivo = "\\A_4x4x2\\estatisticasArvores"
 #df = pd.read_csv("estatisticasArvores.csv", sep=";")
 df = pd.read_csv(caminho+arquivo+".csv", sep=";")
 df = df.dropna().reset_index(drop = True)
@@ -66,7 +66,7 @@ casos = df["CASO"].unique()
 estagios = df["EST"].unique()
 postos = df["POSTO"].unique()
 
-df_vazoes = pd.read_csv(caminho+"\\Pente_GVZP\\cenarios.csv")
+df_vazoes = pd.read_csv(caminho+"\\Pente\\cenarios.csv")
 caminho_deck = "deck_newave_2020_01"
 #caminho_deck = "deck_newave_2020_01_reduzido_180325"
 #caminho_deck = "deck_newave_2020_01_reduzido_180325_postosAlterados"
@@ -144,16 +144,16 @@ dicionarioFalhasGerais = {
     "distribution":["FALHA_KS-TEST"]
 }
 
-#dicionarioFalhasGerais = {
-#    "FALHA_T_TEST":["FALHA_T_TEST"], # "FALHA_T_TEST", "FALHA_W-TEST" ,"FALHA_P_Boot_mean"
-#    "FALHA_F-TEST":["FALHA_F-TEST"], # , , "FALHA_P_Boot_Variance"
-#    "FALHA_L":["FALHA_L-TEST"], # , , "FALHA_P_Boot_Variance"
-#    "FALHA_W-TEST":["FALHA_W-TEST"], # , , "FALHA_P_Boot_Variance"
-#    "distribution":["FALHA_KS-TEST"],
-#    "mean_limite":["Média Viol. LimInf", "Média Viol. LimSup"],
-#    "std_limite":["Std Viol. LimInf", "Std Viol. LimSup"],
-#
-#}
+dicionarioFalhasGerais = {
+    "FALHA_T_TEST":["FALHA_T_TEST"], # "FALHA_T_TEST", "FALHA_W-TEST" ,"FALHA_P_Boot_mean"
+    "FALHA_F-TEST":["FALHA_F-TEST"], # , , "FALHA_P_Boot_Variance"
+    "FALHA_L":["FALHA_L-TEST"], # , , "FALHA_P_Boot_Variance"
+    "FALHA_W-TEST":["FALHA_W-TEST"], # , , "FALHA_P_Boot_Variance"
+    "distribution":["FALHA_KS-TEST"],
+    "mean_limite":["Média Viol. LimInf", "Média Viol. LimSup"],
+    "std_limite":["Std Viol. LimInf", "Std Viol. LimSup"],
+
+}
 
 dicionarioFalhasGlobais = {
     "fail_mean":[ "FALHA_T_TEST", "Média Viol. LimInf", "Média Viol. LimSup"], # "FALHA_T_TEST", "FALHA_P_Boot_mean", ,

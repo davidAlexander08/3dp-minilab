@@ -472,6 +472,7 @@ caso = "..\\Carmen\\exercicio_27cen_20D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\3Estagios\\3AberturasAssim\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
 caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente"
+caso = "..\\Academico\\exercicio_1Dexercicio_27cen_20D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
 mapa_aberturas_estagio = {1:4,    2:5,    3:15}
@@ -526,6 +527,14 @@ reducoes = [
     ({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
     ({1:32, 2:1, 3:1}, 32, "A_32x1x1"),
     ({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
+]
+
+caso = "Pente_GVZP_27cen"
+caminho_base = "..\\Academico\\exercicio_1D\\Exercicio_Pente_Arvore\\"
+reducoes = [
+    ({1:2, 2:2, 3:2}, 8, "A_2x2x2"),
+    ({1:4, 2:2, 3:1}, 8, "A_4x2x1"),
+    ({1:8, 2:1, 3:2}, 8, "A_8x1x1"),
 ]
 
 

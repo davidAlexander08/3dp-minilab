@@ -126,12 +126,15 @@ mapaNome = {
 mapaNome = {
         6:"FURNAS",
         17:"MARIMBONDO",
+        
         #18:"AGUA VERMELHA",
+        18:"AGUA VERMELHA",
         33:"SÃO SIMÃO",
+        8:"ESTREITO",
         34:"ILHA SOLTEIRA",
         #45:"JUPIA",
         #46:"PORTO PRIMAVERA",
-        66:"ITAIPU",
+        #66:"ITAIPU",
         169:"SOBRADINHO",
         #172:"ITAPARICA",
         91:"MACHADINHO",
@@ -139,7 +142,8 @@ mapaNome = {
         77:"SALTO SANTIAGO",
         275:"TUCURUI",
         227:"SINOP",
-        288:"BELO MONTE",
+        
+        #288:"BELO MONTE",
         
 }
 

@@ -574,9 +574,9 @@ module Main
                         #error("Optimization problem is infeasible. Stopping execution.")
                         println("Optimization problem is infeasible. Stopping execution.")
                     end
-                    if(est == 4)
-                        println(m)
-                    end
+                    #if(est == 4)
+                    #    println(m)
+                    #end
                     imprimePolitica(etapa, est, it, i_no)
 
                     if est < caso.n_est

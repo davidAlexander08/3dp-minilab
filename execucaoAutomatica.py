@@ -94,13 +94,39 @@ mapa_caminho_avaliacao = {
     "Academicos\\A_8x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
     "Academicos\\A_4x6x3\\":["KMeansAssimetricoProbPente\\"],
     #"A_4x2x1\\":["KMeansSimetricoProbQuadPente\\"],
-    }
+    } 
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Academico\\exercicio_1D\\"
 caminho_caso_arvores = "128_Aberturas_Equiprovavel_FimMundo\\"
 #caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
 
 
+
+##########################################################################
+
+caminho_arvores = ["Pente_GVZP_27cen\\", "Arvore_27_2_2\\", "Pente_GVZP_2cen\\",  "Pente_GVZP_4cen\\","Pente_GVZP_8cen\\",
+                    "Arvore_2_2_2\\",  "Arvore_4_2_2\\","Arvore_8_2_2\\"]
+caminho_arvores = ["A_2x2x2\\", "A_4x2x1\\", "A_8x1x1\\"]
+#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
+#caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
+mapa_caminho_avaliacao = {
+    "Pente_GVZP\\":[""],
+    "Pente_GVZP_2cen\\":[""],
+    "Pente_GVZP_4cen\\":[""],
+    "Pente_GVZP_8cen\\":[""],
+    "Pente_GVZP_27cen\\":[""],
+    "Arvore_2_2_2\\":[""],
+    "Arvore_4_2_2\\":[""],
+    "Arvore_8_2_2\\":[""],
+    "Arvore_27_2_2\\":[""],
+    "A_2x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
+    "A_4x2x1\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
+    "A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
+    } 
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Academico\\exercicio_1D\\"
+caminho_caso_arvores = "Exercicio_Pente_Arvore\\"
+#caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
 
 
 
