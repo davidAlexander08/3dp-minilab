@@ -1,137 +1,97 @@
 import json
 import subprocess
+#from julia.api import Julia
+#import os 
+#os.environ["JULIA_SYSIMAGE"] = "C:\\your\\path\\PDDAppSysimage.dll"
+#jl = Julia(compiled_modules=False)
+#from julia import Main
 
 
-##########################################
-caminho_arvores = ["Pente_GVZP\\","16Folhas\\A_2x2x4\\", "16Folhas\\A_4x2x2\\", "16Folhas\\A_16_1_1\\",
-                   "8Folhas\\A_2x2x2\\", "8Folhas\\A_4x2x1\\", "8Folhas\\A_8x1x1\\",
-                   ] 
-# 
-#"64Folhas\\A_8x4x2\\", "64Folhas\\A_4x4x4\\", "64Folhas\\A_2x4x8\\",
- 
-mapa_caminho_avaliacao = {
-    "Pente_GVZP\\":[""],
-    "64Folhas\\A_8x4x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
-    "64Folhas\\A_4x4x4\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
-    "64Folhas\\A_2x4x8\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
-    "16Folhas\\A_2x2x4\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "16Folhas\\A_4x2x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "16Folhas\\A_16_1_1\\":["BKAssimetrico\\", "KMeansPente\\"],
-    "8Folhas\\A_2x2x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "8Folhas\\A_4x2x1\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "8Folhas\\A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
-    "8Folhas\\":["A_8x4x2\\", "A_4x4x4\\", "A_2x4x8\\"],
-    "Reduzida_Inicio\\":[""],
-    "Reduzida_Meio\\":[""],
-    "Reduzida_Meio_VarNegativa\\":[""],
-    "Reduzida_Meio_VarPositiva\\":[""],
-    "Reduzida_MeioMediaNegativaVarCte\\":[""],
-    "Reduzida_MeioMediaPositivaVarCte\\":[""],
-    "Reduzida_Meio_VarNegativa25\\":[""],
-    "Reduzida_Meio_VarPositiva25\\":[""],
-    "GTMIN\\A_25_75_150_Teste\\":["KMeansAssimetricoProbPenteSemente13\\"],
-    }
-caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Carmen\\exercicio_27cen_1D\\"
-caminho_caso_arvores = "64_Aberturas_Equiprovavel\\"
-
-
-
-
-
-
-
-##########################################################################
-
-caminho_arvores = [ "Deterministico\\", "Vassoura\\"]#"Pente_GVZP\\",  "A_4x2x1\\","A_2x2x2\\", "A_8x1x1\\", "A_2x3x4\\", ] # 
-#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
+caminho_arvores = [ "Pente_GVZP\\", "Pente_8cen\\", "A_2_2_2\\", "A_4_2_1\\" ] 
 #caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
 mapa_caminho_avaliacao = {
     "Pente_GVZP\\":[""],
-    "Deterministico\\":[""],
-    "Vassoura\\":[""],
-    #"A_2x2x2\\":["KMeansSimetricoProbQuadPente\\"],
-    #"A_2x3x4\\":["KMeansSimetricoProbQuadPente\\"],
-    "A_2x3x4\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
-    "A_4x2x1\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\"],
-    #"A_4x2x1\\":["KMeansSimetricoProbQuadPente\\"],
-    }
-caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Carmen\\exercicio_27cen_36D\\"
-caminho_caso_arvores = "128_Aberturas_Equiprovavel\\"
-caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
-##########################################
-caminho_arvores = ["revisaoDebora\\A_100x1x1_42_20\\", "revisaoDebora\\A_100x1x1_55_20\\", "revisaoDebora\\A_100x1x1_55_137\\", 
-                    "revisaoDebora\\A_100x1x1_84_137\\", "revisaoDebora\\A_100x1x1_254_20\\" ] 
-caminho_arvores = [ "revisaoDebora\\Detrm\\"] 
-mapa_caminho_avaliacao = {
-    "Pente_GVZP\\":[""],
-    "revisaoDebora\\A_100x1x1_42_20\\":["KMeansPente\\"],
-    "revisaoDebora\\A_100x1x1_55_20\\":["KMeansPente\\"],
-    "revisaoDebora\\A_100x1x1_55_137\\":["KMeansPente\\"],
-    "revisaoDebora\\A_100x1x1_84_137\\":["KMeansPente\\"],
-    "revisaoDebora\\A_100x1x1_254_20\\":["KMeansPente\\"],
-    "revisaoDebora\\Detrm\\":["KMeansPente\\"],
+    "Pente_8cen\\":["BKAssimetrico\\", "KMeansPente\\"],
+    "A_2_2_2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
+    "A_2_3_4\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
+    "A_4_2_1\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
+    "Rodada_Final\\A_125_125_125\\":["BKAssimetrico\\"],
     }
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
 
-
-
-##########################################################################
-
-caminho_arvores = ["Pente_GVZP\\",  "Academicos\\A_4x4x2\\","Academicos\\A_2x2x8\\", "Academicos\\A_8x2x2\\", "Academicos\\A_4x6x3\\", "Academicos\\A_32x1x1\\"] #  
-#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
+caminho_caso = "Carmen\\exercicio_27cen_20D\\"
+caminho_caso_arvores = "27_Aberturas_Equiprovavel\\"
+##########################################
+caminho_arvores = ["GTMIN\\A_25_75_150_Teste\\"] 
 #caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
 mapa_caminho_avaliacao = {
     "Pente_GVZP\\":[""],
+    "GTMIN\\A_25_75_150_Teste\\":["KMeansAssimetricoProbPenteSemente13\\"],
+    "GTMIN\\A_25_125_250\\":["KMeansAssimetricoProb\\"],
+    "GTMIN\\A_100_100_100\\":["BKAssimetrico\\"],
+    "GTMIN\\A_100_100_100\\":["KMeansPente\\"],
+    "A_4_2_1\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\"],
+    "Rodada_Final\\A_125_125_125\\":["BKAssimetrico\\"],
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
+caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
+##########################################
+caminho_arvores = ["Pente_GVZP\\", "Academicos\\A_4x4x2\\",
+                   "Academicos\\A_2x2x8\\", "Academicos\\A_4x6x3\\",
+                   "Academicos\\A_8x2x2\\", "Academicos\\A_32x1x1\\" ] 
+# 
+
+mapa_caminho_avaliacao = {
+    "Pente_GVZP\\":[""],
+    "Academicos\\A_2x2x8\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbRegress\\","KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\","KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "Academicos\\A_4x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbRegress\\","KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\","KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "Academicos\\A_4x6x3\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbRegress\\","KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\","KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "Academicos\\A_8x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbRegress\\","KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\","KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
     "Academicos\\A_32x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
-    "Academicos\\A_4x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
-    #"A_2x2x2\\":["KMeansSimetricoProbQuadPente\\"],
-    #"A_2x3x4\\":["KMeansSimetricoProbQuadPente\\"],
-    "Academicos\\A_2x2x8\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
-    "Academicos\\A_8x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
-    "Academicos\\A_4x6x3\\":["KMeansAssimetricoProbPente\\"],
-    #"A_4x2x1\\":["KMeansSimetricoProbQuadPente\\"],
-    } 
-caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Academico\\exercicio_1D\\"
-caminho_caso_arvores = "128_Aberturas_Equiprovavel_FimMundo\\"
-#caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
+    "16Folhas\\A_16x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
+    "8Folhas\\A_2x2x2\\":["BKAssimetrico\\", "BKSimetrico\\","KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "8Folhas\\A_4x2x1\\":["BKAssimetrico\\", "BKSimetrico\\","KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "8Folhas\\A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
+    "GTMIN\\A_25_75_150_Teste\\":["KMeansAssimetricoProbPenteSemente13\\"],
+    }
+caminho_base = "C:\\Users\\david.alexander\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\exercicio_27cen_5D\\"
+caminho_caso_arvores = "128_Aberturas_Equiprovavel_Pfundo\\"
+##########################################
+caminho_arvores = ["revisaoDebora\\Vassoura\\", "revisaoDebora\\A_25x4x2\\",
+                   "revisaoDebora\\A_50x2x2\\", "revisaoDebora\\A_60x3x2\\",
+                   "revisaoDebora\\A_100x2x1\\"] 
+caminho_arvores = ["revisaoDebora\\A_25x3x2\\"] 
 
-
-
-##########################################################################
-
-caminho_arvores = ["Pente_GVZP_27cen\\", "Arvore_27_2_2\\", "Pente_GVZP_2cen\\",  "Pente_GVZP_4cen\\","Pente_GVZP_8cen\\",
-                    "Arvore_2_2_2\\",  "Arvore_4_2_2\\","Arvore_8_2_2\\"]
-caminho_arvores = ["A_2x2x2\\", "A_4x2x1\\", "A_8x1x1\\"]
-#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
-#caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
 mapa_caminho_avaliacao = {
-    "Pente_GVZP\\":[""],
-    "Pente_GVZP_2cen\\":[""],
-    "Pente_GVZP_4cen\\":[""],
-    "Pente_GVZP_8cen\\":[""],
-    "Pente_GVZP_27cen\\":[""],
-    "Arvore_2_2_2\\":[""],
-    "Arvore_4_2_2\\":[""],
-    "Arvore_8_2_2\\":[""],
-    "Arvore_27_2_2\\":[""],
-    "A_2x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
-    "A_4x2x1\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "NeuralGas\\"],
-    "A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
-    } 
-caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Academico\\exercicio_1D\\"
-caminho_caso_arvores = "Exercicio_Pente_Arvore\\"
-#caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
-
+    "revisaoDebora\\Vassoura\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_25x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_50x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_60x3x2\\":["BKAssimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_25x3x2\\":["BKAssimetrico\\", ],
+    "revisaoDebora\\A_100x1x1_55_137\\":["KMeansPente\\",],
+    "revisaoDebora\\A_100x1x1_84_137\\":["KMeansPente\\",],
+    "revisaoDebora\\A_100x1x1_254_20\\":["KMeansPente\\",],
+    "revisaoDebora\\A_25x4x2_13_96\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_25x4x2_75_33\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_25x4x2_254_20\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_25x4x2_267_547\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_50x2x2_S137_255\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_50x2x2_S4220\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "revisaoDebora\\A_50x2x2_S5520\\":["KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    }
+caminho_base = "C:\\Users\\david.alexander\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
+caminho_caso_arvores = "avaliaArvoresRepresentativo\\"
 
 
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
-julia_script = "src\\PDD.jl"
+julia_script = "PDD\\src\\PDD.jl"
+sysimage_path = "PDDApp.dll"  # Update this with your actual sysimage path
+
 
 for caminho_arvore in caminho_arvores:
     for avaliacao in mapa_caminho_avaliacao[caminho_arvore]:
@@ -145,9 +105,17 @@ for caminho_arvore in caminho_arvores:
             config = json.load(file)
         config["CAMINHO_ARVORE_EXTERNA"] = new_arvore_path
         config["CAMINHO_VAZAO_EXTERNA"] = new_cenarios_path
-        config["SIMFINAL"] = 0
         with open(json_path, "w") as file:
             json.dump(config, file, indent=4)
         print("✅ JSON updated!")
         # Step 2: Run Julia script
-        subprocess.run(["julia", julia_script])
+        #subprocess.run(["julia", julia_script])
+        #PDDApp.executaModelo()
+        subprocess.run(["julia", f"--sysimage={sysimage_path}", julia_script])
+        #subprocess.run(["julia", f"--sysimage={sysimage_path}", "-e",'include("C:/Users/david.alexander/Documents/git/3dp-minilab/src/PDD.jl"); executaModelo()'])
+
+        #subprocess.run([
+        #    "julia", 
+        #    "--sysimage", sysimage_path,  # Specify the precompiled sysimage
+        #    "-e", "using PDD; PDD.executaModelo()"  # Call the function inside the compiled image
+        #])

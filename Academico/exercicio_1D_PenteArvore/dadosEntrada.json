@@ -28,8 +28,8 @@
     "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/Detrm/KMeansPente/saidas/PDD/oper/cortes_est.csv",
     "CORTES_EXTERNOS": 0,
     "CAMINHO_CORTES_EXTERNOS": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_1D/128_Aberturas_Equiprovavel/Pente_GVZP/saidas/PDD/oper/cortes_est.csv",
-    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_1D_Debora//Arvore_4_2_2/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_1D_Debora//Arvore_4_2_2/cenarios.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_1D_PenteArvore/27cen/10Perc/A_8x1x1/KMeansPente/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_1D_PenteArvore/27cen/10Perc/A_8x1x1/KMeansPente/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",

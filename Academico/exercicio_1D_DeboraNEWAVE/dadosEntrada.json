@@ -1,6 +1,6 @@
 {
     "MAX_ITERACOES": 100,
-    "ESTAGIOS": 4,
+    "ESTAGIOS": 12,
     "ARVORE": [
         1,
         1,

@@ -134,28 +134,28 @@ mapaNomeUsinas = {
 }
 
 
-mapaNomeUsinas = {
-        6:"FURNAS",
-        17:"MARIMBONDO",
-        #18:"AGUA VERMELHA",
-        34:"I. SOLTEIRA",
-        25:"NOVA PONTE",
-        24:"EMBORCACAO",
-        #45:"JUPIA",
-        #46:"PORTO PRIMAVERA",
-        #66:"ITAIPU",
-        33:"SAO SIMAO",
-        251:"SERRA MESA",
-        257:"PEIXE ANGIC",
-        275:"TUCURUI",
-        74:"G.B. MUNHOZ",
-        #115:"GP SOUZA", 
-        76:"SEGREDO",
-        77:"SALTO SANTIAGO",
-        
-        #74:"G.B. MUNHOZ",
-        
-}
+#mapaNomeUsinas = {
+#        6:"FURNAS",
+#        17:"MARIMBONDO",
+#        #18:"AGUA VERMELHA",
+#        34:"I. SOLTEIRA",
+#        25:"NOVA PONTE",
+#        24:"EMBORCACAO",
+#        #45:"JUPIA",
+#        #46:"PORTO PRIMAVERA",
+#        #66:"ITAIPU",
+#        33:"SAO SIMAO",
+#        251:"SERRA MESA",
+#        257:"PEIXE ANGIC",
+#        275:"TUCURUI",
+#        74:"G.B. MUNHOZ",
+#        #115:"GP SOUZA", 
+#        76:"SEGREDO",
+#        77:"SALTO SANTIAGO",
+#        
+#        #74:"G.B. MUNHOZ",
+#        
+#}
 
 for grandeza in grandezas:
     fig = make_subplots(rows=4, cols=3, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))

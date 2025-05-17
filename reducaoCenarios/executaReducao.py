@@ -65,8 +65,11 @@ def testeConsistenciaProbabilidadesFilhos(no, df_arvore, texto):
     prob = 0
     for filho in filhos:
         prob_filho = df_arvore.loc[(df_arvore["NO"] == filho)]["PROB"].iloc[0]
+        #print(df_arvore.loc[(df_arvore["NO"] == filho)])
         prob += prob_filho
         
+        
+    
     assert prob >= 0.996, f"Distribuição das probabilidades dos filhos está errada para o teste {texto}, prob {prob}, filhos do no {no}"
     assert prob <= 1.004, f"Distribuição das probabilidades dos filhos está errada para o teste {texto}, prob {prob}, filhos do no {no}"
 
@@ -488,14 +491,6 @@ caminho_saida = "..\\Carmen\\exercicio_27cen_5D\\64_Aberturas_Equiprovavel\\8Fol
 
 
 
-caso = "..\\Carmen\\exercicio_27cen_20D\\128_Aberturas_Equiprovavel_Pfundo\\Pente_GVZP"
-reducoes = [
-    ({1:2, 2:2, 3:8}, 32, "revisaoDebora\\A_2x2x8"),
-    ({1:4, 2:4, 3:2}, 32, "revisaoDebora\\A_4x4x2"),
-    ({1:8, 2:2, 3:2}, 32, "revisaoDebora\\A_8x2x2"),
-    ({1:32, 2:1, 3:1}, 32, "revisaoDebora\\A_32x1x1"),
-    ({1:4, 2:6, 3:3}, 72, "revisaoDebora\\A_4x6x3"),
-]
 
 
 caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente"
@@ -529,12 +524,31 @@ reducoes = [
     ({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
 ]
 
-caso = "Pente_GVZP_27cen"
-caminho_base = "..\\Academico\\exercicio_1D\\Exercicio_Pente_Arvore\\"
+caso = "Pente_Gerado"
+caminho_base = "..\\Academico\\exercicio_1D_PenteArvore\\2cen\\10Perc\\"
 reducoes = [
     ({1:2, 2:2, 3:2}, 8, "A_2x2x2"),
     ({1:4, 2:2, 3:1}, 8, "A_4x2x1"),
-    ({1:8, 2:1, 3:2}, 8, "A_8x1x1"),
+    ({1:8, 2:1, 3:1}, 8, "A_8x1x1"),
+]
+
+caso = "Pente_Gerado"
+caminho_base = "..\\Academico\\exercicio_1D_PenteArvore\\27cen\\1Perc\\"
+reducoes = [
+    ({1:2, 2:2, 3:2}, 8, "A_2x2x2"),
+    ({1:4, 2:2, 3:1}, 8, "A_4x2x1"),
+    ({1:8, 2:1, 3:1}, 8, "A_8x1x1"),
+]
+
+
+caso = "Pente_GVZP"
+caminho_base = "..\\Academico_Dissertacao\\exercicio_1D\\128_Aberturas_Equiprovavel\\"
+reducoes = [
+    ({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
+    ({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    ({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
+    ({1:32, 2:1, 3:1}, 32, "A_32x1x1"),
+    ({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
 ]
 
 
@@ -642,11 +656,12 @@ for red in reducoes:
     }
 
     if(red[1] != 0):
-        print("ENTROU AQUI REDUCAO COM KMEANS PENTE")
+        
         for chave in DicionarioListaKmeans:
             binarios = DicionarioListaKmeans[chave]
             if(binarios[0] == False):
                 print("###########################################################################")
+                print("ENTROU AQUI REDUCAO COM KMEANS PENTE")
                 
                 print(chave+ " K-Means Reduction no Último Estágio")
                 binarios_pente =  [False, False, False, False]
@@ -668,20 +683,21 @@ for red in reducoes:
 
             if(binarios[0] == True):
                 # METODO CLUSTERIZACAO SIMETRICO
-                if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
-                    print("###########################################################################")
-                    print(chave+" K-Means Reduction no Último Estágio")
-                    binarios_pente =  [False, False, False, False]
-                    df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio_pente, df_vazoes_original.copy(), df_arvore_original.copy(), 
-                        binarios_pente[0], perservaFolhas, binarios_pente[1], binarios_pente[3], binarios_pente[2], Plota)
-                    print(df_arvore)
-                    df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes.copy(), df_arvore.copy(), 
-                        binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
-                    path_saida = "saidas\\"+chave
-                    path_saida = caminho_saida+"\\"+chave
-                    os.makedirs(path_saida, exist_ok=True)
-                    df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-                    df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+                print(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())])
+                #if(mapa_reducao_estagio[max(df_arvore_original["PER"].tolist())] != 0):
+                print("###########################################################################")
+                print(chave+" K-Means Reduction no Último Estágio")
+                binarios_pente =  [False, False, False, False]
+                df_arvore, df_vazoes = reducaoArvoreClusterizacaoPente(mapa_aberturas_estagio_pente, df_vazoes_original.copy(), df_arvore_original.copy(), 
+                    binarios_pente[0], perservaFolhas, binarios_pente[1], binarios_pente[3], binarios_pente[2], Plota)
+                print(df_arvore)
+                df_arvore, df_vazoes = reducaoArvoreClusterizacao(mapa_aberturas_estagio, df_vazoes.copy(), df_arvore.copy(), 
+                    binarios[0], perservaFolhas, binarios[1], binarios[3], binarios[2], Plota)
+                path_saida = "saidas\\"+chave
+                path_saida = caminho_saida+"\\"+chave
+                os.makedirs(path_saida, exist_ok=True)
+                df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+                df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
                     
                 texto = "Arvore "+chave
                 realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
@@ -785,7 +801,7 @@ for red in reducoes:
     texto = "Arvore Neural Gas"
     realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
     testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-    printaArvore("NeuralGas", path_saida, df_arvore)
+    #printaArvore("NeuralGas", path_saida, df_arvore)
 
 
     ### TESTES UNITARIOS PARA GARANTIR CONSISTENCIA DAS ARVORES GERADAS
@@ -842,7 +858,7 @@ for red in reducoes:
             texto = "Arvore "+chave
             realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
             testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-            printaArvore(chave, path_saida, df_arvore)
+            #printaArvore(chave, path_saida, df_arvore)
         if(binarios[0] == True):
 
             print("###########################################################################")
@@ -859,5 +875,5 @@ for red in reducoes:
             realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
             testeSimetriaFilhos(df_arvore, texto)
             testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-            printaArvore(chave, path_saida, df_arvore)
+            #printaArvore(chave, path_saida, df_arvore)
 

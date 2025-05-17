@@ -5,37 +5,31 @@ using JSON
 using CSV
 using DataFrames
 #using Graphs
-using LightGraphs
-using SparseArrays
+#using LightGraphs
+#using SparseArrays
 using DataStructures
 
 
 str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
-#str_caso = "Carmen/caso_mini"
-#str_caso = "Carmen/exercicio_27cen"
-#str_caso = "Carmen/exercicio_27cen_2D"
-#str_caso = "Carmen/exercicio_27cen_3D"
-#str_caso = "Carmen/exercicio_27cen_4D_Teste"
-##str_caso = "Carmen/exercicio_27cen_4D"
-#str_caso = "Carmen/exercicio_27cen_5D"
-#str_caso = "Carmen/exercicio_27cen_4D"
-##str_caso = "Capitulo_5/caso_mini_500Cen_sorteio_mensais"
 str_caso = "Capitulo_5/caso_mini_500Cen_cluster_semanais"
-#str_caso = "Carmen/exercicio_27cen_1D"
-#str_caso = "Carmen/exercicio_27cen_2D"
-#str_caso = "Carmen/exercicio_27cen_3D"
-#str_caso = "Carmen/exercicio_27cen_4D_Teste"
-#str_caso = "Carmen/exercicio_27cen_1D"
-#str_caso = "Carmen/exercicio_27cen_10D"
-#str_caso = "Carmen/exercicio_27cen_20D"
-#str_caso = "Academico/exercicio_5D" 
 str_caso = "Academico/exercicio_1D"
+str_caso = "Academico_Dissertacao/exercicio_1D"
+str_caso = "Academico_Dissertacao/exercicio_36D"
+str_caso = "Academico/exercicio_1D_DeboraNEWAVE"
 #str_caso = "Academico/exercicio_1D_Debora"
+#str_caso = "Academico/exercicio_1D_PenteArvore"
 #str_caso = "Carmen/exercicio_27cen_36D"
 #str_caso = "Carmen/exercicio_27cen_3D"
 ##str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
 #str_caso = "Dissertacao/exercicioDebora/caso_mini"
 #str_caso = "Carmen/exercicio_27cen_1D"
+
+dict_str_caso = JSON.parsefile("PDD/src/caminho.json"; use_mmap=false)
+str_caso = dict_str_caso["CAMINHO_CASO"]
+tolerancia = dict_str_caso["TOLERANCIA"]
+println("str_caso: ", str_caso, " tolerancia: ", tolerancia)
+
+
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
 PATH_HORAS = str_caso*"/horas.csv"
 

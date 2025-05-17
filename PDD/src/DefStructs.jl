@@ -1,5 +1,5 @@
 
-using SparseArrays
+#using SparseArrays
 using DataStructures 
 mutable struct BarraConfig
     codigo::Int32
@@ -87,36 +87,36 @@ end
 #    end
 #end
 
-mutable struct IlhaConfig
-    codigo::Int32
-    slack::BarraConfig
-    barras::Vector{BarraConfig}
-    linhas::Vector{LinhaConfig}
-    matrizSusceptancia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
-    matrizIncidencia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
-    barrasAtivas::Dict{Int, Vector{BarraConfig}} #Chave EST
-    barrasNaoAtivas::Dict{Int, Vector{BarraConfig}} #Chave EST
-    linhasAtivas::Dict{Int, Vector{LinhaConfig}} #Chave EST
-    linhasNaoAtivas::Dict{Int, Vector{LinhaConfig}} #Chave EST
-
-    #mapaCodigoBarra::Dict{Int,BarraConfig}
-    function IlhaConfig()
-        default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
-        default_linha = LinhaConfig()
-        new(0,
-        default_barra, 
-        [default_barra], 
-        [default_linha], 
-        Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}(), 
-        Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}(),   
-        Dict{Int, BarraConfig}(),
-        Dict{Int, BarraConfig}(),
-        Dict{Int, LinhaConfig}(),
-        Dict{Int, LinhaConfig}()
-        )
-        #default_dict)
-    end
-end
+#mutable struct IlhaConfig
+#    codigo::Int32
+#    slack::BarraConfig
+#    barras::Vector{BarraConfig}
+#    linhas::Vector{LinhaConfig}
+#    matrizSusceptancia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
+#    matrizIncidencia::Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}
+#    barrasAtivas::Dict{Int, Vector{BarraConfig}} #Chave EST
+#    barrasNaoAtivas::Dict{Int, Vector{BarraConfig}} #Chave EST
+#    linhasAtivas::Dict{Int, Vector{LinhaConfig}} #Chave EST
+#    linhasNaoAtivas::Dict{Int, Vector{LinhaConfig}} #Chave EST
+#
+#    #mapaCodigoBarra::Dict{Int,BarraConfig}
+#    function IlhaConfig()
+#        default_barra = BarraConfig()  # Assuming BarraConfig has a default constructor
+#        default_linha = LinhaConfig()
+#        new(0,
+#        default_barra, 
+#        [default_barra], 
+#        [default_linha], 
+#        Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}(), 
+#        Dict{Int, Union{SparseMatrixCSC{Float64, Int}, Nothing}}(),   
+#        Dict{Int, BarraConfig}(),
+#        Dict{Int, BarraConfig}(),
+#        Dict{Int, LinhaConfig}(),
+#        Dict{Int, LinhaConfig}()
+#        )
+#        #default_dict)
+#    end
+#end
 
 mutable struct SubmercadoConfigData
     nome::String

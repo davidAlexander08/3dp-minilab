@@ -5,7 +5,7 @@ import pydot
 import matplotlib.pyplot as plt
 from anytree import Node, RenderTree
 
-def printaArvore(texto, df_arvore, df_cenarios):
+def printaArvore(texto, df_arvore, df_cenarios, path):
     df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = 1
     #df_arvore.loc[df_arvore["NO_PAI"] == 0, "NO_PAI"] = -1  # You can use any value that is not part of the graph
     G = nx.DiGraph()
@@ -27,7 +27,7 @@ def printaArvore(texto, df_arvore, df_cenarios):
     }
     nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=10)
     plt.title("Tree Visualization")
-    plt.savefig(texto+".png", format="png", dpi=100, bbox_inches="tight")
+    plt.savefig(caminho_saida+ "\\"+texto+".png", format="png", dpi=100, bbox_inches="tight")
     
     #plt.show()
 
@@ -60,17 +60,19 @@ def retorna_lista_caminho_forward(no, df_arvore):
         no_inicial = filho
     return lista
 
-caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D\Exercicio_Pente_Arvore\Pente_GVZP_27cen"
+caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\1Perc\Pente_GVZP_27cen"
 #caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Pente_GVZP_8cen"
-#caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Pente_GVZP_2cen"
+caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\Pente_GVZP_2cen"
+caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\Pente_GVZP_27cen"
 #caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Pente_GVZP_4cen"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Arvore_2_2_2"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Arvore_4_2_2"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Arvore_8_2_2"
-caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D\Exercicio_Pente_Arvore\Arvore_27_2_2"
+caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\ArvorePerc_27\10Perc"
+#caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\ArvorePerc_2\1Perc"
 arvore = pd.read_csv(caminho_pente+"\\arvore.csv")
 cenarios = pd.read_csv(caminho_pente+"\\cenarios.csv")
-
+percentual = 0.1
 print(arvore)
 print(cenarios)
 estagios = arvore["PER"].unique()
@@ -124,7 +126,7 @@ for idx,est in enumerate(estagios):
                             no_pai = 1
                             no_pai = df_arvore.loc[(df_arvore["NO"] == node)]["NO_PAI"].iloc[0]
                             prob = 1/aberturas[idx]
-                            vazao_node = vazao + vazao/aberturas[idx]
+                            vazao_node = vazao + vazao*percentual
                         lista_df_novo.append(
                             pd.DataFrame(
                                 {
@@ -151,7 +153,7 @@ for idx,est in enumerate(estagios):
                 elemento_inicial = caminho_forward[0]
                 df_arvore.loc[df_arvore["NO"] == elemento_inicial, "PROB"] = 1/aberturas[idx]
                 vazao = df_cenarios.loc[(df_cenarios["NO"] == elemento_inicial)]["VAZAO"].iloc[0]
-                df_cenarios.loc[df_cenarios["NO"] == elemento_inicial, "VAZAO"] = vazao - vazao/aberturas[idx]
+                df_cenarios.loc[df_cenarios["NO"] == elemento_inicial, "VAZAO"] = vazao - vazao*percentual
                 print(caminho_forward)
                 
                 df_arvore = pd.concat(lista_df_novo).reset_index(drop =True)
@@ -160,11 +162,11 @@ for idx,est in enumerate(estagios):
                 print(df_cenarios)
 
 
-df_arvore.to_csv(caminho_saida+"\\arvore.csv")
-df_cenarios.to_csv(caminho_saida+"\\cenarios.csv")
+df_arvore.to_csv(caminho_saida+"\\arvore.csv", index = False)
+df_cenarios.to_csv(caminho_saida+"\\cenarios.csv", index = False)
 
 
-printaArvore("arvore", df_arvore, df_cenarios)
-printaArvore("arvore_orig", arvore, cenarios)
+printaArvore("arvore", df_arvore, df_cenarios, caminho_saida)
+printaArvore("arvore_orig", arvore, cenarios, caminho_saida)
 
 exit(1)

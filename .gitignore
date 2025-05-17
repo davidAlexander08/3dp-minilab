@@ -12,3 +12,4 @@
 *.parquet
 *.csv
 *.pyc
+*.bak
