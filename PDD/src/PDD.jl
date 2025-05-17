@@ -704,10 +704,12 @@ module PDD
             " Tempo Total: ", minutes_acumulados, " min ", seconds_acumulados, "secs")
             push!(df_convergencia, (iter = it, ZINF = zinf, ZSUP = valor_zsup, GAP = gap, MIN = minutes, SEC = seconds, MIN_TOT = minutes_acumulados, SEC_TOT = seconds_acumulados))
             #if gap < 0.00001
-            if gap < tolerancia
+            if gap < tolerancia || it == caso.n_iter 
+                if it > caso.n_iter_min
             #if gap < 0.01 || minutes_acumulados > 120 || it == caso.n_iter
-                println("CONVERGIU")
-                break
+                    println("CONVERGIU")
+                    break
+                end
             end
 
             if(simfinal == 1)

@@ -41,6 +41,7 @@ dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
 
 caso = CaseData()
 caso.n_iter = dict["MAX_ITERACOES"]
+caso.n_iter_min = dict["MIN_ITERACOES"]
 caso.n_est = dict["ESTAGIOS"]
 rede_eletrica = dict["REDE"]
 limites_intercambio = dict["LIMITES_INTERCAMBIO"]

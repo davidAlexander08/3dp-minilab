@@ -153,6 +153,7 @@ end
 
 mutable struct CaseData
     n_iter::Int32
+    n_iter_min::Int32
     n_est::Int32
     n_term::Int32
     n_uhes::Int32
