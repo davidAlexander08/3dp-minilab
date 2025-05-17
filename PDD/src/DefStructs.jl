@@ -159,7 +159,7 @@ mutable struct CaseData
     n_uhes::Int32
     estrutura_arvore::Vector
     function CaseData()
-        new(0,0, 0,0,[]) 
+        new(0,0,0, 0,0,[]) 
     end
 end
 
