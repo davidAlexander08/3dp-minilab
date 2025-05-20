@@ -1,6 +1,6 @@
 {
     "MAX_ITERACOES": 100,
-    "MIN_ITERACOES":10,
+    "MIN_ITERACOES": 10,
     "ESTAGIOS": 4,
     "ARVORE": [
         500,
@@ -17,12 +17,12 @@
     "VAZAO_EXTERNA": 1,
     "FIM_DE_MUNDO_VOLUMES": 0,
     "PERIODOS_FIM_DE_MUNDO": 0,
-    "SIMFINAL": 0,
-    "CAMINHO_CORTES": "C:/Users/david.alexander/Documents/gitMestrado/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/Detrm/KMeansPente/saidas/PDD/oper/cortes_est.csv",
-   "CORTES_EXTERNOS": 0,
-    "CAMINHO_CORTES_EXTERNOS": "C:/Users/david.alexander/Documents/gitMestrado/3dp-minilab/Academico_Dissertacao/exercicio_1D/128_Aberturas_Equiprovavel/Pente_GVZP/saidas/PDD/oper/cortes_est.csv",
-    "CAMINHO_ARVORE_EXTERNA": "C:/Users/david.alexander/Documents/gitMestrado/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/Vassoura/KMeansAssimetricoProbPente/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA": "C:/Users/david.alexander/Documents/gitMestrado/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/Vassoura/KMeansAssimetricoProbPente/cenarios.csv",
+    "SIMFINAL": 1,
+    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Final_TOL001/A_25x3x2/KMeansSimetricoProbQuadPente/saidas/PDD/oper/cortes_est.csv",
+    "CORTES_EXTERNOS": 1,
+    "CAMINHO_CORTES_EXTERNOS": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Pente_FCF/saidas/PDD/oper/cortes_est.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Caso_SF_Final_TOL001/A_25x3x2Simetrico/Pente/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Caso_SF_Final_TOL001/A_25x3x2Simetrico/Pente/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",
@@ -1635,10 +1635,10 @@
             "CODIGO": 1,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                42076.0,
-                42707.0,
-                43667.0,
-                41247.0
+                42476.0,
+                43107.0,
+                44067.0,
+                41647.0
             ]
         },
         {
@@ -1657,10 +1657,10 @@
             "CODIGO": 3,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                7671.0,
-                7740.0,
-                7951.0,
-                7752.0
+                8771.0,
+                8940.0,
+                9051.0,
+                8852.0
             ]
         },
         {

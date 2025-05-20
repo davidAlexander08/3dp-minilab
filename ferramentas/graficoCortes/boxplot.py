@@ -23,32 +23,37 @@ caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_c
 
 caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\GTMIN"
 
-caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Deterministico\saidas\PDD\oper"
-caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\Vassoura\KMeansAssimetricoProbPente\saidas\PDD\oper"
-caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Pente\saidas\PDD\oper"
-caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
-caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\A_100x1x1_42_20\KMeansPente\saidas\PDD\oper"
-caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\revisaoDebora"
+
+caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Pente\saidas\PDD\oper"
+caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Detrm\saidas\PDD\oper"
+caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Vassoura\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_100x1x1\KMeansPente\saidas\PDD\oper"
+caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso6 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansSimetricoProbQuadPente\saidas\PDD\oper"
+caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001"
 
 casos = {}
-casos["Deterministico"] = caso1
-casos["Vassoura"] = caso2
-casos["Pente"] = caso3
-casos["A_25x3x2"] = caso4
-casos["A_100x1x1"] = caso5
+casos["Pente"] = caso1
+casos["Detrm"] = caso2
+casos["Vassoura"] = caso3
+casos["A_100x1x1"] = caso4
+casos["A_25x3x2"] = caso5
+casos["A_25x3x2Simetrico"] = caso6
 cores = {
-        "Deterministico":"green",
+        "Detrm":"green",
         "Vassoura":"purple",
         "Pente":"black",
         "A_25x3x2":"red",
+        "A_25x3x2Simetrico":"pink",
         "A_100x1x1":"blue"
 }
 
 mapa_nome_caso = {
-        "Deterministico":"Determ.",
+        "Detrm":"Determ.",
         "Vassoura":"Vass.",
         "Pente":"Pente",
         "A_25x3x2":"A_25x3x2",
+        "A_25x3x2Simetrico":"A_25x3x2_S",
         "A_100x1x1":"A_100x1x1",
 }
 
@@ -56,7 +61,7 @@ mapa_nome_caso = {
 usina = 6
 periodo = 1
 no_usado = 1
-fig = make_subplots(rows=4, cols=3, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+fig = make_subplots(rows=4, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
 linha = 1
 coluna = 1
 contador_titulo = 0
@@ -130,16 +135,35 @@ mapaNome = {
         #18:"AGUA VERMELHA",
         18:"AGUA VERMELHA",
         33:"SÃO SIMÃO",
-        8:"ESTREITO",
+        #8:"ESTREITO",
         34:"ILHA SOLTEIRA",
         #45:"JUPIA",
         #46:"PORTO PRIMAVERA",
         #66:"ITAIPU",
         169:"SOBRADINHO",
-        #172:"ITAPARICA",
+        172:"ITAPARICA",
         91:"MACHADINHO",
         115:"GP SOUZA",
         77:"SALTO SANTIAGO",
+        275:"TUCURUI",
+        227:"SINOP",
+        
+        #288:"BELO MONTE",
+        
+}
+
+mapaNome = {
+        6:"FURNAS",
+        17:"MARIMBONDO",
+        #18:"AGUA VERMELHA",
+        #33:"SÃO SIMÃO",
+        34:"ILHA SOLTEIRA",
+        91:"MACHADINHO",
+        169:"SOBRADINHO",
+        172:"ITAPARICA",
+        
+        #115:"GP SOUZA",
+        #77:"SALTO SANTIAGO",
         275:"TUCURUI",
         227:"SINOP",
         
@@ -179,7 +203,7 @@ for usina in mapaNome:#usinas:
         contador_titulo += 1
         print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador_titulo)
         coluna = coluna + 1
-        if(coluna == 4):
+        if(coluna == 3):
                 coluna = 1
                 linha = linha + 1
 

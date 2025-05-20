@@ -129,30 +129,21 @@ caminho_caso_arvores = ""
 #caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
 
 ##########################################################################
-caminho_arvores = ["Academicos\\A_4x4x2\\"]#, "27cen\\10Perc\\A_2x2x2\\", "27cen\\10Perc\\A_4x2x1\\", "27cen\\10Perc\\A_8x1x1\\"]
-#caminho_arvores = [ "A_2x2x2\\","A_4x2x1\\","A_2x3x4\\",] # "A_2x3x4\\",
-#caminho_arvores = [ "Rodada_Final\\A_125_125_125\\"] 
+caminho_arvores = ["Pente_GVZP\\", "A_4x4x2\\", "A_8x2x2\\", "A_2x2x8\\"]
+
 mapa_caminho_avaliacao = {
-    "27cen\\10Perc\\Pente_Gerado\\":[""],
     "Pente_GVZP\\":[""],
-    "Pente_GVZP_4cen\\":[""],
-    "Pente_GVZP_8cen\\":[""],
-    "Pente_GVZP_27cen\\":[""],
-    "Academicos\\A_4x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\"],
-    "Arvore_2_2_2\\":[""],
-    "Arvore_4_2_2\\":[""],
-    "Arvore_8_2_2\\":[""],
-    "Arvore_27_2_2\\":[""],
-    "ArvorePerc_2\\":["10Perc\\", "3Perc\\", "5Perc\\", "10Perc\\"],
-    "ArvorePerc_27\\":["10Perc\\", "3Perc\\", "5Perc\\", "10Perc\\"],
-    "27cen\\10Perc\\A_2x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\"],
-    "27cen\\10Perc\\A_4x2x1\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\"],
+    "A_4x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\","NeuralGas\\"],
+    "A_2x2x8\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\","NeuralGas\\"],
+    "A_8x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\","NeuralGas\\"],
     "27cen\\10Perc\\A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
     } 
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Academico\\exercicio_36D\\"
+caminho_caso = "Academico_Dissertacao\\exercicio_5D\\"
 caminho_caso_arvores = ""
 #caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
+
+JSON_PDD = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\PDD\\src\\caminho.json
 
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "PDD\\src\\PDD.jl"
@@ -165,6 +156,10 @@ for caminho_arvore in caminho_arvores:
         new_cenarios_path = new_cenarios_path.replace("\\", "/")
         print("EXECUTANDO: ",new_arvore_path )
         # Step 1: Load and update JSON
+        with open(JSON_PDD, "r") as file:
+            config_PDD = JSON_PDD.load(caminho_base+caminho_caso)
+        config_PDD["CAMINHO_CASO"] = new_arvore_path
+
         with open(json_path, "r") as file:
             config = json.load(file)
         config["CAMINHO_ARVORE_EXTERNA"] = new_arvore_path

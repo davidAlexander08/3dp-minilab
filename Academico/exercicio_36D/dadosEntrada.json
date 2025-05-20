@@ -19,8 +19,8 @@
     "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_36D/27_Aberturas_Equiprovavel/A_8x1x1/BKAssimetrico/saidas/PDD/oper/cortes_est.csv",
     "CORTES_EXTERNOS": 1,
     "CAMINHO_CORTES_EXTERNOS": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_36D/Pente_GVZP_horizonteExtendido/saidas/PDD/oper/cortes_est.csv",
-    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_36D/A_4x4x2_PenteGVZP_FcfHorizonteExtendidoGAP/KMeansAssimetricoProbPente/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_36D/A_4x4x2_PenteGVZP_FcfHorizonteExtendidoGAP/KMeansAssimetricoProbPente/cenarios.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_36D/Academicos/A_4x4x2/BKAssimetrico/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico/exercicio_36D/Academicos/A_4x4x2/BKAssimetrico/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",

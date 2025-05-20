@@ -476,6 +476,7 @@ caso = "..\\Carmen\\exercicio_27cen_20D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 #caso = "..\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas_teste\\Pente_GVZP"
 caso = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\Pente"
 caso = "..\\Academico\\exercicio_1Dexercicio_27cen_20D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
+caso = "..\\Academico_Dissertacao\\exercicio_1D\\27_Aberturas_Equiprovavel\\Pente_GVZP"
 
 #mapa_aberturas_estagio = {1:3,    2:3,    3:3}
 mapa_aberturas_estagio = {1:4,    2:5,    3:15}
@@ -514,15 +515,6 @@ reducoes = [
     ({1:2, 2:3, 3:4}, 24, "A_2x3x4"),
 ]
 
-caso = "Pente_GVZP"
-caminho_base = "..\\Carmen\\exercicio_27cen_5D\\128_Aberturas_Equiprovavel_13052025\\"
-reducoes = [
-    ({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
-    ({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
-    ({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
-    ({1:32, 2:1, 3:1}, 32, "A_32x1x1"),
-    ({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
-]
 
 caso = "Pente_Gerado"
 caminho_base = "..\\Academico\\exercicio_1D_PenteArvore\\2cen\\10Perc\\"
@@ -542,15 +534,14 @@ reducoes = [
 
 
 caso = "Pente_GVZP"
-caminho_base = "..\\Academico_Dissertacao\\exercicio_1D\\128_Aberturas_Equiprovavel\\"
+caminho_base = "..\\Academico_Dissertacao\\exercicio_1D\\"
 reducoes = [
-    ({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
-    ({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
-    ({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
-    ({1:32, 2:1, 3:1}, 32, "A_32x1x1"),
-    ({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
+    #({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
+    #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
+    ({1:2, 2:4, 3:4}, 32, "A_2x4x4"),
+    #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
 ]
-
 
 for red in reducoes:
     mapa_aberturas_estagio = red[0]
@@ -587,6 +578,10 @@ for red in reducoes:
     #printaArvore("Arvore Original", "saidas\\",df_arvore_original)
 
 
+
+
+
+
     if(red[1] != 0):
         ###            #SIMETR, WEIGHT, QUAD, PACOTE
         binarios_pente =  [False, False, False, False]
@@ -604,6 +599,7 @@ for red in reducoes:
     #printaArvore("KMeansPente", path_saida, df_arvore)
 #
 #
+    
     ######################################### COMPARACAO METODOS 
     print("###########################################################################")
     ### METODO -  BACKWARD REDUCTION ASSIMETRICO

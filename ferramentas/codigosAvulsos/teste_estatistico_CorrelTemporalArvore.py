@@ -57,28 +57,28 @@ def weighted_correlation(data_x, data_y, weights):
     return correlation
 
 camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
-pasta_arvores = "\\avaliaArvoresRepresentativo"
-pasta_adicional_casos = "revisaoDebora\\"
+pasta_arvores = "\\Dissertacao"
+pasta_adicional_casos = "Final_TOL001\\"
 #pasta_arvores = "\\avaliaArvoresSIN"
 caminho_pente = "\\Pente"
 df_arvore_original = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\arvore.csv")
 #print(df_arvore_original)
 df_vazoes = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\cenarios.csv")
 
-tipo = "avaliaArvoresRepresentativo\\"
+tipo = "Dissertacao\\"
 #tipo = "avaliaArvoresSIN\\"
 #tipo = "VazaoIncrementalMultidimensional\\"
 mapa_casos = {
-    "BKAssimetrico":"Redução Regressiva",
-    "KMeansPente":"K-Means", 
-    #"KMeansAssimetricoProbPente":"K-Means", 
+    #"BKAssimetrico":"Redução Regressiva",
+    #"KMeansPente":"K-Means", 
+    "KMeansAssimetricoProbPente":"K-Means", 
     #"KMeansAssimetricoProb":"K-Means Assimetrico", 
-    #"KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
-    #"KMeansSimetricoProbQuad":"K-Means Simetrico", 
+    "KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
     #"NeuralGas":"NeuralGas"
 }
 analises = ["A_125_2_2", "A_125_2_2", "A_50_5_2", "A_25_10_2"]
 analises = ["A_100x1x1"]
+analises = ["A_25x3x2"]
 #casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
 #casos = ["Arvore1"]
 lista_df_final = []
@@ -99,7 +99,6 @@ mapa_estagio_index ={
 }
 def truncate_to_2_decimals(x):
     return math.floor(x * 100) / 100
-
 for parTemporal in paresCorrelacaoTemporal:
     for caso in mapa_casos:
         fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
@@ -107,7 +106,7 @@ for parTemporal in paresCorrelacaoTemporal:
         coluna = 1
         contador = 0
         for analise in analises:
-            caminho_red = camino_caso_orig+"\\"+tipo+"\\"+pasta_adicional_casos+"\\"+analise+"\\"+caso+"\\"
+            caminho_red = camino_caso_orig+"\\"+tipo+pasta_adicional_casos+analise+"\\"+caso+"\\"
             df_arvore_reduzida = pd.read_csv(caminho_red+"arvore.csv")
             df_vazoes_reduzida = pd.read_csv(caminho_red+"cenarios.csv")
             df_orig_est = df_arvore_original.loc[(df_arvore_original["PER"] == estagio_folhas)].reset_index(drop = True)

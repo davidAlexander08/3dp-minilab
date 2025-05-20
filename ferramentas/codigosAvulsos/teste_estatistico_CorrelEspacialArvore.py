@@ -56,28 +56,28 @@ def weighted_correlation(data_x, data_y, weights):
     return correlation
 
 camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
-pasta_arvores = "\\avaliaArvoresRepresentativo"
-pasta_adicional_casos = "revisaoDebora\\"
+pasta_arvores = "\\Dissertacao"
+pasta_adicional_casos = "Final_TOL001\\"
 #pasta_arvores = "\\avaliaArvoresSIN"
 caminho_pente = "\\Pente"
 df_arvore_original = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\arvore.csv")
 df_vazoes = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\cenarios.csv")
 
 analises = [("A_125_2_2_Teste",3), ("A_125_2_2_Teste",2), ("A_50_5_2_Teste",2), ("A_25_10_2_Teste",2) ]
-analises = [("A_25x3x2",4), ("A_25x3x2",3), ("A_25x3x2",2)]
-analises = [("A_100x1x1",4), ("A_100x1x1",3), ("A_100x1x1",2)]
+
+#analises = [("A_100x1x1",4), ("A_100x1x1",3), ("A_100x1x1",2)]
 mapa_casos = {
-    "BKAssimetrico":"Redução Regressiva",
-    "KMeansPente":"K-Means",
+    #"BKAssimetrico":"Redução Regressiva",
+    #"KMeansPente":"K-Means",
     #"KMeansAssimetricoProb":"K-Means Assimetrico", 
-    #"KMeansAssimetricoProbPente":"K-Means", 
-    #"KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
+    "KMeansAssimetricoProbPente":"K-Means", 
+    "KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
     #"KMeansSimetricoProbQuad":"K-Means Simetrico", 
     #"NeuralGas":"NeuralGas"
 }
 
 analises = [("A_100x1x1",4), ("A_100x1x1",3), ("A_100x1x1",2)]
-
+analises = [("A_25x3x2",4), ("A_25x3x2",3), ("A_25x3x2",2)]
 
 lista_df_final = []
 usinas = df_vazoes["NOME_UHE"].unique()

@@ -46,48 +46,48 @@ caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "Dissertacao\\"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-caminho_subarvores = "Caso_SF_Final_TOL001"
-caminhosaida = "Caso_SF_Final_TOL001"
+caminho_subarvores = "Final_TOL001"
+caminhosaida = "Final_TOL001"
 casos = {
-        "Caso_SF_Final_TOL001\\Pente\\Pente":"black",
-        #"Caso_SF_Final_TOL001\\Vassoura\\Pente":"purple",
-        "Caso_SF_Final_TOL001\\A_300x1x1_Kmeans\\Pente":"gray",
-        "Caso_SF_Final_TOL001\\A_200x1x1_Kmeans\\Pente":"darkblue",
-        "Caso_SF_Final_TOL001\\A_100x1x1_Kmeans\\Pente":"blue",
-        "Caso_SF_Final_TOL001\\A_50x1x1_Kmeans\\Pente":"lightblue",
-        #"Caso_SF_Final_TOL001\\A_25x1x1_Kmeans\\Pente":"cyan",
-        "Caso_SF_Final_TOL001\\A_5x1x1_Kmeans\\Pente":"cyan",
-        "Caso_SF_Final_TOL001\\Determ\\Pente":"green",
-        #"Caso_SF_Final_TOL001\\A_25x3x2\\Pente":"red",
-        #"Caso_SF_Final_TOL001\\A_25x3x2Simetrico\\Pente":"pink",
-        #"Caso_SF_Final_TOL001\\A_25x2x2\\Pente":"gold",
-        #"Caso_SF_Final_TOL001\\A_25x2x2Simetrico\\Pente":"orange",
+        "Final_TOL001\\Pente":"black",
+        "Final_TOL001\\Detrm":"green",
+        "Final_TOL001\\Vassoura\\KMeansAssimetricoProbPente":"purple",
+        #"Final_TOL001\\A_300x1x1_Kmeans\\Pente":"gray",
+        #"Final_TOL001\\A_200x1x1_Kmeans\\Pente":"darkblue",
+        "Final_TOL001\\A_100x1x1\\KMeansPente":"blue",
+        #"Final_TOL001\\A_50x1x1_Kmeans\\Pente":"lightblue",
+        #"Final_TOL001\\A_25x1x1_Kmeans\\Pente":"cyan",
+        #"Final_TOL001\\A_5x1x1_Kmeans\\Pente":"cyan",
+        "Final_TOL001\\A_25x3x2\\KMeansAssimetricoProbPente":"red",
+        "Final_TOL001\\A_25x3x2\\KMeansSimetricoProbQuadPente":"pink",
+        #"Final_TOL001\\A_25x2x2\\Pente":"gold",
+        #"Final_TOL001\\A_25x2x2Simetrico\\Pente":"orange",
         }
 mapa_nome_caso = {
         caminho_subarvores+"\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
         caminho_subarvores+"\\A_100x1x1\\BKAssimetrico":"A_100x1x1",
-        "Detrm":"Deterministico",
-        "Vassoura\\KMeansAssimetricoProb":"Vassoura",
-        "Pente":"Pente",
+        #"Final_TOL001\\Detrm":"Deterministico",
+        #"Final_TOL001\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
+        #"Final_TOL001\\Pente":"Pente",
         caminho_subarvores+"\\Pente":"Pente Original",
         caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
         caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProb":"A_25_125_250_Teste",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
-        "Caso_SF_Final_TOL001\\A_25x3x2\\Pente":"A_25x3x2",
-        "Caso_SF_Final_TOL001\\A_25x3x2Simetrico\\Pente":"A_25x3x2Simetrico",
-        "Caso_SF_Final_TOL001\\A_25x2x2\\Pente":"A_25x2x2",
-        "Caso_SF_Final_TOL001\\A_25x2x2Simetrico\\Pente":"A_25x2x2Simetrico",
-        "Caso_SF_Final_TOL001\\A_5x1x1_Kmeans\\Pente":"A_5x1x1_Kmeans",
-        "Caso_SF_Final_TOL001\\A_25x1x1_Kmeans\\Pente":"A_25x1x1_Kmeans",
-        "Caso_SF_Final_TOL001\\A_50x1x1_Kmeans\\Pente":"A_50x1x1_Kmeans",
-        "Caso_SF_Final_TOL001\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
-        "Caso_SF_Final_TOL001\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
-        "Caso_SF_Final_TOL001\\A_100x1x1_Kmeans\\Pente":"A_100x1x1_Kmeans",
-        "Caso_SF_Final_TOL001\\Determ":"Determ",
-        "Caso_SF_Final_TOL001\\Vassoura\\Pente":"Vassoura",
-        "Caso_SF_Final_TOL001\\Pente\\Pente":"Pente",
+        "Final_TOL001\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
+        "Final_TOL001\\A_25x3x2\\KMeansSimetricoProbQuadPente":"A_25x3x2_S",
+        "Final_TOL001\\A_25x2x2\\Pente":"A_25x2x2",
+        "Final_TOL001\\A_25x2x2Simetrico\\Pente":"A_25x2x2Simetrico",
+        "Final_TOL001\\A_5x1x1_Kmeans\\Pente":"A_5x1x1_Kmeans",
+        "Final_TOL001\\A_25x1x1_Kmeans\\Pente":"A_25x1x1_Kmeans",
+        "Final_TOL001\\A_50x1x1_Kmeans\\Pente":"A_50x1x1_Kmeans",
+        "Final_TOL001\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
+        "Final_TOL001\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
+        "Final_TOL001\\A_100x1x1\\KMeansPente":"A_100x1x1",
+        "Final_TOL001\\Detrm":"Detrm",
+        "Final_TOL001\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
+        "Final_TOL001\\Pente":"Pente",
         caminho_subarvores+"\\Determ\\Pente":"Determ"
 }
 grandezas = ["CustoPresente","EarmP", "Deficit", "GT", "GH",  "CustoFuturo", "VolArm","AFL","CMO","VERT", "Earm","CustoTotal", ]
@@ -327,26 +327,26 @@ for grandeza in grandezas:
             line=dict(color=casos[caso], width=2),
             showlegend=True
         ), row=linha, col=coluna)
-        fig.add_trace(go.Scatter(
-            x=df["est"], 
-            y=lista_p25_est,  # or simply [0, slope]
-            mode='lines', 
-            name = "p25",
-            legendgroup  = "p25",
-            #line=dict(color=colors[contador], width=2, dash='dot'),
-            line=dict(color=casos[caso], width=2, dash='dot'),
-            showlegend=mostra_legendaLimites
-        ), row=linha, col=coluna)
-        fig.add_trace(go.Scatter(
-            x=df["est"], 
-            y=lista_p75_est,  # or simply [0, slope]
-            mode='lines', 
-            name = "p75",
-            legendgroup  = "p75",
-            #line=dict(color=colors[contador], width=2, dash='dash'),
-            line=dict(color=casos[caso], width=2, dash='dash'),
-            showlegend=mostra_legendaLimites
-        ), row=linha, col=coluna)
+        #fig.add_trace(go.Scatter(
+        #    x=df["est"], 
+        #    y=lista_p25_est,  # or simply [0, slope]
+        #    mode='lines', 
+        #    name = "p25",
+        #    legendgroup  = "p25",
+        #    #line=dict(color=colors[contador], width=2, dash='dot'),
+        #    line=dict(color=casos[caso], width=2, dash='dot'),
+        #    showlegend=mostra_legendaLimites
+        #), row=linha, col=coluna)
+        #fig.add_trace(go.Scatter(
+        #    x=df["est"], 
+        #    y=lista_p75_est,  # or simply [0, slope]
+        #    mode='lines', 
+        #    name = "p75",
+        #    legendgroup  = "p75",
+        #    #line=dict(color=colors[contador], width=2, dash='dash'),
+        #    line=dict(color=casos[caso], width=2, dash='dash'),
+        #    showlegend=mostra_legendaLimites
+        #), row=linha, col=coluna)
         contador += 1
         mostra_legendaLimites = False
     titulo = "Comparação Entre Árvores de Cenários - "+mapa_grandezas[grandeza]

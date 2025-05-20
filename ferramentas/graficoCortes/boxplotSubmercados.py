@@ -50,24 +50,27 @@ caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_c
 caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\A_25_125_250\KMeansAssimetricoProb\saidas\PDD\oper"
 caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\A_100_100_100\BKAssimetrico\saidas\PDD\oper"
 
-caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Deterministico\saidas\PDD\oper"
-caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\Vassoura\KMeansAssimetricoProbPente\saidas\PDD\oper"
-caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\Pente\saidas\PDD\oper"
-caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
-caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\revisaoDebora\A_100x1x1_42_20\KMeansPente\saidas\PDD\oper"
-caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\revisaoDebora"
+caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Pente\saidas\PDD\oper"
+caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Detrm\saidas\PDD\oper"
+caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Vassoura\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_100x1x1\KMeansPente\saidas\PDD\oper"
+caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso6 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansSimetricoProbQuadPente\saidas\PDD\oper"
+caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001"
 
 casos = {}
-casos["Deterministico"] = caso1
-casos["Vassoura"] = caso2
-casos["Pente"] = caso3
-casos["A_25x3x2"] = caso4
-casos["A_100x1x1"] = caso5
+casos["Pente"] = caso1
+casos["Detrm"] = caso2
+casos["Vassoura"] = caso3
+casos["A_100x1x1"] = caso4
+casos["A_25x3x2"] = caso5
+casos["A_25x3x2Simetrico"] = caso6
 cores = {
-        "Deterministico":"green",
+        "Detrm":"green",
         "Vassoura":"purple",
         "Pente":"black",
         "A_25x3x2":"red",
+        "A_25x3x2Simetrico":"pink",
         "A_100x1x1":"blue"
 }
 

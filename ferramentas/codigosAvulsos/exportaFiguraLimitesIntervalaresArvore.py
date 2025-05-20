@@ -17,11 +17,12 @@ from inewave.newave import Hidr
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_5D\\128_Aberturas_Equiprovavel\\Academicos\\"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\27_Aberturas_Equiprovavel\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001\\"
 #caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\revisaoDebora\\"
 casos = ["BKAssimetrico", "KMeansAssimetricoProbPente", "KMeansSimetricoProbQuadPente", "NeuralGas"]
-casos = ["BKAssimetrico", "KMeansAssimetricoProbPente", "KMeansSimetricoProbQuadPente"]
 casos = ["BKAssimetrico", "KMeansAssimetricoProbPente"]
-#casos = ["BKAssimetrico", "KMeansPente"]
+casos = ["BKAssimetrico", "KMeansAssimetricoProbPente", "KMeansSimetricoProbQuadPente"]
+casos = ["KMeansPente"]
 
 mapaNomeCaso = {
     "BKAssimetrico":"Redução Regressiva",
@@ -35,8 +36,9 @@ mapaNomeCaso = {
 analises = [("A_125_2_2",3, "250"), ("A_125_2_2",2, "125"), ("A_50_5_2",2, "50"), ("A_25_10_2",2, "25") ]
 analises = [("A_4x4x2",4, "32"), ("A_4x4x2",3, "16"), ("A_4x4x2",2, "4")]
 analises = [("A_25x3x2",4, "150"), ("A_25x3x2",3, "75"), ("A_25x3x2",2, "25")]
-analises = [("A_100x1x1",4, "100"), ("A_100x1x1",3, "100"), ("A_100x1x1",2, "100")]
 analises = [("A_4x2x1",4, "8"), ("A_4x2x1",3, "8"), ("A_4x2x1",2, "4")]
+analises = [("A_25x3x2",4, "150"), ("A_25x3x2",3, "75"), ("A_25x3x2",2, "25")]
+analises = [("A_100x1x1",4, "100"), ("A_100x1x1",3, "100"), ("A_100x1x1",2, "100")]
 
 for caso in casos:
     fig_mean = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))

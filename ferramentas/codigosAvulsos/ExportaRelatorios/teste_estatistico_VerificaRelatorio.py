@@ -48,10 +48,15 @@ def calcula_prodt_acum_65(codigo_usi, df_confhd, df_hidr):
 
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico\\exercicio_10D\\128_Aberturas_Equiprovavel\\"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico_Dissertacao\\exercicio_5D\\"
 #caminho  = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Carmen\\exercicio_27cen_36D\\128_Aberturas_Equiprovavel"
 arquivo = "avaliaArvores\\A_25_10_2\\BKAssimetrico_ENA\\estatisticasArvores_ENA"
 arquivo = "Academicos\\A_4x4x2\\estatisticasArvores"
 arquivo = "revisaoDebora\\A_25x3x2\\estatisticasArvores"
+arquivo = "A_4x4x2\\estatisticasArvores"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001\\"
+arquivo = "A_25x3x2\\estatisticasArvores"
+#arquivo = "A_100x1x1\\estatisticasArvores"
 #arquivo = "\\A_4x4x2\\estatisticasArvores"
 #df = pd.read_csv("estatisticasArvores.csv", sep=";")
 df = pd.read_csv(caminho+arquivo+".csv", sep=";")
@@ -301,7 +306,7 @@ for tipo_falha in dicionarioFalhas:
                     )
                 )
 df_falhaTestesContagem = pd.concat(lista_df_todosTestes).reset_index(drop = True)
-print(df_falhaTestesContagem)
+
 df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados.csv", index = False)
 
 lista_df_todosTestes = []
@@ -364,11 +369,24 @@ for tipo_falha in dicionarioFalhasGerais:
             )
 
 df_falhaTestesContagem = pd.concat(lista_df_todosTestes).reset_index(drop = True)
-print(df_falhaTestesContagem)
+#df_falhaTestesContagem = df_falhaTestesContagem.loc[(df_falhaTestesContagem["CASO"]!= "KMeansSimetricoProbQuadPente")]
+df_falhaTestesContagem = df_falhaTestesContagem.drop(columns=["TESTE"])
+print(df_falhaTestesContagem.loc[df_falhaTestesContagem["CASO"] == "KMeansAssimetricoProbPente"])
+print(df_falhaTestesContagem.loc[df_falhaTestesContagem["CASO"] == "KMeansSimetricoProbQuadPente"])
+print(df_falhaTestesContagem.loc[df_falhaTestesContagem["CASO"] == "NeuralGas"])
+print(df_falhaTestesContagem.loc[df_falhaTestesContagem["CASO"] == "BKAssimetrico"])
+print(df_falhaTestesContagem.loc[df_falhaTestesContagem["CASO"] == "KMeansPente"])
+
+
 df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados_gerais.csv", index = False)
 df_falhaTestesContagemGeralTodosEstagios = pd.concat(lista_df_todosTestesTodosEstagios).reset_index(drop = True)
 df_falhaTestesContagemGeralTodosEstagios.to_csv(caminho+"\\"+arquivo+"_resultados_gerais_geral_todosEstagios.csv", index = False)
-print(df_falhaTestesContagemGeralTodosEstagios)
+#df_falhaTestesContagemGeralTodosEstagios = df_falhaTestesContagemGeralTodosEstagios.loc[(df_falhaTestesContagemGeralTodosEstagios["CASO"]!= "KMeansSimetricoProbQuadPente")]
+print(df_falhaTestesContagemGeralTodosEstagios.loc[df_falhaTestesContagemGeralTodosEstagios["CASO"] == "KMeansAssimetricoProbPente"])
+print(df_falhaTestesContagemGeralTodosEstagios.loc[df_falhaTestesContagemGeralTodosEstagios["CASO"] == "KMeansSimetricoProbQuadPente"])
+print(df_falhaTestesContagemGeralTodosEstagios.loc[df_falhaTestesContagemGeralTodosEstagios["CASO"] == "NeuralGas"])
+print(df_falhaTestesContagemGeralTodosEstagios.loc[df_falhaTestesContagemGeralTodosEstagios["CASO"] == "BKAssimetrico"])
+print(df_falhaTestesContagemGeralTodosEstagios.loc[df_falhaTestesContagemGeralTodosEstagios["CASO"] == "KMeansPente"])
 
 lista_df_todosTestes = []
 lista_df_todosTestesTodosEstagios = []
@@ -431,7 +449,7 @@ for tipo_falha in dicionarioFalhasGlobais:
 
 df_falhaTestesContagem = pd.concat(lista_df_todosTestes).reset_index(drop = True)
 df_falhaTestesContagemTodosEstagios = pd.concat(lista_df_todosTestesTodosEstagios).reset_index(drop = True)
-print(df_falhaTestesContagemTodosEstagios)
+#print(df_falhaTestesContagemTodosEstagios)
 df_falhaTestesContagem.to_csv(caminho+"\\"+arquivo+"_resultados_gerais_globais.csv", index = False)
 df_falhaTestesContagemTodosEstagios.to_csv(caminho+"\\"+arquivo+"_resultados_gerais_globais_todosEstagios.csv", index = False)
 

@@ -56,30 +56,30 @@ def weighted_correlation(data_x, data_y, weights):
     correlation = covariance / np.sqrt(var_x * var_y)
     return correlation
 
+
 camino_caso_orig = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais"
-pasta_arvores = "\\avaliaArvoresRepresentativo"
-pasta_adicional_casos = "revisaoDebora\\"
+pasta_arvores = "\\Dissertacao"
+pasta_adicional_casos = "Final_TOL001\\"
 #pasta_arvores = "\\avaliaArvoresSIN"
 caminho_pente = "\\Pente"
 df_arvore_original = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\arvore.csv")
 #print(df_arvore_original)
 df_vazoes = pd.read_csv(camino_caso_orig+pasta_arvores+caminho_pente+"\\cenarios.csv")
 
-tipo = "avaliaArvoresRepresentativo\\"
+tipo = "Dissertacao\\"
 #tipo = "avaliaArvoresSIN\\"
 #tipo = "VazaoIncrementalMultidimensional\\"
 mapa_casos = {
-    "BKAssimetrico":"Redução Regressiva",
-    "KMeansPente":"K-Means", 
-    #"KMeansAssimetricoProbPente":"K-Means", 
+    #"BKAssimetrico":"Redução Regressiva",
+    #"KMeansPente":"K-Means", 
+    "KMeansAssimetricoProbPente":"K-Means", 
     #"KMeansAssimetricoProb":"K-Means Assimetrico", 
-    #"KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
-    #"KMeansSimetricoProbQuad":"K-Means Simetrico", 
+    "KMeansSimetricoProbQuadPente":"K-Means Simetrico", 
     #"NeuralGas":"NeuralGas"
 }
 analises = ["A_125_2_2", "A_125_2_2", "A_50_5_2", "A_25_10_2"]
 analise = "A_25x3x2"
-analise = "A_100x1x1"
+#analise = "A_100x1x1"
 #casos = ["BKAssimetrico", "KMeansAssimetrico", "KMeansSimetrico", "NeuralGas"]
 #casos = ["Arvore1"]
 lista_df_final = []
@@ -175,103 +175,103 @@ for caso in mapa_casos:
             except:
                 print(f"Não foi possível calcular a correlação tempora para usina {usi} para o par {parTemporal}")
 
-            #print("listaCorrelacaoTemporalOriginal: ", listaCorrelacaoTemporalOriginal)
-            #print("listaCorrelacaoTemporalReduzida: ",listaCorrelacaoTemporalReduzida)
-            # Compute R^2 using linear regression
-            print(len(listaCorrelacaoTemporalOriginal))
-            print(len(listaCorrelacaoTemporalReduzida))
-            listaCorrelacaoTemporalOriginal = [x for x in listaCorrelacaoTemporalOriginal if not math.isnan(x)]
-            listaCorrelacaoTemporalReduzida =  [x for x in listaCorrelacaoTemporalReduzida if not math.isnan(x)]
-            #slope, intercept, r_value, p_value, std_err = linregress(listaCorrelacaoTemporalOriginal, listaCorrelacaoTemporalReduzida)
-            #print(slope)
-            #print(intercept)
-            #print(r_value)
-            #print(r_value**2)
-            #print(p_value)
-            #print(std_err)
-            #r_squared = r_value**2
-            #print("R-squared:", r_squared)
-            #print(len(listaCorrelacaoTemporalOriginal))
-            #print(len(listaCorrelacaoTemporalReduzida))
-            #print(listaCorrelacaoTemporalOriginal)
-            #print(listaCorrelacaoTemporalReduzida)
-            x = np.array(listaCorrelacaoTemporalOriginal)  # original correlation
-            y = np.array(listaCorrelacaoTemporalReduzida)   # reduced correlation
+        #print("listaCorrelacaoTemporalOriginal: ", listaCorrelacaoTemporalOriginal)
+        #print("listaCorrelacaoTemporalReduzida: ",listaCorrelacaoTemporalReduzida)
+        # Compute R^2 using linear regression
+        print(len(listaCorrelacaoTemporalOriginal))
+        print(len(listaCorrelacaoTemporalReduzida))
+        listaCorrelacaoTemporalOriginal = [x for x in listaCorrelacaoTemporalOriginal if not math.isnan(x)]
+        listaCorrelacaoTemporalReduzida =  [x for x in listaCorrelacaoTemporalReduzida if not math.isnan(x)]
+        #slope, intercept, r_value, p_value, std_err = linregress(listaCorrelacaoTemporalOriginal, listaCorrelacaoTemporalReduzida)
+        #print(slope)
+        #print(intercept)
+        #print(r_value)
+        #print(r_value**2)
+        #print(p_value)
+        #print(std_err)
+        #r_squared = r_value**2
+        #print("R-squared:", r_squared)
+        #print(len(listaCorrelacaoTemporalOriginal))
+        #print(len(listaCorrelacaoTemporalReduzida))
+        #print(listaCorrelacaoTemporalOriginal)
+        #print(listaCorrelacaoTemporalReduzida)
+        x = np.array(listaCorrelacaoTemporalOriginal)  # original correlation
+        y = np.array(listaCorrelacaoTemporalReduzida)   # reduced correlation
 
-            # Force the model y = a * x
-            slope = np.sum(x * y) / np.sum(x * x)
-            y_pred = slope * x
-            # Compute residual sum of squares (SQ_res)
-            SQ_res = np.sum((y - y_pred) ** 2)
-            # Compute total sum of squares (SQ_tot)
-            y_mean = np.mean(y)
-            SQ_tot = np.sum((y - y_mean) ** 2)
-            # Compute R²
-            r_squared = 1 - (SQ_res / SQ_tot) 
+        # Force the model y = a * x
+        slope = np.sum(x * y) / np.sum(x * x)
+        y_pred = slope * x
+        # Compute residual sum of squares (SQ_res)
+        SQ_res = np.sum((y - y_pred) ** 2)
+        # Compute total sum of squares (SQ_tot)
+        y_mean = np.mean(y)
+        SQ_tot = np.sum((y - y_mean) ** 2)
+        # Compute R²
+        r_squared = 1 - (SQ_res / SQ_tot) 
 
-            print("R-squared (manual):", r_squared)
-            print("slope (manual):", slope)
-            r_squared = truncate_to_2_decimals(r_squared)
-            slope = truncate_to_2_decimals(slope)
-            print("R-squared (manual):", r_squared)
-            print("slope (manual):", slope)
-
-
-            fig.add_trace(go.Scatter(
-                x=listaCorrelacaoTemporalOriginal, 
-                y=listaCorrelacaoTemporalReduzida, 
-                mode='markers',
-                name=f' {mapa_casos[caso]} {str(est)} (R² = {r_squared:.2f})',
-                showlegend=False,
-                marker=dict(size=10, color='blue')
-            ), row=linha, col=coluna)
+        print("R-squared (manual):", r_squared)
+        print("slope (manual):", slope)
+        #r_squared = truncate_to_2_decimals(r_squared)
+        #slope = truncate_to_2_decimals(slope)
+        #print("R-squared (manual):", r_squared)
+        #print("slope (manual):", slope)
 
 
-            fig.add_trace(go.Scatter(
-                x=[-0.5, 1], 
-                y=[slope * -0.5, slope * 1],  # or simply [0, slope]
-                mode='lines', 
-                line=dict(color='red', width=2),
-                showlegend=False
-            ), row=linha, col=coluna)
+        fig.add_trace(go.Scatter(
+            x=listaCorrelacaoTemporalOriginal, 
+            y=listaCorrelacaoTemporalReduzida, 
+            mode='markers',
+            name=f' {mapa_casos[caso]} {str(est)} (R² = {r_squared:.2f})',
+            showlegend=False,
+            marker=dict(size=10, color='blue')
+        ), row=linha, col=coluna)
 
-            # Add R² annotation
-            axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
-            fig.add_annotation(
-                x=1.0,  # X position (relative to subplot domain)
-                y=-0.3,  # Y position (relative to subplot domain)
-                xref=f"x{axis_index}",  # Dynamic x-axis reference
-                yref=f"y{axis_index}",  # Dynamic y-axis reference
-                text=f"a = {slope:.2f}",
-                showarrow=False,
-                font=dict(size=20, color="black"),
-                align="right"
-            )
 
-            # Add R² annotation
-            #axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
-            axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
-            fig.add_annotation(
-                x=1.0,  # X position (relative to subplot domain)
-                y=0,  # Y position (relative to subplot domain)
-                xref=f"x{axis_index}",  # Dynamic x-axis reference
-                yref=f"y{axis_index}",  # Dynamic y-axis reference
-                text=f"R² = {r_squared:.2f}",
-                showarrow=False,
-                font=dict(size=20, color="black"),
-                align="right"
-            )
+        fig.add_trace(go.Scatter(
+            x=[0, 1], 
+            y=[slope * 0, slope * 1],  # or simply [0, slope]
+            mode='lines', 
+            line=dict(color='red', width=2),
+            showlegend=False
+        ), row=linha, col=coluna)
 
-            titulo =  "Caso: " + mapa_casos[caso] + " A: " + analise
-            fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
-            contador += 1
-            #print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
-            coluna = coluna + 1
-            if(coluna == 3):
-                coluna = 1
-                linha = linha + 1
-            print(parTemporal)
-            print(f" Caso {mapa_casos[caso]} A {analise} R²: {r_squared:.2f} Slope: {slope:.2f}")
+        # Add R² annotation
+        axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
+        fig.add_annotation(
+            x=1.0,  # X position (relative to subplot domain)
+            y=-0.3,  # Y position (relative to subplot domain)
+            xref=f"x{axis_index}",  # Dynamic x-axis reference
+            yref=f"y{axis_index}",  # Dynamic y-axis reference
+            text=f"a = {slope:.2f}",
+            showarrow=False,
+            font=dict(size=20, color="black"),
+            align="right"
+        )
+
+        # Add R² annotation
+        #axis_index = (linha - 1) * 3 + coluna  # Correct axis index for 6x3 grid
+        axis_index = (linha - 1) * 2 + coluna  # Correct axis index for 6x3 grid
+        fig.add_annotation(
+            x=1.0,  # X position (relative to subplot domain)
+            y=0,  # Y position (relative to subplot domain)
+            xref=f"x{axis_index}",  # Dynamic x-axis reference
+            yref=f"y{axis_index}",  # Dynamic y-axis reference
+            text=f"R² = {r_squared:.2f}",
+            showarrow=False,
+            font=dict(size=20, color="black"),
+            align="right"
+        )
+
+        titulo =  "Caso: " + mapa_casos[caso] + " A: " + analise + " Par: " + str(parTemporal[0]) + "_" +str(parTemporal[1])
+        fig.layout.annotations[contador].update(text=titulo, font=dict(size=20)) 
+        contador += 1
+        print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador, " axis_index: ", axis_index)
+        coluna = coluna + 1
+        if(coluna == 3):
+            coluna = 1
+            linha = linha + 1
+        print(parTemporal)
+        print(f" Caso {mapa_casos[caso]} A {analise} R²: {r_squared:.2f} Slope: {slope:.2f}")
             # Print the results
             #print("ORIGINAL: ")
             #print(dicionario_correlacao_original)
