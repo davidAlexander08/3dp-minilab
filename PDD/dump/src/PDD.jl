@@ -158,12 +158,7 @@ module PDD
             folga_positiva_volFimMundo_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="sPVfmundo_$(no.codigo)_$(uhe.codigo)_$(etapa)")
             folga_negativa_volFimMundo_vars[(no.codigo, uhe.nome, etapa)] = @variable(m, base_name="sPVfmundo_$(no.codigo)_$(uhe.codigo)_$(etapa)")
         end
-        for eol in lista_eols
-            ge_vars[(no.codigo, eol.nome, etapa)] = @variable(m, base_name="gh_$(no.codigo)_$(eol.codigo)_$(etapa)")
-            folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)] = @variable(m, base_name="spdefmin_$(no.codigo)_$(eol.codigo)_$(etapa)")
-            folga_negativa_eolica_vars[(no.codigo, eol.nome, etapa)] = @variable(m, base_name="sndefmin_$(no.codigo)_$(eol.codigo)_$(etapa)")
-
-        end
+        
         for sbm in lista_submercados
             deficit_vars[(no.codigo, sbm.nome, etapa)] = @variable(m, base_name="def_$(no.codigo)_$(sbm.codigo)_$(etapa)")
             excesso_vars[(no.codigo, sbm.nome, etapa)] = @variable(m, base_name="exc_$(no.codigo)_$(sbm.codigo)_$(etapa)")
@@ -190,16 +185,6 @@ module PDD
 
         alpha_vars[(no.codigo,etapa)] = @variable(m, base_name="alpha_$(no.codigo)_$(etapa)")
         @constraint(m, alpha_vars[(no.codigo, etapa)] >= 0 )
-
-        for eol in lista_eols
-            @constraint(  m, ge_vars[(no.codigo, eol.nome, etapa)] >= 0 ) 
-            @constraint(  m, folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)] >= 0 ) 
-            @constraint(  m, folga_negativa_eolica_vars[(no.codigo, eol.nome, etapa)] >= 0 ) 
-            @constraint(m, ge_vars[(no.codigo, eol.nome, etapa)] 
-            +folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)] 
-            -folga_negativa_eolica_vars[(no.codigo, eol.nome, etapa)] == 0) #linha, coluna      /converte_m3s_hm3
-        end
-
 
         for uhe in lista_uhes
             @constraint(  m, gh_vars[(no.codigo, uhe.nome, etapa)] >= 0 ) 
@@ -340,7 +325,6 @@ module PDD
         for sbm in lista_submercados
             constraint_balancDem_dict[(no.codigo, sbm.nome, etapa)] = @constraint(  m, sum(gh_vars[(no.codigo, uhe.nome, etapa)] for uhe in cadastroUsinasHidreletricasSubmercado[sbm.codigo]) 
             + sum(gt_vars[(no.codigo, term.nome, etapa)] for term in cadastroUsinasTermicasSubmercado[sbm.codigo]) 
-            + sum(ge_vars[(no.codigo, eol.nome, etapa)] for eol in cadastroUsinasEolicasSubmercado[sbm.codigo]) 
             + sum(intercambio_vars[(no.codigo, sbm_2.nome, sbm.nome, etapa)] for sbm_2 in lista_submercados if sbm != sbm_2)
             - sum(intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)] for sbm_2 in lista_submercados if sbm != sbm_2)
             + deficit_vars[(no.codigo, sbm.nome, etapa)] 

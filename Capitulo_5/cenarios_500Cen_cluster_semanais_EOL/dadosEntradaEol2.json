@@ -1,27 +1,28 @@
 {
-    "MAX_ITERACOES": 50,
-    "MIN_ITERACOES": 1,
+    "MAX_ITERACOES": 100,
+    "MIN_ITERACOES": 10,
     "ESTAGIOS": 4,
     "ARVORE": [
+        500,
         1,
         1
     ],
     "REDE": 0,
-    "LIMITES_INTERCAMBIO": 0,
-    "VAZAO_MINIMA": 0,
+    "LIMITES_INTERCAMBIO": 1,
+    "VAZAO_MINIMA": 1,
     "PENALIDADE_VAZAO_MINIMA": 5000,
-    "VOLUME_MINIMO": 0,
-    "VOLUME_ESPERA": 0,
+    "VOLUME_MINIMO": 1,
+    "VOLUME_ESPERA": 1,
     "ARVORE_EXTERNA": 1,
     "VAZAO_EXTERNA": 1,
     "FIM_DE_MUNDO_VOLUMES": 0,
     "PERIODOS_FIM_DE_MUNDO": 0,
-    "SIMFINAL": 0,
-    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/revisaoDebora/A_50x2x2/BKAssimetrico/saidas/PDD/oper/cortes_est.csv",
-    "CORTES_EXTERNOS": 0,
+    "SIMFINAL": 1,
+    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Final_TOL001/A_25x3x2/KMeansSimetricoProbQuadPente/saidas/PDD/oper/cortes_est.csv",
+    "CORTES_EXTERNOS": 1,
     "CAMINHO_CORTES_EXTERNOS": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Pente_FCF/saidas/PDD/oper/cortes_est.csv",
-    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico_Dissertacao/exercicio_36D/A_2x2x8_L/KMeansAssimetricoLinear/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Academico_Dissertacao/exercicio_36D/A_2x2x8_L/KMeansAssimetricoLinear/cenarios.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Caso_SF_Final_TOL001/A_25x3x2Simetrico/Pente/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Caso_SF_Final_TOL001/A_25x3x2Simetrico/Pente/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",
@@ -116,7 +117,7 @@
         {
             "NOME": "34",
             "POSTO": 34,
-            "JUSANTE": "",
+            "JUSANTE": "45",
             "GHMIN": 0,
             "GHMAX": 3444,
             "TURBMAX": 9399,
@@ -129,9 +130,24 @@
             "CODIGO": 34
         },
         {
+            "NOME": "66",
+            "POSTO": 266,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 14000,
+            "TURBMAX": 13260,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 1.03,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 66
+        },
+        {
             "NOME": "156",
             "POSTO": 156,
-            "JUSANTE": "",
+            "JUSANTE": "169",
             "GHMIN": 0,
             "GHMAX": 396,
             "TURBMAX": 924,
@@ -326,7 +342,7 @@
         {
             "NOME": "33",
             "POSTO": 33,
-            "JUSANTE": "",
+            "JUSANTE": "34",
             "GHMIN": 0,
             "GHMAX": 1710,
             "TURBMAX": 2670,
@@ -339,9 +355,99 @@
             "CODIGO": 33
         },
         {
+            "NOME": "37",
+            "POSTO": 237,
+            "JUSANTE": "40",
+            "GHMIN": 0,
+            "GHMAX": 140,
+            "TURBMAX": 756,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 2566,
+            "PRODT": 0.16,
+            "VOLUME_INICIAL": 1377,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 37
+        },
+        {
+            "NOME": "40",
+            "POSTO": 240,
+            "JUSANTE": "42",
+            "GHMIN": 0,
+            "GHMAX": 264,
+            "TURBMAX": 1293,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 2128,
+            "PRODT": 0.21,
+            "VOLUME_INICIAL": 912,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 40
+        },
+        {
+            "NOME": "42",
+            "POSTO": 242,
+            "JUSANTE": "43",
+            "GHMIN": 0,
+            "GHMAX": 347,
+            "TURBMAX": 1431,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.28,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 42
+        },
+        {
+            "NOME": "43",
+            "POSTO": 243,
+            "JUSANTE": "45",
+            "GHMIN": 0,
+            "GHMAX": 807,
+            "TURBMAX": 2180,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 3449,
+            "PRODT": 0.39,
+            "VOLUME_INICIAL": 2271,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 43
+        },
+        {
+            "NOME": "45",
+            "POSTO": 245,
+            "JUSANTE": "46",
+            "GHMIN": 0,
+            "GHMAX": 1551,
+            "TURBMAX": 8344,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.18,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 45
+        },
+        {
+            "NOME": "46",
+            "POSTO": 246,
+            "JUSANTE": "66",
+            "GHMIN": 0,
+            "GHMAX": 1540,
+            "TURBMAX": 8904,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.16,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 46
+        },
+        {
             "NOME": "47",
             "POSTO": 47,
-            "JUSANTE": "",
+            "JUSANTE": "49",
             "GHMIN": 0,
             "GHMAX": 100,
             "TURBMAX": 364,
@@ -352,6 +458,36 @@
             "BARRA": 1,
             "SUBMERCADO": 1,
             "CODIGO": 47
+        },
+        {
+            "NOME": "49",
+            "POSTO": 49,
+            "JUSANTE": "50",
+            "GHMIN": 0,
+            "GHMAX": 414,
+            "TURBMAX": 626,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 3041,
+            "PRODT": 0.6,
+            "VOLUME_INICIAL": 680,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 49
+        },
+        {
+            "NOME": "50",
+            "POSTO": 50,
+            "JUSANTE": "61",
+            "GHMIN": 0,
+            "GHMAX": 73,
+            "TURBMAX": 580,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.15,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 1,
+            "CODIGO": 50
         },
         {
             "NOME": "61",
@@ -386,7 +522,7 @@
         {
             "NOME": "63",
             "POSTO": 63,
-            "JUSANTE": "",
+            "JUSANTE": "66",
             "GHMIN": 0,
             "GHMAX": 354,
             "TURBMAX": 2468,
@@ -401,7 +537,7 @@
         {
             "NOME": "74",
             "POSTO": 74,
-            "JUSANTE": "",
+            "JUSANTE": "76",
             "GHMIN": 0,
             "GHMAX": 1676,
             "TURBMAX": 1376,
@@ -410,8 +546,23 @@
             "PRODT": 1.03,
             "VOLUME_INICIAL": 791,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 74
+        },
+        {
+            "NOME": "86",
+            "POSTO": 215,
+            "JUSANTE": "91",
+            "GHMIN": 0,
+            "GHMAX": 690,
+            "TURBMAX": 516,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 2193,
+            "PRODT": 1.37,
+            "VOLUME_INICIAL": 423,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 86
         },
         {
             "NOME": "91",
@@ -425,13 +576,13 @@
             "PRODT": 0.86,
             "VOLUME_INICIAL": 187,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 91
         },
         {
             "NOME": "92",
             "POSTO": 92,
-            "JUSANTE": "",
+            "JUSANTE": "103",
             "GHMIN": 0,
             "GHMAX": 1450,
             "TURBMAX": 1590,
@@ -440,13 +591,13 @@
             "PRODT": 0.91,
             "VOLUME_INICIAL": 0,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 92
         },
         {
             "NOME": "93",
             "POSTO": 93,
-            "JUSANTE": "",
+            "JUSANTE": "103",
             "GHMIN": 0,
             "GHMAX": 226,
             "TURBMAX": 102,
@@ -455,8 +606,23 @@
             "PRODT": 2.26,
             "VOLUME_INICIAL": 416,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 93
+        },
+        {
+            "NOME": "103",
+            "POSTO": 94,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 855,
+            "TURBMAX": 1888,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 74,
+            "PRODT": 0.45,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 103
         },
         {
             "NOME": "115",
@@ -470,8 +636,23 @@
             "PRODT": 6.35,
             "VOLUME_INICIAL": 37,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 115
+        },
+        {
+            "NOME": "76",
+            "POSTO": 76,
+            "JUSANTE": "77",
+            "GHMIN": 0,
+            "GHMAX": 1260,
+            "TURBMAX": 1268,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 388,
+            "PRODT": 0.89,
+            "VOLUME_INICIAL": 137,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 76
         },
         {
             "NOME": "77",
@@ -485,7 +666,7 @@
             "PRODT": 0.85,
             "VOLUME_INICIAL": 779,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 77
         },
         {
@@ -500,8 +681,53 @@
             "PRODT": 0.57,
             "VOLUME_INICIAL": 0,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 82
+        },
+        {
+            "NOME": "169",
+            "POSTO": 169,
+            "JUSANTE": "172",
+            "GHMIN": 0,
+            "GHMAX": 1050,
+            "TURBMAX": 4278,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 28669,
+            "PRODT": 0.22,
+            "VOLUME_INICIAL": 8259,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 169
+        },
+        {
+            "NOME": "172",
+            "POSTO": 999,
+            "JUSANTE": "178",
+            "GHMIN": 0,
+            "GHMAX": 1479,
+            "TURBMAX": 3264,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 3548,
+            "PRODT": 0.43,
+            "VOLUME_INICIAL": 1328,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 172
+        },
+        {
+            "NOME": "178",
+            "POSTO": 999,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 3162,
+            "TURBMAX": 2976,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 1.08,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 178
         },
         {
             "NOME": "267",
@@ -515,7 +741,7 @@
             "PRODT": 0.2,
             "VOLUME_INICIAL": 0,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 267
         },
         {
@@ -530,8 +756,38 @@
             "PRODT": 0.52,
             "VOLUME_INICIAL": 6728,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 275
+        },
+        {
+            "NOME": "314",
+            "POSTO": 288,
+            "JUSANTE": "288",
+            "GHMIN": 0,
+            "GHMAX": 233,
+            "TURBMAX": 2466,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.12,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 314
+        },
+        {
+            "NOME": "288",
+            "POSTO": 999,
+            "JUSANTE": "",
+            "GHMIN": 0,
+            "GHMAX": 10999,
+            "TURBMAX": 13950,
+            "VOLUME_MINIMO": 0,
+            "VOLUME_MAXIMO": 0,
+            "PRODT": 0.8,
+            "VOLUME_INICIAL": 0,
+            "BARRA": 1,
+            "SUBMERCADO": 4,
+            "CODIGO": 288
         }
     ],
     "UTEs": [
@@ -802,7 +1058,7 @@
             "GTMAX": 350.0,
             "CUSTO_GERACAO": 84.68,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 156
         },
         {
@@ -811,7 +1067,7 @@
             "GTMAX": 249.0,
             "CUSTO_GERACAO": 698.14,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 64
         },
         {
@@ -820,7 +1076,7 @@
             "GTMAX": 4.0,
             "CUSTO_GERACAO": 303.11,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 169
         },
         {
@@ -829,7 +1085,7 @@
             "GTMAX": 20.0,
             "CUSTO_GERACAO": 330.64,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 28
         },
         {
@@ -838,7 +1094,7 @@
             "GTMAX": 100.0,
             "CUSTO_GERACAO": 254.97,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 26
         },
         {
@@ -847,7 +1103,7 @@
             "GTMAX": 132.0,
             "CUSTO_GERACAO": 235.35,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 27
         },
         {
@@ -856,7 +1112,7 @@
             "GTMAX": 262.0,
             "CUSTO_GERACAO": 228.12,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 25
         },
         {
@@ -865,7 +1121,7 @@
             "GTMAX": 363.0,
             "CUSTO_GERACAO": 193.62,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 24
         },
         {
@@ -874,7 +1130,7 @@
             "GTMAX": 345.0,
             "CUSTO_GERACAO": 53.4,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 107
         },
         {
@@ -883,7 +1139,7 @@
             "GTMAX": 8.0,
             "CUSTO_GERACAO": 74.49,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 149
         },
         {
@@ -892,7 +1148,7 @@
             "GTMAX": 640.0,
             "CUSTO_GERACAO": 486.2,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 2,
             "CODIGO": 35
         },
         {
@@ -901,7 +1157,7 @@
             "GTMAX": 13.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 109
         },
         {
@@ -910,7 +1166,7 @@
             "GTMAX": 11.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 111
         },
         {
@@ -919,7 +1175,7 @@
             "GTMAX": 31.0,
             "CUSTO_GERACAO": 729.37,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 112
         },
         {
@@ -928,7 +1184,7 @@
             "GTMAX": 11.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 113
         },
         {
@@ -937,7 +1193,7 @@
             "GTMAX": 150.0,
             "CUSTO_GERACAO": 1165.8,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 166
         },
         {
@@ -946,7 +1202,7 @@
             "GTMAX": 169.0,
             "CUSTO_GERACAO": 707.42,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 52
         },
         {
@@ -955,7 +1211,7 @@
             "GTMAX": 13.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 117
         },
         {
@@ -964,7 +1220,7 @@
             "GTMAX": 15.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 119
         },
         {
@@ -973,7 +1229,7 @@
             "GTMAX": 13.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 121
         },
         {
@@ -982,7 +1238,7 @@
             "GTMAX": 15.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 125
         },
         {
@@ -991,7 +1247,7 @@
             "GTMAX": 327.0,
             "CUSTO_GERACAO": 180.57,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 42
         },
         {
@@ -1000,7 +1256,7 @@
             "GTMAX": 149.0,
             "CUSTO_GERACAO": 802.28,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 53
         },
         {
@@ -1009,7 +1265,7 @@
             "GTMAX": 149.0,
             "CUSTO_GERACAO": 802.28,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 55
         },
         {
@@ -1018,7 +1274,7 @@
             "GTMAX": 15.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 127
         },
         {
@@ -1027,7 +1283,7 @@
             "GTMAX": 15.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 133
         },
         {
@@ -1036,7 +1292,7 @@
             "GTMAX": 168.0,
             "CUSTO_GERACAO": 685.04,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 57
         },
         {
@@ -1045,7 +1301,7 @@
             "GTMAX": 13.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 135
         },
         {
@@ -1054,7 +1310,7 @@
             "GTMAX": 147.0,
             "CUSTO_GERACAO": 1165.8,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 164
         },
         {
@@ -1063,7 +1319,7 @@
             "GTMAX": 13.0,
             "CUSTO_GERACAO": 1009.78,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 138
         },
         {
@@ -1072,7 +1328,7 @@
             "GTMAX": 720.0,
             "CUSTO_GERACAO": 155.97,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 167
         },
         {
@@ -1081,7 +1337,7 @@
             "GTMAX": 365.0,
             "CUSTO_GERACAO": 166.97,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 163
         },
         {
@@ -1090,7 +1346,7 @@
             "GTMAX": 94.0,
             "CUSTO_GERACAO": 1378.14,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 160
         },
         {
@@ -1099,7 +1355,7 @@
             "GTMAX": 201.0,
             "CUSTO_GERACAO": 604.97,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 98
         },
         {
@@ -1108,7 +1364,7 @@
             "GTMAX": 136.0,
             "CUSTO_GERACAO": 1279.05,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 144
         },
         {
@@ -1117,7 +1373,7 @@
             "GTMAX": 53.0,
             "CUSTO_GERACAO": 1221.88,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 151
         },
         {
@@ -1126,7 +1382,7 @@
             "GTMAX": 66.0,
             "CUSTO_GERACAO": 1221.87,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 161
         },
         {
@@ -1135,7 +1391,7 @@
             "GTMAX": 28.0,
             "CUSTO_GERACAO": 159.37,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 147
         },
         {
@@ -1144,7 +1400,7 @@
             "GTMAX": 381.0,
             "CUSTO_GERACAO": 715.95,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 170
         },
         {
@@ -1153,7 +1409,7 @@
             "GTMAX": 30.0,
             "CUSTO_GERACAO": 510.12,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 221
         },
         {
@@ -1162,7 +1418,7 @@
             "GTMAX": 186.0,
             "CUSTO_GERACAO": 281.23,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 43
         },
         {
@@ -1171,7 +1427,7 @@
             "GTMAX": 50.0,
             "CUSTO_GERACAO": 698.86,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 152
         },
         {
@@ -1180,7 +1436,7 @@
             "GTMAX": 120.0,
             "CUSTO_GERACAO": 345.02,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 74
         },
         {
@@ -1189,7 +1445,7 @@
             "GTMAX": 223.0,
             "CUSTO_GERACAO": 368.23,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 58
         },
         {
@@ -1198,7 +1454,7 @@
             "GTMAX": 143.0,
             "CUSTO_GERACAO": 1378.14,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 159
         },
         {
@@ -1207,7 +1463,7 @@
             "GTMAX": 171.0,
             "CUSTO_GERACAO": 703.54,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 67
         },
         {
@@ -1216,7 +1472,7 @@
             "GTMAX": 171.0,
             "CUSTO_GERACAO": 703.54,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 69
         },
         {
@@ -1225,7 +1481,7 @@
             "GTMAX": 533.0,
             "CUSTO_GERACAO": 138.51,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 96
         },
         {
@@ -1234,7 +1490,7 @@
             "GTMAX": 368.0,
             "CUSTO_GERACAO": 281.61,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 3,
             "CODIGO": 83
         },
         {
@@ -1243,7 +1499,7 @@
             "GTMAX": 166.0,
             "CUSTO_GERACAO": 67.61,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 201
         },
         {
@@ -1252,7 +1508,7 @@
             "GTMAX": 40.0,
             "CUSTO_GERACAO": 969.35,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 318
         },
         {
@@ -1261,7 +1517,7 @@
             "GTMAX": 40.0,
             "CUSTO_GERACAO": 984.9,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 319
         },
         {
@@ -1270,7 +1526,7 @@
             "GTMAX": 166.0,
             "CUSTO_GERACAO": 707.39,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 73
         },
         {
@@ -1279,7 +1535,7 @@
             "GTMAX": 166.0,
             "CUSTO_GERACAO": 707.39,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 70
         },
         {
@@ -1288,7 +1544,7 @@
             "GTMAX": 25.0,
             "CUSTO_GERACAO": 955.63,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 317
         },
         {
@@ -1297,7 +1553,7 @@
             "GTMAX": 519.0,
             "CUSTO_GERACAO": 82.48,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 212
         },
         {
@@ -1306,7 +1562,7 @@
             "GTMAX": 338.0,
             "CUSTO_GERACAO": 131.23,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 36
         },
         {
@@ -1315,7 +1571,7 @@
             "GTMAX": 338.0,
             "CUSTO_GERACAO": 131.23,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 21
         },
         {
@@ -1324,7 +1580,7 @@
             "GTMAX": 591.0,
             "CUSTO_GERACAO": 67.61,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 140
         },
         {
@@ -1333,7 +1589,7 @@
             "GTMAX": 110.0,
             "CUSTO_GERACAO": 411.92,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 206
         },
         {
@@ -1342,7 +1598,7 @@
             "GTMAX": 150.0,
             "CUSTO_GERACAO": 575.0,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 141
         },
         {
@@ -1351,7 +1607,7 @@
             "GTMAX": 178.0,
             "CUSTO_GERACAO": 223.51,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 46
         },
         {
@@ -1360,7 +1616,7 @@
             "GTMAX": 56.0,
             "CUSTO_GERACAO": 151.69,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 116
         },
         {
@@ -1369,20 +1625,84 @@
             "GTMAX": 360.0,
             "CUSTO_GERACAO": 161.5,
             "BARRA": 1,
-            "SUBMERCADO": 1,
+            "SUBMERCADO": 4,
             "CODIGO": 176
+        }
+    ],
+    "EOLs":[
+        {
+            "NOME": "EOLICA NORDESTE",
+            "POSTO": 993,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 993
+        },
+        {
+            "NOME": "EOLICA SUL",
+            "POSTO": 992,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 992
         }
     ],
     "SUBMERCADOs": [
         {
             "NOME": "SUDESTE",
             "CODIGO": 1,
-            "CUSTO_DEFICIT": 5000.0,
+            "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                60000,
-                60000,
-                60000,
-                60000
+                42476.0,
+                43107.0,
+                44067.0,
+                41647.0
+            ]
+        },
+        {
+            "NOME": "SUL",
+            "CODIGO": 2,
+            "CUSTO_DEFICIT": 5000,
+            "DEMANDA": [
+                11299.0,
+                11104.0,
+                11834.0,
+                10210.0
+            ]
+        },
+        {
+            "NOME": "NORDESTE",
+            "CODIGO": 3,
+            "CUSTO_DEFICIT": 5000,
+            "DEMANDA": [
+            12771.0,
+            12940.0,
+            13051.0,
+            12852.0
+            ]
+        },
+        {
+            "NOME": "NORTE",
+            "CODIGO": 4,
+            "CUSTO_DEFICIT": 5000,
+            "DEMANDA": [
+                5707.0,
+                6019.0,
+                6125.0,
+                6141.0
+            ]
+        },
+        {
+            "NOME": "FIC",
+            "CODIGO": 11,
+            "CUSTO_DEFICIT": 5000,
+            "DEMANDA": [
+                0,
+                0,
+                0,
+                0
             ]
         }
     ],
@@ -1499,10 +1819,10 @@
             ],
             "TIPO": 1,
             "CARGA": [
-                50000,
-                70000,
-                70000,
-                95000,
+                500000,
+                600000,
+                500000,
+                650000,
                 0
             ],
             "AREA": 1

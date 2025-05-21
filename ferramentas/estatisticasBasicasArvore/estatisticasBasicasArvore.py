@@ -37,16 +37,17 @@ caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\27cen\Orig\Pente_GVZP_27cen"
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\27cen\10Perc\Pente_Gerado"
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Casos_A\A_25x3x2\KMeansAssimetricoProbPente"
-caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Pente"
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_1D\semFCF\A_4x4x2\BKAssimetrico"
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_1D\semFCF\Pente_GVZP"
+caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Pente"
+
 arvore = pd.read_csv(caminho_arvore+"\\arvore.csv")
 cenarios = pd.read_csv(caminho_arvore+"\\cenarios.csv")
 estagios = arvore["PER"].unique()
 maior_estagio = arvore["PER"].max()
 total_nodes = arvore["NO"].unique()
 #print(cenarios)
-usina =6
+usina =169
 
 lista_df  = []
 for est in estagios:

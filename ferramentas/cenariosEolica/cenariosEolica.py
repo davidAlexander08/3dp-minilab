@@ -9,12 +9,13 @@ import numpy as np
 import plotly.graph_objects as go
 
 
+#df = pd.read_csv("Verif_NE.txt", sep=";", encoding="latin1")
 df = pd.read_csv("Verif_NE.txt", sep=";", encoding="latin1")
 
 ## Realizar soma dos patamares
 list_S = ["S1", "S2", "S3", "S4", "S5"]
-variacoes = [" Pesada", " Média", " Leve"]
-
+variacoes = [" Pesada", " Media", " Leve"]
+print(df)
 for elemento in list_S:
     df[elemento] = df[elemento+variacoes[0]] + df[elemento+variacoes[1]] + df[elemento+variacoes[2]]
     df = df.drop(columns = [elemento+variacoes[0], elemento+variacoes[1], elemento+variacoes[2]])
@@ -31,6 +32,7 @@ for ano in unique_years:
     lista_x = []
     for mes in meses:
         for semana in list_S:
+            #print(df)
             valor = df.loc[(df["Ini_Sem"].dt.year == ano) & (df["Ini_Sem"].dt.month == mes)][semana].iloc[0]
             dicionario_anos[ano].append(valor)
             lista_x.append(str(mes)+"_"+semana)
@@ -70,14 +72,14 @@ print(dicionarioMedia)
 print(weibull_params)
 
 
-n_scenarios = 100
+n_scenarios = 500
 stochastic_scenarios = {}
 for stage, (c, loc, scale) in weibull_params.items():
     samples = weibull_min.rvs(c, loc=loc, scale=scale, size=n_scenarios)
     #samples_norm = (samples - samples.min()) / (samples.max() - samples.min())
-    relative_noise = samples/samples.mean()
-    synthetic_wind = dicionarioMedia[stage] * (relative_noise)
-    stochastic_scenarios[stage] = synthetic_wind
+    #relative_noise = samples/samples.mean()
+    #synthetic_wind = dicionarioMedia[stage] * (relative_noise)
+    stochastic_scenarios[stage] = samples/5
 scenario_df = pd.DataFrame(stochastic_scenarios).reset_index(drop = True)
 print(scenario_df)
 
@@ -94,11 +96,11 @@ for mes in meses:
         print("Media original: ", df_est_orig.mean(), " Media Cenarios: ", df_cenarios.mean(), "Desvio original: ", df_est_orig.std(), " Desvio Cenarios: ", df_cenarios.std())
 scenario_df = pd.DataFrame(stochastic_scenarios)
 print(scenario_df)
+scenario_df.to_csv("500_cenarios_NE.csv", index = False)
 
-
-print(dicionario_media_cenarios)
-print(list(dicionario_media_cenarios.values()))
-print(list(dicionarioMedia.values()))
+#print(dicionario_media_cenarios)
+#print(list(dicionario_media_cenarios.values()))
+#print(list(dicionarioMedia.values()))
 media_cenarios = np.array(list(dicionario_media_cenarios.values()))
 desvio_cenarios = np.array(list(dicionario_desvio_cenarios.values()))
 media_hist_3anos = np.array(list(dicionarioMedia.values()))

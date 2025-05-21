@@ -46,48 +46,48 @@ caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_arvores = "Dissertacao\\"
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-caminho_subarvores = "Final_TOL001"
-caminhosaida = "Final_TOL001"
+caminho_subarvores = "Final"
+caminhosaida = "Final"
 casos = {
-        "Final_TOL001\\Pente":"black",
-        "Final_TOL001\\Detrm":"green",
-        "Final_TOL001\\Vassoura\\KMeansAssimetricoProbPente":"purple",
-        #"Final_TOL001\\A_300x1x1_Kmeans\\Pente":"gray",
-        #"Final_TOL001\\A_200x1x1_Kmeans\\Pente":"darkblue",
-        "Final_TOL001\\A_100x1x1\\KMeansPente":"blue",
-        #"Final_TOL001\\A_50x1x1_Kmeans\\Pente":"lightblue",
-        #"Final_TOL001\\A_25x1x1_Kmeans\\Pente":"cyan",
-        #"Final_TOL001\\A_5x1x1_Kmeans\\Pente":"cyan",
-        "Final_TOL001\\A_25x3x2\\KMeansAssimetricoProbPente":"red",
-        "Final_TOL001\\A_25x3x2\\KMeansSimetricoProbQuadPente":"pink",
-        #"Final_TOL001\\A_25x2x2\\Pente":"gold",
-        #"Final_TOL001\\A_25x2x2Simetrico\\Pente":"orange",
+        "Final\\Pente":"black",
+        "Final\\Detrm":"green",
+        "Final\\Vassoura\\KMeansAssimetricoProbPente":"purple",
+        #"Final\\A_300x1x1_Kmeans\\Pente":"gray",
+        #"Final\\A_200x1x1_Kmeans\\Pente":"darkblue",
+        "Final\\A_100x1x1\\KMeansPente":"blue",
+        #"Final\\A_50x1x1_Kmeans\\Pente":"lightblue",
+        #"Final\\A_25x1x1_Kmeans\\Pente":"cyan",
+        #"Final\\A_5x1x1_Kmeans\\Pente":"cyan",
+        "Final\\A_25x3x2\\KMeansAssimetricoProbPente":"red",
+        "Final\\A_25x3x2\\KMeansSimetricoProbQuadPente":"pink",
+        #"Final\\A_25x2x2\\Pente":"gold",
+        #"Final\\A_25x2x2Simetrico\\Pente":"orange",
         }
 mapa_nome_caso = {
         caminho_subarvores+"\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
         caminho_subarvores+"\\A_100x1x1\\BKAssimetrico":"A_100x1x1",
-        #"Final_TOL001\\Detrm":"Deterministico",
-        #"Final_TOL001\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
-        #"Final_TOL001\\Pente":"Pente",
+        #"Final\\Detrm":"Deterministico",
+        #"Final\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
+        #"Final\\Pente":"Pente",
         caminho_subarvores+"\\Pente":"Pente Original",
         caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
         caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProb":"A_25_125_250_Teste",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
-        "Final_TOL001\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
-        "Final_TOL001\\A_25x3x2\\KMeansSimetricoProbQuadPente":"A_25x3x2_S",
-        "Final_TOL001\\A_25x2x2\\Pente":"A_25x2x2",
-        "Final_TOL001\\A_25x2x2Simetrico\\Pente":"A_25x2x2Simetrico",
-        "Final_TOL001\\A_5x1x1_Kmeans\\Pente":"A_5x1x1_Kmeans",
-        "Final_TOL001\\A_25x1x1_Kmeans\\Pente":"A_25x1x1_Kmeans",
-        "Final_TOL001\\A_50x1x1_Kmeans\\Pente":"A_50x1x1_Kmeans",
-        "Final_TOL001\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
-        "Final_TOL001\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
-        "Final_TOL001\\A_100x1x1\\KMeansPente":"A_100x1x1",
-        "Final_TOL001\\Detrm":"Detrm",
-        "Final_TOL001\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
-        "Final_TOL001\\Pente":"Pente",
+        "Final\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
+        "Final\\A_25x3x2\\KMeansSimetricoProbQuadPente":"A_25x3x2_S",
+        "Final\\A_25x2x2\\Pente":"A_25x2x2",
+        "Final\\A_25x2x2Simetrico\\Pente":"A_25x2x2Simetrico",
+        "Final\\A_5x1x1_Kmeans\\Pente":"A_5x1x1_Kmeans",
+        "Final\\A_25x1x1_Kmeans\\Pente":"A_25x1x1_Kmeans",
+        "Final\\A_50x1x1_Kmeans\\Pente":"A_50x1x1_Kmeans",
+        "Final\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
+        "Final\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
+        "Final\\A_100x1x1\\KMeansPente":"A_100x1x1",
+        "Final\\Detrm":"Detrm",
+        "Final\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
+        "Final\\Pente":"Pente",
         caminho_subarvores+"\\Determ\\Pente":"Determ"
 }
 grandezas = ["CustoPresente","EarmP", "Deficit", "GT", "GH",  "CustoFuturo", "VolArm","AFL","CMO","VERT", "Earm","CustoTotal", ]
@@ -144,6 +144,7 @@ for grandeza in grandezas:
     fig2 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
     fig3 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
     fig4 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+    fig5 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
     linha = 1
     coluna = 1
     contador = 0
@@ -255,7 +256,17 @@ for grandeza in grandezas:
             opacity=0.6,
             showlegend=True
         ), row=linha, col=coluna)      
-
+        fig5.add_trace(go.Bar(
+            x=[mapa_nome_caso[caso]],
+            y=[df[grandeza].reset_index(drop =True).iloc[0]],  # or simply [0, slope]
+            #y=lista_media,  # or simply [0, slope]
+            name = mapa_nome_caso[caso],
+            legendgroup  = mapa_nome_caso[caso],
+            #line=dict(color=colors[contador], width=2),
+            marker_color=casos[caso],
+            opacity=0.6,
+            showlegend=True
+        ), row=linha, col=coluna)  
         dados_x = []
         dados_y = []
         estagios = df_cen["est"].unique()
@@ -402,5 +413,18 @@ for grandeza in grandezas:
         showlegend=True
     )
     fig4.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\BAR_Mean_{nome_figura}.html")
+
+    fig5.update_layout(
+        title="Valores Médios "+titulo,
+        title_font=dict(size=30, family="Arial", color="black"),
+        xaxis_title="casos",
+        yaxis_title=mapa_unidades[grandeza],
+        font=dict(size=30), 
+        xaxis=dict(title_font=dict(size=30)),  
+        yaxis=dict(title_font=dict(size=30)),
+        showlegend=True
+    )
+    fig5.write_html(f"{caminho_base+caminho_deck+caminho_arvores+caminhosaida}\\BAR_1oEst_{nome_figura}.html")
     #exit(1)
     #exit(1)
+

@@ -4,19 +4,19 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import math
 
-caminhoSF = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Caso_SF_Final\\"
-pasta_saida = "ResultadosDeterm\\"
+caminhoSF = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001\\"
+pasta_saida = "Final_TOL001\\"
 mapaNomeCaso = {
     "Pente":"Pente",
     "Vassoura":"Vassoura",
     #"A_300x1x1_Kmeans":"A_300x1x1_Kmeans", 
     #"A_200x1x1_Kmeans":"A_200x1x1_Kmeans", 
-    "A_100x1x1_Kmeans":"A_100x1x1_Kmeans", 
+    "P_100x1x1":"P_100x1x1", 
     #"A_50x1x1_Kmeans":"A_50x1x1_Kmeans", 
     #"A_5x1x1_Kmeans":"A_5x1x1_Kmeans", 
     #"Determ":"Determ", 
-    "A_25x3x2": "A_25x3x2 K-Means", 
-    "A_25x3x2Simetrico":"A_25x3x2 K-Means S", 
+    "A_25x3x2": "P_25x3x2", 
+    "A_25x3x2-S":"P_25x3x2-S", 
     #"A_25x2x2": "A_25x2x2 K-Means", 
     #"A_25x2x2Simetrico":"A_25x2x2 K-Means S", 
     

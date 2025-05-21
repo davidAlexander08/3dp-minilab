@@ -64,15 +64,17 @@ caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1
 #caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Pente_GVZP_8cen"
 caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\Pente_GVZP_2cen"
 caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\Pente_GVZP_27cen"
+caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\casoPenteParaArvore\Pente_GVZP"
 #caminho_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Pente_GVZP_4cen"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Arvore_2_2_2"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Arvore_4_2_2"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_Debora\Arvore_8_2_2"
 caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\ArvorePerc_27\10Perc"
+caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\casoPenteParaArvore\25Perc"
 #caminho_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Academico\exercicio_1D_PenteArvore\ArvorePerc_2\1Perc"
 arvore = pd.read_csv(caminho_pente+"\\arvore.csv")
 cenarios = pd.read_csv(caminho_pente+"\\cenarios.csv")
-percentual = 0.1
+percentual = 0.25
 print(arvore)
 print(cenarios)
 estagios = arvore["PER"].unique()

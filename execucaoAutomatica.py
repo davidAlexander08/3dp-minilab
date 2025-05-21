@@ -61,13 +61,13 @@ caminho_base = "C:\\Users\\david.alexander\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\exercicio_27cen_5D\\"
 caminho_caso_arvores = "128_Aberturas_Equiprovavel_Pfundo\\"
 ##########################################################################
-caminho_arvores = ["Pente_GVZP\\", "A_4x4x2\\", "A_8x2x2\\", "A_2x2x8\\", "A_2x4x4\\"]#, "A_32x1x1_S226\\", "A_32x1x1_S280\\", "A_32x1x1_S394\\", ]#, "A_4x6x3\\"] #]  "A_32x1x1\\"
+caminho_arvores = ["A_4x4x2_L\\", "A_8x2x2_L\\", "A_2x2x8_L\\"] #"A_32x1x1_Caminho_1Est\\",]# "Pente_GVZP\\", "1Perc\\", "5Perc\\", "10Perc\\", "50Perc\\", "75Perc\\"]#"A_2x2x8\\"]#"Pente_GVZP\\", "A_4x4x2\\", "A_8x2x2\\",, "A_2x4x4\\"]#, "A_32x1x1_S226\\", "A_32x1x1_S280\\", "A_32x1x1_S394\\", ]#, "A_4x6x3\\"] #]  "A_32x1x1\\"
 
 mapa_caminho_avaliacao = {
     "Pente_GVZP\\":[""],
     "A_2x4x4\\":["BKAssimetrico\\","KMeansAssimetricoProbPente\\",  "KMeansSimetricoProbQuadPente\\"],
     "A_4x4x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
-    "A_2x2x8\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
+    "A_2x2x8\\":["BKAssimetrico\\"],#, "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"
     "A_8x2x2\\":["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\"],
     "A_4x6x3\\":["KMeansAssimetricoProbPente\\"],
     "A_32x1x1\\":["NeuralGas\\"],
@@ -78,10 +78,20 @@ mapa_caminho_avaliacao = {
     "A_32x1x1_S394\\":["KMeansPente\\"],
     "A_32x1x1_S17\\":["KMeansPente\\"],
     "A_32x1x1_S25\\":["KMeansPente\\"],
+    "1Perc\\":[""],
+    "5Perc\\":[""],
+    "10Perc\\":[""],
+    "25Perc\\":[""],
+    "50Perc\\":[""],
+    "75Perc\\":[""],
+    "A_4x4x2_L\\":["KMeansAssimetricoProbPente\\", "KMeansAssimetricoLinear\\"],
+    "A_2x2x8_L\\":[ "KMeansAssimetricoProbPente\\", "KMeansAssimetricoLinear\\"],
+    "A_8x2x2_L\\":["KMeansAssimetricoProbPente\\", "KMeansAssimetricoLinear\\"],
+    "A_32x1x1_Caminho_1Est\\":["KMeansPente\\","KMeansAssimetricoProbPente\\" ],
     } 
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Academico_Dissertacao\\exercicio_1D\\"
-caminho_caso_arvores = "semFCF\\"
+caminho_caso = "Academico_Dissertacao\\exercicio_36D\\"
+caminho_caso_arvores = ""
 #caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
 
 JSON_PDD = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\PDD\\src\\caminho.json"
@@ -102,7 +112,7 @@ for caminho_arvore in caminho_arvores:
         with open(JSON_PDD, "r") as file_PDD:
             config_PDD = json.load(file_PDD)
         config_PDD["CAMINHO_CASO"] = caminho_base+caminho_caso
-        config_PDD["TOLERANCIA"] = 0.001
+        config_PDD["TOLERANCIA"] = 0.00001
         with open(JSON_PDD, "w") as file_PDD:
             json.dump(config_PDD, file_PDD, indent=4)
         print("✅ JSON PDD updated!")
