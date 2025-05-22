@@ -242,8 +242,8 @@ mapa_codigoBARRA_nomeUSINA = OrderedDict()
 usinas_eol = dict["EOLs"]
 lista_eols = []
 mapa_nome_EOL = OrderedDict()
-for usi in usinas
-    usina = EOLConfigData(usi["NOME"], usi["POSTO"], usi["GTMIN"], usi["GTMAX"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"] )
+for usi in usinas_eol
+    usina = EOLConfigData(usi["NOME"], usi["POSTO"], usi["GMIN"], usi["GMAX"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"] )
     push!(lista_eols,usina)
     mapa_nome_EOL[usi["NOME"]] = usina
     mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]

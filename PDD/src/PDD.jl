@@ -104,9 +104,12 @@ module PDD
         CustoF[(it,no.codigo, etapa)] = 0.0
     end
     df_intercambio            = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], SubmercadoDE = Int[], SubmercadoPARA = Int[], Valor = Float64[])
-    df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
-    df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CMO = Float64[])
+    #df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    df_balanco_energetico_SIN = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [],                     Demanda = Float64[], GT = Float64[], GH = Float64[], EOL = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    #df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CMO = Float64[])
+    df_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], EOL = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = [], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CMO = Float64[])
     
+    df_eolicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], folgaPositiva = Float64[], folgaNegativa = Float64[])
     df_termicas               = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[], GerMin = Float64[], GerMax = Float64[])
     df_hidreletricas          = DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = [], Submercado = Int[], nome = String[] , usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[])
     df_convergencia           = DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[], GAP = Float64[], MIN = Float64[], SEC = Float64[], MIN_TOT = Float64[], SEC_TOT = Float64[])
@@ -192,12 +195,18 @@ module PDD
         @constraint(m, alpha_vars[(no.codigo, etapa)] >= 0 )
 
         for eol in lista_eols
+            cenario_eolica = 0
+            if(eol.posto != 999)
+                cenario_eolica = (dat_vaz[(dat_vaz.NOME_UHE .== eol.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
+            else
+                cenario_eolica = 0
+            end
             @constraint(  m, ge_vars[(no.codigo, eol.nome, etapa)] >= 0 ) 
             @constraint(  m, folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)] >= 0 ) 
             @constraint(  m, folga_negativa_eolica_vars[(no.codigo, eol.nome, etapa)] >= 0 ) 
             @constraint(m, ge_vars[(no.codigo, eol.nome, etapa)] 
-            +folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)] 
-            -folga_negativa_eolica_vars[(no.codigo, eol.nome, etapa)] == 0) #linha, coluna      /converte_m3s_hm3
+            +folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)]  == cenario_eolica) #linha, coluna      /converte_m3s_hm3
+            #@constraint(m, ge_vars[(no.codigo, eol.nome, etapa)] <= cenario_eolica) #linha, coluna      /converte_m3s_hm3
         end
 
 
@@ -333,6 +342,7 @@ module PDD
         + sum(0.01 * vert_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
         + sum(penalidVazMin * folga_positiva_vazmin_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
         + sum(penalidVazMin * folga_positiva_volFimMundo_vars[(no.codigo, uhe.nome, etapa)] for uhe in lista_uhes)
+        + sum(0.001 * folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)] for eol in lista_eols)
         + sum(0.01 * intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)] for sbm in lista_submercados, sbm_2 in lista_submercados if sbm != sbm_2)
         + sum(sbm.deficit_cost * deficit_vars[(no.codigo, sbm.nome, etapa)] for sbm in lista_submercados)
         + alpha_vars[(no.codigo, etapa)])
@@ -356,6 +366,7 @@ module PDD
         probabilidadeNo = (dat_prob[(dat_prob.NO .== no.codigo), "PROBABILIDADE"][1])
         GeracaoHidreletricaSIN = 0
         GeracaoTermicaSIN = 0
+        GeracaoEolicaSIN = 0
         DemandaTotalSIN = 0
         DeficitSIN = 0
         excesso_SIN = 0
@@ -368,6 +379,7 @@ module PDD
         EnergiaArmazenadaSIN = 0
         for sbm in lista_submercados
             GeracaoHidreletricaTotal = 0
+            GeracaoEolicaTotal = 0
             VolumeArmazenadoTotal = 0
             AfluenciaTotal = 0
             VolumeArmazenadoInicialTotal = 0
@@ -375,11 +387,24 @@ module PDD
             VertimentoTotal = 0
             TurbinamentoTotal = 0
             EnergiaArmazenadaTotal = 0
+
+            for eol in cadastroUsinasEolicasSubmercado[sbm.codigo]
+                geracaoEol = JuMP.value(ge_vars[(no.codigo, eol.nome, etapa)])
+                folgaPositivaEol = JuMP.value(folga_positiva_eolica_vars[(no.codigo, eol.nome, etapa)])
+                folgaNegativaEol = JuMP.value(folga_negativa_eolica_vars[(no.codigo, eol.nome, etapa)])
+                push!(df_eolicas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = eol.nome, usina = eol.codigo, generation = round(geracaoEol, digits = 2), folgaPositiva = round(folgaPositivaEol, digits = 2), folgaNegativa = round(folgaNegativaEol, digits = 2)))
+                GeracaoEolicaSIN += geracaoEol
+                GeracaoEolicaTotal += geracaoEol
+               # println("geracaoEol: ", geracaoEol, "folgaPositivaEol: ", folgaPositivaEol, "folgaNegativaEol: ", folgaNegativaEol)
+            end
+
+
             for term in cadastroUsinasTermicasSubmercado[sbm.codigo]
                 geracao = JuMP.value(gt_vars[(no.codigo, term.nome, etapa)])
                 push!(df_termicas, (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, nome = term.nome, usina = term.codigo, generation = round(geracao, digits = 2) , custo = term.custo_geracao, custoTotal = round(geracao, digits = 1)*term.custo_geracao , GerMin = term.gmin, GerMax = term.gmax))
                 GeracaoTermicaTotal += geracao
                 GeracaoTermicaSIN += geracao
+                
             end
             for uhe in cadastroUsinasHidreletricasSubmercado[sbm.codigo]
                 geracao = JuMP.value(gh_vars[(no.codigo, uhe.nome, etapa)])
@@ -485,7 +510,7 @@ module PDD
             excesso_SIN += excesso_sbm
             CustoPresenteSIN += custo_presente
             valor_CMO = -JuMP.shadow_price( constraint_balancDem_dict[(no.codigo, sbm.nome, etapa)])
-            push!(df_balanco_energetico_SBM,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, Demanda = sbm.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, AFL = AfluenciaTotal, Vini = VolumeArmazenadoInicialTotal, VolArm = VolumeArmazenadoTotal, Earm = EnergiaArmazenadaTotal, Turb = TurbinamentoTotal, Vert = VertimentoTotal, Deficit = def, Excesso = excesso_sbm, CustoPresente = custo_presente, CMO = round(valor_CMO, digits = 2)))
+            push!(df_balanco_energetico_SBM,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Submercado = sbm.codigo, Demanda = sbm.demanda[est], GT = GeracaoTermicaTotal, GH = GeracaoHidreletricaTotal, EOL = GeracaoEolicaTotal, AFL = AfluenciaTotal, Vini = VolumeArmazenadoInicialTotal, VolArm = VolumeArmazenadoTotal, Earm = EnergiaArmazenadaTotal, Turb = TurbinamentoTotal, Vert = VertimentoTotal, Deficit = def, Excesso = excesso_sbm, CustoPresente = custo_presente, CMO = round(valor_CMO, digits = 2)))
             for sbm_2 in lista_submercados
                 if sbm.codigo != sbm_2.codigo
                     interc = JuMP.value(intercambio_vars[(no.codigo, sbm.nome, sbm_2.nome, etapa)])
@@ -493,7 +518,7 @@ module PDD
                 end
             end
         end
-        push!(df_balanco_energetico_SIN,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Demanda = DemandaTotalSIN, GT = GeracaoTermicaSIN, GH = GeracaoHidreletricaSIN, Deficit = DeficitSIN, Excesso = excesso_SIN, AFL = AfluenciaSIN, Vini = VolumeArmazenadoInicialSIN, VolArm = VolumeArmazenadoSIN, Earm = EnergiaArmazenadaSIN, Turb = TurbinamentoSIN, Vert = VertimentoSIN, CustoPresente = CustoPresenteSIN, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
+        push!(df_balanco_energetico_SIN,  (etapa = etapa, iter = it, est = est, node = no.codigo, prob = probabilidadeNo, Demanda = DemandaTotalSIN, GT = GeracaoTermicaSIN, GH = GeracaoHidreletricaSIN, EOL = GeracaoEolicaSIN, Deficit = DeficitSIN, Excesso = excesso_SIN, AFL = AfluenciaSIN, Vini = VolumeArmazenadoInicialSIN, VolArm = VolumeArmazenadoSIN, Earm = EnergiaArmazenadaSIN, Turb = TurbinamentoSIN, Vert = VertimentoSIN, CustoPresente = CustoPresenteSIN, CustoFuturo = JuMP.value(alpha_vars[no.codigo, etapa])))
     end
 
 
@@ -528,6 +553,7 @@ module PDD
 
     println("NUMERO DE USINAS HIDRELETRICAS: ", length(lista_uhes))
     println("NUMERO DE USINAS TERMICAS: ", length(lista_utes))
+    println("NUMERO DE USINAS EOLICAS: ", length(lista_eols))
     global maxIteration = 0
     global tempo_acumulado = 0
     @time begin
@@ -870,6 +896,12 @@ module PDD
     df_termicas_bk = df_termicas[(df_termicas.etapa .== "BK"), :]
     df_termicas_sf = df_termicas[(df_termicas.etapa .== "FW") .&& (df_termicas.iter .== max_iter), :]
 
+
+    
+    df_eolica_fw = df_eolicas[(df_eolicas.etapa .== "FW"), :]
+    df_eolica_bk = df_eolicas[(df_eolicas.etapa .== "BK"), :]
+    df_eolica_sf = df_eolicas[(df_eolicas.etapa .== "FW") .&& (df_eolicas.iter .== max_iter), :]
+
     df_hidreletricas_fw = df_hidreletricas[(df_hidreletricas.etapa .== "FW"), :]
     df_hidreletricas_bk = df_hidreletricas[(df_hidreletricas.etapa .== "BK"), :]
     df_hidreletricas_sf = df_hidreletricas[(df_hidreletricas.etapa .== "FW") .&& (df_hidreletricas.iter .== max_iter), :]
@@ -896,6 +928,9 @@ module PDD
     #CSV.write(output_dir_oper*"/termicas_fw.csv", df_termicas_fw)
     #CSV.write(output_dir_oper*"/termicas_bk.csv", df_termicas_bk)
     CSV.write(output_dir_oper*"/termicas_sf.csv", df_termicas_sf)
+    #CSV.write(output_dir_oper*"/eolicas_fw.csv", df_eolicas_fw)
+    #CSV.write(output_dir_oper*"/eolicas_bk.csv", df_eolicas_bk)
+    CSV.write(output_dir_oper*"/eolicas_sf.csv", df_eolica_sf)
     #CSV.write(output_dir_oper*"/hidreletricas_fw.csv", df_hidreletricas_fw)
     #CSV.write(output_dir_oper*"/hidreletricas_bk.csv", df_hidreletricas_bk)
     CSV.write(output_dir_oper*"/hidreletricas_sf.csv", df_hidreletricas_sf)
@@ -909,7 +944,7 @@ module PDD
     CSV.write(output_dir_oper*"/df_cortes_equivalentes.csv", df_cortes_equivalentes)
 
 
-    df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[],  est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
+    df_per_balanco_energetico = DataFrame(etapa = String[], iter = Int[],  est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], EOL = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[])
     for est_value in unique(df_balanco_energetico_SIN.est)
         subset = df_balanco_energetico_SIN_sf[df_balanco_energetico_SIN_sf.est .== est_value, :]
         for iteracao in unique(subset.iter)
@@ -919,6 +954,7 @@ module PDD
             ProbAFL = 0
             ProbVini = 0
             ProbGH = 0
+            ProbEOL = 0
             ProbVert = 0
             ProbTurb = 0
             ProbEarm = 0
@@ -930,6 +966,7 @@ module PDD
             for no in unique(subsubset.node)
                 ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
                 ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
+                ProbEOL += (subsubset[(subsubset.node .== no), "EOL"][1])*(mapaProbCondicionalNo[no])
                 ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
                 ProbVarm += (subsubset[(subsubset.node .== no), "VolArm"][1])*(mapaProbCondicionalNo[no])
                 ProbVert += (subsubset[(subsubset.node .== no), "Vert"][1])*(mapaProbCondicionalNo[no])
@@ -945,7 +982,7 @@ module PDD
             end
             
             dem = (subset[(subset.est .== est_value), "Demanda"][1])
-            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), Earm = round(ProbEarm, digits= 0 ), Turb = round(ProbTurb, digits= 0 ), Vert = round(ProbVert, digits= 0 ), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
+            push!(df_per_balanco_energetico, (etapa = "SF", iter = iteracao, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), EOL = round(ProbEOL, digits = 0),Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), Earm = round(ProbEarm, digits= 0 ), Turb = round(ProbTurb, digits= 0 ), Vert = round(ProbVert, digits= 0 ), CustoPresente = round(ProbCustoPresente, digits = 0) , CustoFuturo = round(ProbCustoFuturo, digits = 0)))
         end
     end
     df_per_balanco_energetico = sort(df_per_balanco_energetico, :iter)
@@ -959,7 +996,7 @@ module PDD
     CSV.write(output_dir_oper*"/media_SIN.csv", means)
     
 
-    df_per_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[],  Submercado = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CMO = Float64[])
+    df_per_balanco_energetico_SBM = DataFrame(etapa = String[], iter = Int[],  Submercado = Int[], est = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], EOL = Float64[], Deficit = Float64[], Excesso =Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CMO = Float64[])
     sbms = unique(df_balanco_energetico_SBM_sf.Submercado)
     for sbm in sbms
         subsubset_1 = df_balanco_energetico_SBM_sf[(df_balanco_energetico_SBM_sf.Submercado .== sbm), :]
@@ -972,6 +1009,7 @@ module PDD
                 ProbAFL = 0
                 ProbVini = 0
                 ProbGH = 0
+                ProbEOL = 0
                 ProbVert = 0
                 ProbTurb = 0
                 ProbEarm = 0
@@ -983,6 +1021,7 @@ module PDD
                 for no in unique(subsubset.node)
                     ProbGT += (subsubset[(subsubset.node .== no), "GT"][1])*(mapaProbCondicionalNo[no])
                     ProbGH += (subsubset[(subsubset.node .== no), "GH"][1])*(mapaProbCondicionalNo[no])
+                    ProbEOL += (subsubset[(subsubset.node .== no), "EOL"][1])*(mapaProbCondicionalNo[no])
                     ProbAFL += (subsubset[(subsubset.node .== no), "AFL"][1])*(mapaProbCondicionalNo[no])
                     ProbVarm += (subsubset[(subsubset.node .== no), "VolArm"][1])*(mapaProbCondicionalNo[no])
                     ProbVert += (subsubset[(subsubset.node .== no), "Vert"][1])*(mapaProbCondicionalNo[no])
@@ -997,7 +1036,7 @@ module PDD
                     #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
                 end
                 dem = (subset[(subset.est .== est_value), "Demanda"][1])
-                push!(df_per_balanco_energetico_SBM, (etapa = "SF", iter = iteracao, Submercado = sbm, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), Earm = round(ProbEarm, digits = 0), Turb = round(ProbTurb, digits = 0), Vert = round(ProbVert, digits= 0 ), CustoPresente = round(ProbCustoPresente, digits = 0) , CMO = round(ProbCMO, digits = 0)))
+                push!(df_per_balanco_energetico_SBM, (etapa = "SF", iter = iteracao, Submercado = sbm, est = est_value, Demanda = dem, GT = round(ProbGT, digits = 0), GH = round(ProbGH, digits = 0), EOL = round(ProbEOL, digits = 0),Deficit = round(ProbDeficit, digits = 0), Excesso = round(ProbExcesso,digits = 0), AFL = round(ProbAFL, digits= 0), Vini = round(ProbVini, digits = 0), VolArm = round(ProbVarm, digits = 0), Earm = round(ProbEarm, digits = 0), Turb = round(ProbTurb, digits = 0), Vert = round(ProbVert, digits= 0 ), CustoPresente = round(ProbCustoPresente, digits = 0) , CMO = round(ProbCMO, digits = 0)))
             end
         end
     end
@@ -1082,6 +1121,35 @@ module PDD
     means_ute = combine(df_per_balanco_energetico_USIT, names(df_per_balanco_energetico_USIT, Number) .=> mean)
     #println(means_ute)
     CSV.write(output_dir_oper*"/media_UTE.csv", means_ute)
+
+    df_per_balanco_energetico_EOL = DataFrame(etapa = String[], iter = Int[],  usina = Int[], est = Int[], Submercado = Int[], nome = String[], generation = Float64[], folgaPositiva = Float64[], folgaNegativa = Float64[])
+    for eol in lista_eols
+        subsubset_1 = df_eolica_sf[(df_eolica_sf.usina .== eol.codigo), :]
+        for est_value in unique(subsubset_1.est)
+            subset = subsubset_1[subsubset_1.est .== est_value, :]
+            for iteracao in unique(subset.iter)
+                subsubset = subset[(subset.iter .== iteracao), :]
+                Probgeneration = 0
+                ProbFolgaPos = 0
+                ProbFolgaNeg = 0
+                for no in unique(subsubset.node)
+                    Probgeneration += (subsubset[(subsubset.node .== no), "generation"][1])*(mapaProbCondicionalNo[no])
+                    ProbFolgaPos += (subsubset[(subsubset.node .== no), "folgaPositiva"][1])*(mapaProbCondicionalNo[no])
+                    ProbFolgaNeg += (subsubset[(subsubset.node .== no), "folgaNegativa"][1])*(mapaProbCondicionalNo[no])
+                    #println("ProbGT: ", ProbGT, " No: ", no, " GT: ", (subsubset[(subsubset.node .== no), "GT"][1]), " prob: ", (mapaProbCondicionalNo[no]))
+                end
+                submercado = (subset[(subset.est .== est_value), "Submercado"][1])
+                push!(df_per_balanco_energetico_EOL, (etapa = "SF", iter = iteracao, usina = eol.codigo, est = est_value, Submercado = submercado,nome = eol.nome, generation = round(Probgeneration, digits = 0), folgaPositiva = round(ProbFolgaPos, digits= 0), folgaNegativa = round(ProbFolgaNeg, digits= 0),))
+            end
+        end
+    end
+    df_per_balanco_energetico_EOL = sort(df_per_balanco_energetico_EOL, :iter)
+    CSV.write(output_dir_oper*"/balanco_energetico_final_EOL.csv", df_per_balanco_energetico_EOL)
+    #show(IOContext(stdout, :compact => false), df_per_balanco_energetico_USIT)
+
+    means_eol = combine(df_per_balanco_energetico_EOL, names(df_per_balanco_energetico_EOL, Number) .=> mean)
+    #println(means_ute)
+    CSV.write(output_dir_oper*"/media_EOL.csv", means_eol)
     
     df_per_parcelaCustoPresente_sf = DataFrame(etapa = String[], iter = Int[], est = Int[], Submercado = Int[], usina = String[], codigo = Int[], geracao = Float64[], Custo = Float64[], CustoPresente = Float64[], CustoPresenteAcum = Float64[])
     for usi in unique(df_parcelasCustoPresente_sf.usina)

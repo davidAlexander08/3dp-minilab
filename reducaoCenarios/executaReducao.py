@@ -533,15 +533,6 @@ reducoes = [
 ]
 
 
-caso = "Pente_GVZP"
-caminho_base = "..\\Academico_Dissertacao\\exercicio_1D\\"
-reducoes = [
-    #({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
-    #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
-    #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
-    ({1:2, 2:4, 3:4}, 32, "A_2x4x4"),
-    #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
-]
 
 caso = "Pente_Eol2"
 caminho_base = "..\\Capitulo_5\\cenarios_500Cen_cluster_semanais_EOL\\"
@@ -550,6 +541,29 @@ reducoes = [
     #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
     #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
     ({1:25, 2:3, 3:2}, 150, "A_25x3x2_Eol2"),
+    #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
+]
+
+
+caso = "Pente_GVZP"
+caminho_base = "..\\Academico_Dissertacao\\exercicio_36D_EOL\\Eol_cen\\"
+reducoes = [
+    #({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
+    ({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
+    #({1:32, 2:1, 3:1}, 32, "A_32x1x1"),
+    #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
+]
+
+
+caso = "Pente"
+caminho_base = "..\\Capitulo_5\\cenarios_500Cen_cluster_semanais_EOL\\EOL_2\\Eol_dem\\"
+reducoes = [
+    #({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
+    #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
+    ({1:25, 2:3, 3:2}, 150, "A_25x3x2"),
     #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
 ]
 

@@ -58,6 +58,16 @@ caminho_arvore1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_min
 caminho_arvore2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansAssimetricoProbPente"
 #caminho_arvore3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\NeuralGas"
 caminho_orig = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Pente"
+caminho_orig = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_36D\Pente_GVZP"
+caminho_arvore1 = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_36D\A_4x4x2\BKAssimetrico"
+caminho_arvore2 = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_36D\A_4x4x2\KMeansAssimetricoProbPente"
+caminho_arvore3 = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_36D\A_4x4x2\NeuralGas"
+
+#caminho_orig = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Pente"
+#caminho_arvore1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\BKAssimetrico"
+#caminho_arvore2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansAssimetricoProbPente"
+#caminho_arvore3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\NeuralGas"
+
 
 mapa_nome_caso = {
     caminho_arvore1:"RR",
@@ -74,7 +84,7 @@ cores = {
 
 lista_casos = [caminho_orig,caminho_arvore2, caminho_arvore1,   ] #caminho_arvore3
 #print(cenarios)
-usina =227
+usina =93
 fig2 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
 linha = 1
 coluna = 1
@@ -123,24 +133,29 @@ fig2.update_layout(
     boxmode='group',
     showlegend=True
 )
-fig2.write_html(f"BOX_{nome_figura}.html", auto_open=True)
+#fig2.write_html(f"BOX_{nome_figura}.html", auto_open=True)
 
 
 
 lista_casos = [caminho_orig,caminho_arvore2, caminho_arvore1,   ]
 #print(cenarios)
-usinas = [6, 227, 77, 275]
-usinas = [6, 227, 77, 275]
-usinas = [6, 17, 34 , 266]
-#usinas = [156, 169, 74 , 217]
-#usinas = [270, 257, 273, 287]
-#usinas = [32, 33, 237, 240]
-#usinas = [242, 243, 245, 246]
-#usinas = [47, 49, 50, 61]
+usinas = [6, 8, 11, 12]
+usinas = [17, 18, 34, 156]
+usinas = [227, 229, 270, 257]
+usinas = [273, 285, 287, 279]
+usinas = [24, 25, 31,32]
+usinas = [33, 47, 61, 62]
+usinas = [63, 74 , 217, 92]
+usinas = [93, 115, 77, 222]
+usinas = [271, 275, 6, 11]
+
+
+
+
 fig2 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
 linha = 1
 coluna = 1
-estagio = 4
+estagio = 2
 contador_titulo = 0
 mostra_legendaLimites = True
 for caso in lista_casos:
@@ -153,7 +168,7 @@ for caso in lista_casos:
         arvore_est = arvore.loc[(arvore["PER"] == estagio)]
         nodes_est = arvore_est.loc[(arvore_est["PER"] == estagio)]["NO"].unique()
         vazoes_per_posto = df_cen_usi.loc[(df_cen_usi["NO"].isin(nodes_est))]
-        lista_y = lista_y + (vazoes_per_posto["VAZAO"]/vazoes_per_posto["VAZAO"].mean()).tolist()
+        lista_y = lista_y + (vazoes_per_posto["VAZAO"]).tolist()
         #lista_x = lista_x + [estagio]*len(vazoes_per_posto["VAZAO"].tolist())
         lista_x = lista_x + [str(usi)]*len(vazoes_per_posto["VAZAO"].tolist())
 

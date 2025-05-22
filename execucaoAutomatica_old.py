@@ -2,40 +2,6 @@ import json
 import subprocess
 
 
-##########################################
-caminho_arvores = ["Pente_GVZP\\","16Folhas\\A_2x2x4\\", "16Folhas\\A_4x2x2\\", "16Folhas\\A_16_1_1\\",
-                   "8Folhas\\A_2x2x2\\", "8Folhas\\A_4x2x1\\", "8Folhas\\A_8x1x1\\",
-                   ] 
-# 
-#"64Folhas\\A_8x4x2\\", "64Folhas\\A_4x4x4\\", "64Folhas\\A_2x4x8\\",
- 
-mapa_caminho_avaliacao = {
-    "Pente_GVZP\\":[""],
-    "64Folhas\\A_8x4x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
-    "64Folhas\\A_4x4x4\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
-    "64Folhas\\A_2x4x8\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
-    "16Folhas\\A_2x2x4\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "16Folhas\\A_4x2x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "16Folhas\\A_16_1_1\\":["BKAssimetrico\\", "KMeansPente\\"],
-    "8Folhas\\A_2x2x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "8Folhas\\A_4x2x1\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
-    "8Folhas\\A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
-    "8Folhas\\":["A_8x4x2\\", "A_4x4x4\\", "A_2x4x8\\"],
-    "Reduzida_Inicio\\":[""],
-    "Reduzida_Meio\\":[""],
-    "Reduzida_Meio_VarNegativa\\":[""],
-    "Reduzida_Meio_VarPositiva\\":[""],
-    "Reduzida_MeioMediaNegativaVarCte\\":[""],
-    "Reduzida_MeioMediaPositivaVarCte\\":[""],
-    "Reduzida_Meio_VarNegativa25\\":[""],
-    "Reduzida_Meio_VarPositiva25\\":[""],
-    "GTMIN\\A_25_75_150_Teste\\":["KMeansAssimetricoProbPenteSemente13\\"],
-    }
-caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_caso = "Carmen\\exercicio_27cen_1D\\"
-caminho_caso_arvores = "64_Aberturas_Equiprovavel\\"
-
-
 
 
 
@@ -143,7 +109,46 @@ caminho_caso = "Academico_Dissertacao\\exercicio_5D\\"
 caminho_caso_arvores = ""
 #caminho_caso_arvores = "27_Aberturas_Equiprovavel_2\\"
 
-JSON_PDD = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\PDD\\src\\caminho.json
+
+
+
+##########################################
+caminho_arvores = ["Eol_dem\\Pente_GVZP\\", "Eol_dem\\A_4x4x2\\" , "Eol_cen\\Pente_GVZP\\", "Eol_cen\\A_4x4x2\\" ] #,
+# 
+#"64Folhas\\A_8x4x2\\", "64Folhas\\A_4x4x4\\", "64Folhas\\A_2x4x8\\",
+ 
+mapa_caminho_avaliacao = {
+    "Eol_dem\\Pente_GVZP\\":[""],
+    "Eol_dem\\A_4x4x2\\" :["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\" ],#
+    "Eol_cen\\Pente_GVZP\\":[""],
+    "Eol_cen\\A_4x4x2\\" :["BKAssimetrico\\", "KMeansAssimetricoProbPente\\", "KMeansSimetricoProbQuadPente\\" ],#
+    "64Folhas\\A_8x4x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
+    "64Folhas\\A_4x4x4\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
+    "64Folhas\\A_2x4x8\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansSimetricoProbQuad\\", "NeuralGas\\"],
+    "16Folhas\\A_2x2x4\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "16Folhas\\A_4x2x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "16Folhas\\A_16_1_1\\":["BKAssimetrico\\", "KMeansPente\\"],
+    "8Folhas\\A_2x2x2\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "8Folhas\\A_4x2x1\\":["BKAssimetrico\\", "BKSimetrico\\", "KMeansAssimetricoProb\\", "KMeansAssimetricoProbPente\\", "KMeansAssimetricoProbRegress\\","KMeansSimetricoProbQuad\\", "KMeansSimetricoProbQuadPente\\", "KMeansSimetricoProbQuadRegress\\","NeuralGas\\"],
+    "8Folhas\\A_8x1x1\\":["BKAssimetrico\\", "KMeansPente\\"],
+    "8Folhas\\":["A_8x4x2\\", "A_4x4x4\\", "A_2x4x8\\"],
+    "Reduzida_Inicio\\":[""],
+    "Reduzida_Meio\\":[""],
+    "Reduzida_Meio_VarNegativa\\":[""],
+    "Reduzida_Meio_VarPositiva\\":[""],
+    "Reduzida_MeioMediaNegativaVarCte\\":[""],
+    "Reduzida_MeioMediaPositivaVarCte\\":[""],
+    "Reduzida_Meio_VarNegativa25\\":[""],
+    "Reduzida_Meio_VarPositiva25\\":[""],
+    "GTMIN\\A_25_75_150_Teste\\":["KMeansAssimetricoProbPenteSemente13\\"],
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Academico_Dissertacao\\exercicio_5D_EOL\\"
+caminho_caso_arvores = ""
+
+
+
+JSON_PDD = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\PDD\\src\\caminho.json"
 
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "PDD\\src\\PDD.jl"
@@ -156,15 +161,20 @@ for caminho_arvore in caminho_arvores:
         new_cenarios_path = new_cenarios_path.replace("\\", "/")
         print("EXECUTANDO: ",new_arvore_path )
         # Step 1: Load and update JSON
-        with open(JSON_PDD, "r") as file:
-            config_PDD = JSON_PDD.load(caminho_base+caminho_caso)
-        config_PDD["CAMINHO_CASO"] = new_arvore_path
+        with open(JSON_PDD, "r") as file_PDD:
+            config_PDD = json.load(file_PDD)
+        config_PDD["CAMINHO_CASO"] = caminho_base+caminho_caso
+        config_PDD["TOLERANCIA"] = 0.00001
+        with open(JSON_PDD, "w") as file_PDD:
+            json.dump(config_PDD, file_PDD, indent=4)
+        print("✅ JSON PDD updated!")
 
+            
         with open(json_path, "r") as file:
             config = json.load(file)
-        config["CAMINHO_ARVORE_EXTERNA"] = new_arvore_path
-        config["CAMINHO_VAZAO_EXTERNA"] = new_cenarios_path
-        config["SIMFINAL"] = 0
+            config["CAMINHO_ARVORE_EXTERNA"] = new_arvore_path
+            config["CAMINHO_VAZAO_EXTERNA"] = new_cenarios_path
+            config["SIMFINAL"] = 0
         with open(json_path, "w") as file:
             json.dump(config, file, indent=4)
         print("✅ JSON updated!")
