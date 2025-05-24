@@ -63,16 +63,16 @@ caminho_arvore1 = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertac
 caminho_arvore2 = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_36D\A_4x4x2\KMeansAssimetricoProbPente"
 caminho_arvore3 = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_36D\A_4x4x2\NeuralGas"
 
-#caminho_orig = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Pente"
-#caminho_arvore1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\BKAssimetrico"
-#caminho_arvore2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansAssimetricoProbPente"
-#caminho_arvore3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\NeuralGas"
+caminho_orig = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_2\Eol_cen\Pente"
+caminho_arvore1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_2\Eol_cen\A_25x3x2\BKAssimetrico"
+caminho_arvore2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_2\Eol_cen\A_25x3x2\KMeansAssimetricoProbPente"
+caminho_arvore3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_2\Eol_cen\A_25x3x2\KMeansSimetricoProbQuadPente"
 
 
 mapa_nome_caso = {
     caminho_arvore1:"RR",
     caminho_arvore2:"KM",
-    caminho_arvore3:"NG",
+    caminho_arvore3:"KMS",
     caminho_orig:"Pente",
 }
 cores = {
@@ -82,9 +82,9 @@ cores = {
     caminho_orig:"black",
 }
 
-lista_casos = [caminho_orig,caminho_arvore2, caminho_arvore1,   ] #caminho_arvore3
+lista_casos = [caminho_orig,caminho_arvore2, caminho_arvore1, caminho_arvore3   ] #caminho_arvore3
 #print(cenarios)
-usina =93
+usina =992
 fig2 = make_subplots(rows=1, cols=1, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
 linha = 1
 coluna = 1
@@ -133,7 +133,7 @@ fig2.update_layout(
     boxmode='group',
     showlegend=True
 )
-#fig2.write_html(f"BOX_{nome_figura}.html", auto_open=True)
+fig2.write_html(f"BOX_{nome_figura}.html", auto_open=True)
 
 
 
@@ -206,5 +206,5 @@ fig2.update_layout(
     boxmode='group',
     showlegend=True
 )
-fig2.write_html(f"BOX_EST2_{nome_figura}.html", auto_open=True)
+#fig2.write_html(f"BOX_EST2_{nome_figura}.html", auto_open=True)
 

@@ -41,29 +41,38 @@ def weighted_quantile(values, quantiles, sample_weight=None):
 
     return np.interp(quantiles, weighted_cdf, values)
 
-
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
-caminho_arvores = "Dissertacao\\"
+caminho_deck = "Capitulo_5\\cenarios_500Cen_cluster_semanais_EOL\\EOL_4\\"
+caminho_arvores = ""
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-caminho_subarvores = "Caso_SF_Final"
-caminhosaida = "Caso_SF_Final"
+caminho_subarvores = ""
+caminhosaida = ""
 casos = {
-        "Caso_SF_Final\\Pente\\Pente":"black",
-        "Caso_SF_Final\\Vassoura\\Pente":"purple",
+        "Eol_dem\\SFINAL_25x3x2_KM_semEol\\Pente":"red",
+        "Eol_cen\\SFINAL_25x3x2_KM_Eol\\Pente":"gold",
+        
+        #"Caso_SF_Final\\Pente\\Pente":"black",
+        #"Caso_SF_Final\\Vassoura\\Pente":"purple",
         #"Caso_SF_Final\\A_300x1x1_Kmeans\\Pente":"gray",
         #"Caso_SF_Final\\A_200x1x1_Kmeans\\Pente":"darkblue",
-        "Caso_SF_Final\\A_100x1x1_Kmeans\\Pente":"blue",
+        #"Caso_SF_Final\\A_100x1x1_Kmeans\\Pente":"blue",
+        #"Caso_SF_Final\\A_100x1x1_BK\\Pente":"lightblue",
         #"Caso_SF_Final\\A_50x1x1_Kmeans\\Pente":"lightblue",
         #"Caso_SF_Final\\A_25x1x1_Kmeans\\Pente":"cyan",
         #"Caso_SF_Final\\A_5x1x1_Kmeans\\Pente":"cyan",
         #"Caso_SF_Final\\Determ\\Pente":"green",
-        "Caso_SF_Final\\A_25x3x2\\Pente":"red",
-        "Caso_SF_Final\\A_25x3x2Simetrico\\Pente":"pink",
+        #"SF_FINAL\\A_25x3x2_Orig\\Pente":"red",
+        #"SF_FINAL\\A_25x3x2_KM_Gran\\Pente":"gold",
+        #"Caso_SF_Final\\A_25x3x2\\Pente":"gold",
+        #"Caso_SF_Final\\A_25x3x2Simetrico\\Pente":"pink",
         #"Caso_SF_Final\\A_25x2x2\\Pente":"gold",
         #"Caso_SF_Final\\A_25x2x2Simetrico\\Pente":"orange",
         }
 mapa_nome_caso = {
+        "Eol_cen\\SFINAL_25x3x2_KM_Eol\\Pente":"25x3x2_EOL",
+        "Eol_dem\\SFINAL_25x3x2_KM_semEol\\Pente":"25x3x2",
+        "SF_FINAL\\A_25x3x2_Orig\\Pente":"A_25x3x2",
+        "SF_FINAL\\A_25x3x2_KM_Gran\\Pente":"A_25x3x2_Eol",
         caminho_subarvores+"\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
         caminho_subarvores+"\\A_100x1x1\\BKAssimetrico":"A_100x1x1",
         "Detrm":"Deterministico",
@@ -85,6 +94,7 @@ mapa_nome_caso = {
         "Caso_SF_Final\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
         "Caso_SF_Final\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
         "Caso_SF_Final\\A_100x1x1_Kmeans\\Pente":"A_100x1x1_Kmeans",
+        "Caso_SF_Final\\A_100x1x1_BK\\Pente":"A_100x1x1_BK",
         "Caso_SF_Final\\Determ":"Determ",
         "Caso_SF_Final\\Vassoura\\Pente":"Vassoura",
         "Caso_SF_Final\\Pente\\Pente":"Pente",

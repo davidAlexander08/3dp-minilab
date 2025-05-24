@@ -147,6 +147,18 @@ caminho_caso = "Academico_Dissertacao\\exercicio_5D_EOL\\"
 caminho_caso_arvores = ""
 
 
+#########################################
+caminho_arvores = ["Determ_Teste\\"] #,"A_1x1x32\\", 
+# 
+#"64Folhas\\A_8x4x2\\", "64Folhas\\A_4x4x4\\", "64Folhas\\A_2x4x8\\",
+ 
+mapa_caminho_avaliacao = {
+    "Determ_Teste\\" :["BKAssimetrico\\", "KMeansAssimetricoProbPente\\"],#
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
+caminho_caso_arvores = "Dissertacao\\Final_TOL001\\"
+
 
 JSON_PDD = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\PDD\\src\\caminho.json"
 

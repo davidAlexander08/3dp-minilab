@@ -68,6 +68,30 @@ mapa_caminho_avaliacao = {
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_caso_arvores = "Dissertacao\\"
+
+##########################################
+caminho_arvores = [ "Eol_cen\\SFINAL_25x3x2_KM_Eol\\", "Eol_dem\\SFINAL_25x3x2_KM_semEol\\" ]# "SF_FINAL\\A_25x3x2_KM_Gran_Curtailment\\",  #"Caso_SF_Final_TOL001\\A_200x1x1_Kmeans\\",  "Caso_SF_Final_TOL001\\A_300x1x1_Kmeans\\",]
+#"Caso_SF_Final_TOL001\\Pente\\",  "Caso_SF_Final_TOL001\\A_25x3x2\\",  "Caso_SF_Final_TOL001\\A_100x1x1_Kmeans\\",
+#  "Caso_SF_Final_TOL001\\A_25x3x2Simetrico\\",  "Caso_SF_Final_TOL001\\A_50x1x1_Kmeans\\" ,"Caso_SF_Final_TOL001\\Vassoura\\", 
+#"Caso_SF_Final_TOL001\\A_25x2x2\\",  "Caso_SF_Final_TOL001\\Determ\\",   "Caso_SF_Final_TOL001\\A_25x2x2Simetrico\\" ] 
+mapa_caminho_cortes ={
+    "Eol_cen\\SFINAL_25x3x2_KM_Eol\\":  "Eol_cen\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
+    "Eol_dem\\SFINAL_25x3x2_KM_semEol\\": "Eol_dem\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
+}
+mapa_caminho_avaliacao = {
+    "Eol_cen\\SFINAL_25x3x2_KM_Eol\\":["Pente\\"],
+    "Eol_dem\\SFINAL_25x3x2_KM_semEol\\":["Pente\\"],
+    "SF_FINAL\\A_25x3x2_KMS_Dem\\":["Pente\\"],
+    "SF_FINAL\\A_25x3x2_KMS_Gran\\":["Pente\\"],
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\cenarios_500Cen_cluster_semanais_EOL\\EOL_4\\"
+caminho_caso_arvores = ""
+
+
+
+
+
 JSON_PDD = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\PDD\\src\\caminho.json"
 json_path = caminho_base+caminho_caso+"dadosEntrada.json"  # <-- Update if needed
 julia_script = "PDD\\src\\PDD.jl"

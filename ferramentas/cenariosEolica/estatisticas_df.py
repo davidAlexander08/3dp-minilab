@@ -3,8 +3,8 @@ import pandas as pd
 lista_df_cen = []
 
 arquivos = {
-    "500_cenarios_NE":993,
-    "500_cenarios_S":992
+    "500_cenarios_Verif_NE":993,
+    "500_cenarios_Verif_S":992
 }
 for arquivo in arquivos:
     df = pd.read_csv(arquivo+".csv")

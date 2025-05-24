@@ -5,13 +5,14 @@ from plotly.subplots import make_subplots
 import math
 
 caminhoSF = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Caso_SF_Final\\"
-pasta_saida = "ResultadosDeterm\\"
+pasta_saida = "ResultadosDeterm_BK\\"
 mapaNomeCaso = {
     "Pente":"Pente",
     "Vassoura":"Vassoura",
     #"A_300x1x1_Kmeans":"A_300x1x1_Kmeans", 
     #"A_200x1x1_Kmeans":"A_200x1x1_Kmeans", 
     "A_100x1x1_Kmeans":"A_100x1x1_Kmeans", 
+    "A_100x1x1_BK":"A_100x1x1_BK", 
     #"A_50x1x1_Kmeans":"A_50x1x1_Kmeans", 
     #"A_5x1x1_Kmeans":"A_5x1x1_Kmeans", 
     #"Determ":"Determ", 
@@ -52,6 +53,7 @@ cores = {
     "A_25x2x2":"gold", 
     "A_25x2x2Simetrico":"yellow", 
     "A_100x1x1_Kmeans":"blue",
+    "A_100x1x1_BK":"lightblue",
     "A_200x1x1_Kmeans":"darkblue",
     "A_300x1x1_Kmeans":"gray",
     "A_50x1x1_Kmeans":"lightblue",

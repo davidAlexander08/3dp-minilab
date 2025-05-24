@@ -10,7 +10,8 @@ import plotly.graph_objects as go
 
 
 #df = pd.read_csv("Verif_NE.txt", sep=";", encoding="latin1")
-df = pd.read_csv("Verif_NE.txt", sep=";", encoding="latin1")
+texto = "Verif_S"
+df = pd.read_csv(texto+".txt", sep=";", encoding="latin1")
 
 ## Realizar soma dos patamares
 list_S = ["S1", "S2", "S3", "S4", "S5"]
@@ -79,7 +80,7 @@ for stage, (c, loc, scale) in weibull_params.items():
     #samples_norm = (samples - samples.min()) / (samples.max() - samples.min())
     #relative_noise = samples/samples.mean()
     #synthetic_wind = dicionarioMedia[stage] * (relative_noise)
-    stochastic_scenarios[stage] = samples/5
+    stochastic_scenarios[stage] = samples/2
 scenario_df = pd.DataFrame(stochastic_scenarios).reset_index(drop = True)
 print(scenario_df)
 
@@ -96,7 +97,7 @@ for mes in meses:
         print("Media original: ", df_est_orig.mean(), " Media Cenarios: ", df_cenarios.mean(), "Desvio original: ", df_est_orig.std(), " Desvio Cenarios: ", df_cenarios.std())
 scenario_df = pd.DataFrame(stochastic_scenarios)
 print(scenario_df)
-scenario_df.to_csv("500_cenarios_NE.csv", index = False)
+scenario_df.to_csv("500_cenarios_"+texto+".csv", index = False)
 
 #print(dicionario_media_cenarios)
 #print(list(dicionario_media_cenarios.values()))
