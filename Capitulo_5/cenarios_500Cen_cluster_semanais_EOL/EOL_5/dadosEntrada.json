@@ -17,12 +17,12 @@
     "VAZAO_EXTERNA": 1,
     "FIM_DE_MUNDO_VOLUMES": 0,
     "PERIODOS_FIM_DE_MUNDO": 0,
-    "SIMFINAL": 1,
-    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/cenarios_500Cen_cluster_semanais_EOL/EOL_4/Eol_dem/Pente/saidas/PDD/oper/cortes_est.csv",
+    "SIMFINAL": 0,
+    "CAMINHO_CORTES": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/cenarios_500Cen_cluster_semanais_EOL/EOL_4/Eol_gran/A_25x3x2/KMeansAssimetricoProbPente/saidas/PDD/oper/cortes_est.csv",
     "CORTES_EXTERNOS": 1,
     "CAMINHO_CORTES_EXTERNOS": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Pente_FCF/saidas/PDD/oper/cortes_est.csv",
-    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/cenarios_500Cen_cluster_semanais_EOL/EOL_4/Eol_dem/SFINAL_Pente_semEol/Pente/arvore.csv",
-    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/cenarios_500Cen_cluster_semanais_EOL/EOL_4/Eol_dem/SFINAL_Pente_semEol/Pente/cenarios.csv",
+    "CAMINHO_ARVORE_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/cenarios_500Cen_cluster_semanais_EOL/EOL_5/Eol_dem/A_25x3x2/KMeansAssimetricoProbPente/arvore.csv",
+    "CAMINHO_VAZAO_EXTERNA": "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/cenarios_500Cen_cluster_semanais_EOL/EOL_5/Eol_dem/A_25x3x2/KMeansAssimetricoProbPente/cenarios.csv",
     "UHEs": [
         {
             "NOME": "6",
@@ -1631,22 +1631,94 @@
     ],
     "EOLs": [
         {
-            "NOME": "EOLICA NORDESTE",
-            "POSTO": 993,
+            "NOME": "EOLICA NORDESTE 1005",
+            "POSTO": 1005,
             "GMIN": 0.0,
             "GMAX": 999999.0,
             "BARRA": 1,
             "SUBMERCADO": 3,
-            "CODIGO": 993
+            "CODIGO": 1005
         },
         {
-            "NOME": "EOLICA SUL",
-            "POSTO": 992,
+            "NOME": "EOLICA NORDESTE 1006",
+            "POSTO": 1006,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 1006
+        },
+        {
+            "NOME": "EOLICA NORDESTE 1007",
+            "POSTO": 1007,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 1007
+        },
+        {
+            "NOME": "EOLICA NORDESTE 1008",
+            "POSTO": 1008,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 1008
+        },
+        {
+            "NOME": "EOLICA NORDESTE 1009",
+            "POSTO": 1009,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 3,
+            "CODIGO": 1009
+        },
+        {
+            "NOME": "EOLICA SUL 1000",
+            "POSTO": 1000,
             "GMIN": 0.0,
             "GMAX": 999999.0,
             "BARRA": 1,
             "SUBMERCADO": 2,
-            "CODIGO": 992
+            "CODIGO": 1000
+        },
+        {
+            "NOME": "EOLICA SUL 1001",
+            "POSTO": 1001,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 1001
+        },
+        {
+            "NOME": "EOLICA SUL 1002",
+            "POSTO": 1002,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 1002
+        },
+        {
+            "NOME": "EOLICA SUL 1003",
+            "POSTO": 1003,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 1003
+        },
+        {
+            "NOME": "EOLICA SUL 1004",
+            "POSTO": 1004,
+            "GMIN": 0.0,
+            "GMAX": 999999.0,
+            "BARRA": 1,
+            "SUBMERCADO": 2,
+            "CODIGO": 1004
         }
     ],
     "SUBMERCADOs": [
@@ -1655,10 +1727,10 @@
             "CODIGO": 1,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                42476.0,
-                43107.0,
-                44067.0,
-                41647.0
+                47119.0,
+                47119.0,
+                47119.0,
+                47119.0
             ]
         },
         {
@@ -1666,10 +1738,10 @@
             "CODIGO": 2,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                11274.0,
-                11068.0,
-                11796.0,
-                10172.0
+                10899.0,
+                10704.0,
+                11434.0,
+                9810.0
             ]
         },
         {
@@ -1677,10 +1749,10 @@
             "CODIGO": 3,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                12680.0,
-                13019.0,
-                13208.0,
-                13023.0
+                11671.0,
+                11671.0,
+                11671.0,
+                11671.0
             ]
         },
         {
@@ -1688,10 +1760,10 @@
             "CODIGO": 4,
             "CUSTO_DEFICIT": 5000,
             "DEMANDA": [
-                5707.0,
-                6019.0,
-                6125.0,
-                6141.0
+                6976.0,
+                6976.0,
+                6976.0,
+                6976.0
             ]
         },
         {
