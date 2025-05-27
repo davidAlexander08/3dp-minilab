@@ -43,14 +43,16 @@ def weighted_quantile(values, quantiles, sample_weight=None):
 
 
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
-caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
-caminho_arvores = "Dissertacao\\"
+caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\"
+caminho_arvores = ""
 caminho_resultados = "\\saidas\\PDD\\oper\\"
-caminho_subarvores = "Final"
-caminhosaida = "Final"
+caminho_subarvores = "graficos_Politica"
+caminhosaida = "Final\\graficos_Politica"
 casos = {
         "Final\\Pente":"black",
         "Final\\Detrm":"green",
+        #"Eol_dem\\A_25x3x2\\KMeansAssimetricoProbPente":"red",
+        #"Eol_gran\\A_25x3x2\\KMeansAssimetricoProbPente":"yellow",
         "Final\\Vassoura\\KMeansAssimetricoProbPente":"purple",
         #"Final\\A_300x1x1_Kmeans\\Pente":"gray",
         #"Final\\A_200x1x1_Kmeans\\Pente":"darkblue",
@@ -66,17 +68,11 @@ casos = {
 mapa_nome_caso = {
         caminho_subarvores+"\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
         caminho_subarvores+"\\A_100x1x1\\BKAssimetrico":"A_100x1x1",
-        #"Final\\Detrm":"Deterministico",
+        "Final\\Detrm":"Determ.",
         #"Final\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
         #"Final\\Pente":"Pente",
-        caminho_subarvores+"\\Pente":"Pente Original",
-        caminho_subarvores+"\\A_25_250_250\\KMeansAssimetricoProb":"A_25_250_250",
-        caminho_subarvores+"\\A_25_125_250\\KMeansAssimetricoProb":"A_25_125_250",
-        caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProb":"A_25_125_250_Teste",
-        caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
-        caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
-        "Final\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
-        "Final\\A_25x3x2\\KMeansSimetricoProbQuadPente":"A_25x3x2_S",
+        "Final\\A_25x3x2\\KMeansAssimetricoProbPente":"A-25x3x2",
+        "Final\\A_25x3x2\\KMeansSimetricoProbQuadPente":"A-25x3x2-S",
         "Final\\A_25x2x2\\Pente":"A_25x2x2",
         "Final\\A_25x2x2Simetrico\\Pente":"A_25x2x2Simetrico",
         "Final\\A_5x1x1_Kmeans\\Pente":"A_5x1x1_Kmeans",
@@ -84,11 +80,13 @@ mapa_nome_caso = {
         "Final\\A_50x1x1_Kmeans\\Pente":"A_50x1x1_Kmeans",
         "Final\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
         "Final\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
-        "Final\\A_100x1x1\\KMeansPente":"A_100x1x1",
+        "Final\\A_100x1x1\\KMeansPente":"P-100x1x1",
         "Final\\Detrm":"Detrm",
         "Final\\Vassoura\\KMeansAssimetricoProbPente":"Vassoura",
         "Final\\Pente":"Pente",
-        caminho_subarvores+"\\Determ\\Pente":"Determ"
+        caminho_subarvores+"\\Determ\\Pente":"Determ",
+        "Eol_dem\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2",
+        "Eol_gran\\A_25x3x2\\KMeansAssimetricoProbPente":"A_25x3x2_EOL",
 }
 grandezas = ["CustoPresente","EarmP", "Deficit", "GT", "GH",  "CustoFuturo", "VolArm","AFL","CMO","VERT", "Earm","CustoTotal", ]
 #grandezas = [ "GT","CMO"]

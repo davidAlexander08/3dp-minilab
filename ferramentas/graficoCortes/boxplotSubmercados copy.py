@@ -10,6 +10,35 @@ from datetime import timedelta  # <-- Add this import at the top of your script
 import time
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import json
+
+
+
+def encontraUsinaJusante(codigo_usi, df_uhe):
+        #print("codigo_usi: ", codigo_usi, " df: ", df_uhe)
+        df_conf_uhe = df_uhe.loc[(df_uhe["CODIGO"] == int(codigo_usi))].reset_index(drop = True)
+        #print("codigo_usi: ", codigo_usi, " df: ", df_conf_uhe)
+        return df_conf_uhe["JUSANTE"].iloc[0]
+    
+def calcula_prodt_acum(codigo_usi, df_uhe):
+        #print(df_uhe)
+        df_uhe_usi = df_uhe.loc[(df_uhe["CODIGO"] == codigo_usi)].reset_index(drop = True)
+        
+        usi_jusante = codigo_usi
+        prodt = df_uhe_usi["PRODT"].iloc[0]
+        #print("codigo_usi: ", codigo_usi, " prodt: ", prodt)
+        while (usi_jusante != ""):
+                
+                usi_jusante = encontraUsinaJusante(usi_jusante, df_uhe)
+                #print("usina_jusante: ", usi_jusante)
+                if(usi_jusante != ""):
+                        prodt_jusante = df_uhe.loc[(df_uhe["CODIGO"] == int(usi_jusante))]["PRODT"].iloc[0]
+                        #print("usi_jusante: ", usi_jusante, " prodt: ", prodt_jusante)
+                        prodt += prodt_jusante
+                
+        return prodt
+
+
 
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Red_2Aberturas_2\\BKAssimetrico\\saidas\\PDD\\oper\\df_cortes_equivalentes.csv"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\Dissertacao\\apresentacaoCarmen_Gevazp\\caso_mini\\exercicioGevazp\\4Estagios\\3Aberturas\\Deterministico_mediaProb\\saidas\\PDD\\oper\\df_cortes_equivalentes.csv"
@@ -21,202 +50,130 @@ caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_c
 caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\A_25_125_250\KMeansAssimetricoProb\saidas\PDD\oper"
 caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\avaliaArvoresRepresentativo\GTMIN\A_100_100_100\BKAssimetrico\saidas\PDD\oper"
 
-caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\avaliaArvoresRepresentativo\\GTMIN"
-
-
-caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Pente\saidas\PDD\oper"
-caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Detrm\saidas\PDD\oper"
-caso3 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\Vassoura\KMeansAssimetricoProbPente\saidas\PDD\oper"
-caso4 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_100x1x1\KMeansPente\saidas\PDD\oper"
-caso5 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
-caso6 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final_TOL001\A_25x3x2\KMeansSimetricoProbQuadPente\saidas\PDD\oper"
-caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001"
+caso1 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_5\Eol_dem\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caso2 = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_5\Eol_gran\A_25x3x2\KMeansAssimetricoProbPente\saidas\PDD\oper"
+caminho_saida = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\cenarios_500Cen_cluster_semanais_EOL\\EOL_5"
 
 casos = {}
-casos["Pente"] = caso1
-casos["Detrm"] = caso2
-casos["Vassoura"] = caso3
-casos["P-100x1x1"] = caso4
-casos["A-25x3x2"] = caso5
-casos["A-25x3x2-S"] = caso6
+casos["25x3x2"] = caso1
+casos["25x3x2_EOL"] = caso2
 cores = {
         "Detrm":"green",
         "Vassoura":"purple",
         "Pente":"black",
-        "A-25x3x2":"red",
-        "A-25x3x2-S":"pink",
-        "P-100x1x1":"blue"
+        "25x3x2":"red",
+        "25x3x2_EOL":"gold",
+        "A_25x3x2Simetrico":"pink",
+        "A_100x1x1":"blue"
 }
-
-mapa_nome_caso = {
-        "Detrm":"Determ.",
-        "Vassoura":"Vass.",
-        "Pente":"Pente",
-        "A-25x3x2":"A-25x3x2",
-        "A-25x3x2-S":"A-25x3x2-S",
-        "P-100x1x1":"P-100x1x1",
-}
-
 
 usina = 6
 periodo = 1
 no_usado = 1
-fig = make_subplots(rows=4, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
+fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
 linha = 1
 coluna = 1
 contador_titulo = 0
-mapaNome = {
-        6:"FURNAS",
-        275:"TUCURUI",
-        17:"MARIMBONDO",
-        288:"BELO MONTE",
-        18:"AGUA VERMELHA",
-        91:"MACHADINHO",
-        169:"SOBRADINHO",
-        66:"ITAIPU",
-        46:"PORTO PRIMAVERA",
-        45:"JUPIA",
-        43:"3 IRMAOS",
-        33:"SÃO SIMÃO",
-        115:"GP SOUZA",
-        47:"A. A. LAYDNER",
-        178:"XINGO",
-        34:"ILHA SOLTEIRA",
-}
+caminho_json = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\dadosEntrada.json"
+with open(caminho_json, "r") as f:
+    data = json.load(f)
+df_uhe = pd.DataFrame(data["UHEs"])
+#print(df_uhe)
+submercados = df_uhe["SUBMERCADO"].unique()
+print(submercados)
 
-mapaNome = {
-        8:"ESTREITO",
-        11:"VOLTA GRANDE",
-        12:"P. COLOMBIA",
-        156:"3 MARIAS",
-        227:"SINOP",
-        229:"TELES PIRES",
-        270:"SERRA MESA",
-        257:"PEIXE ANGIC",
-        273:"LAJEADO",
-        285:"JIRAU",
-        287:"STO ANTONIO",
-        279:"SAMUEL",
-        115:"GP SOUZA",
-        24:"EMBORCAÇÃO",
-        25:"NOVA PONTE",
-        31:"ITUMBIARA",
+mapa_nome_sbm = {
+        1:"SUDESTE",
+        2:"SUL",
+        3:"NORDESTE",
+        4:"NORTE"
 }
 
 
-mapaNome = {
-        32:"CACH DOURADA",
-        37:"BARRA BONITA",
-        40:"PROMISSÃO",
-        42:"NAVANHANDAVA",
-        50:"L. N. GARCEZ",
-        61:"CAPIVARA",
-        62:"TAQUARUCU",
-        63:"ROSANA",
-        86:"BARRA GRANDE",
-        92:"ITA",
-        93:"P. FUNDO",
-        103:"CHAPECO",
-        76:"SEGREDO",
-        77:"SLTO SANTIAGO",
-        82:"SALTO CAXIAS",
-        172:"ITAPARICA",
-}
-
-mapaNome = {
-        267:"ESTREITO TOC",
-        314:"PIMENTAL",
-}
-
-mapaNome = {
-        6:"FURNAS",
-        17:"MARIMBONDO",
-        
-        #18:"AGUA VERMELHA",
-        18:"AGUA VERMELHA",
-        33:"SÃO SIMÃO",
-        #8:"ESTREITO",
-        34:"ILHA SOLTEIRA",
-        #45:"JUPIA",
-        #46:"PORTO PRIMAVERA",
-        #66:"ITAIPU",
-        169:"SOBRADINHO",
-        172:"ITAPARICA",
-        91:"MACHADINHO",
-        115:"GP SOUZA",
-        77:"SALTO SANTIAGO",
-        275:"TUCURUI",
-        227:"SINOP",
-        
-        #288:"BELO MONTE",
-        
-}
-
-mapaNome = {
-        6:"FURNAS",
-        17:"MARIMBONDO",
-        #18:"AGUA VERMELHA",
-        #33:"SÃO SIMÃO",
-        34:"ILHA SOLTEIRA",
-        91:"MACHADINHO",
-        169:"SOBRADINHO",
-        172:"ITAPARICA",
-        
-        #115:"GP SOUZA",
-        #77:"SALTO SANTIAGO",
-        275:"TUCURUI",
-        227:"SINOP",
-        
-        #288:"BELO MONTE",
-        
-}
-
-#for usina in [6, 275, 17, 288]:#usinas:
-for usina in mapaNome:#usinas:
-        fig2 = go.Figure()
+for sbm in submercados:
+        df_usinas_sbm = df_uhe.loc[(df_uhe["SUBMERCADO"] == sbm)].reset_index(drop = True)        
         for caso in casos:
+                soma_prodt_acum = 0
                 df_cortes = pd.read_csv(casos[caso]+"\df_cortes_equivalentes.csv")
-                df_filtro = df_cortes.loc[(df_cortes["usina"] == usina)  & (df_cortes["est"] == periodo)  & (df_cortes["noUso"] == no_usado) & (df_cortes["Indep"] != 0) ]
-                df_filtro = df_filtro.loc[(df_filtro["iter"] != 1)].reset_index(drop = True)
-                #print(df_filtro)
-                #exit(1)
-                coefs = df_filtro["Coef"].tolist()
-                fig2.add_trace(go.Box(
-                x=[mapa_nome_caso[caso]]*len(coefs), 
-                #x=[caso]*len(coefs), 
-                y=coefs, 
-                marker_color=cores[caso],  # or any valid color name or hex code like '#1f77b4'
-                boxpoints=False,
-                showlegend=True))
-
-                fig.add_trace(go.Box(
-                #x=[caso]*len(coefs), 
-                x=[mapa_nome_caso[caso]]*len(coefs), 
-                y=coefs, 
+                lista_df = []
+                for usi in df_usinas_sbm["CODIGO"].unique():
+                        prodt_acum = calcula_prodt_acum(usi, df_uhe)
+                        df_filtro = df_cortes.loc[(df_cortes["usina"] == usi)  & (df_cortes["est"] == periodo)  & (df_cortes["noUso"] == no_usado) & (df_cortes["Indep"] != 0) ]
+                        df_filtro = df_filtro.loc[(df_filtro["iter"] != 1)].reset_index(drop = True)
+                        #print(prodt_acum)
+                        #print(df_filtro)
+                        lista_df.append(df_filtro["Coef"]*prodt_acum)
+                        soma_prodt_acum += prodt_acum
+                
+                df_result = pd.concat(lista_df, axis = 1)
+                df_result["soma_total"] = df_result.sum(axis=1)
+                coef_final = df_result["soma_total"]/soma_prodt_acum
+                #print(coef_final)
+                fig.add_trace(go.Box(x=[caso]*len(coef_final.tolist()), 
+                y=coef_final, 
                 marker_color=cores[caso],  # or any valid color name or hex code like '#1f77b4'
                 boxpoints=False,
                 showlegend=True), row=linha, col=coluna)
-
-        titulo =  "Usina " + str(usina)
-        titulo =  "Usina " + mapaNome[usina]
-        fig.layout.annotations[contador_titulo].update(text=titulo, font=dict(size=40)) 
+        titulo =  f"Submercado {mapa_nome_sbm[sbm]}"
+        fig.layout.annotations[contador_titulo].update(text=titulo, font=dict(size=35)) 
         contador_titulo += 1
         print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador_titulo)
         coluna = coluna + 1
         if(coluna == 3):
                 coluna = 1
                 linha = linha + 1
+        print(df_usinas_sbm)
 
-        titulo = f"cortes_usina_{usina}_no_{no_usado}"
-        fig2.update_layout(
-            title=titulo,
-            title_font=dict(size=24, family="Arial", color="black"),        
-            xaxis_title="Caso",
-            yaxis_title="$/hm3",
-            showlegend=False,
-            font=dict(size=20),  # General font (e.g., legend)
-        )
-        #fig2.write_html(f"htmls\\{titulo}.html", auto_open=True)  # Opens in browser
+titulo = f"PIVs Médios Submercados"
+fig.update_layout(
+        title=titulo,
+        xaxis_title="Caso",
+        yaxis_title="$/hm3",
+        showlegend=False,
+        title_font=dict(size=30),  # Title font size
+        font=dict(size=30),  # General font (e.g., legend)
+)
+fig.write_html(f"{caminho_saida}\\{titulo}.html", auto_open=True)  # Opens in browser
+exit(1)
+fig2 = go.Figure()
+for caso in casos:
+        df_cortes = pd.read_csv(casos[caso]+"\df_cortes_equivalentes.csv")
+        df_filtro = df_cortes.loc[(df_cortes["usina"] == usina)  & (df_cortes["est"] == periodo)  & (df_cortes["noUso"] == no_usado) & (df_cortes["Indep"] != 0) ]
+        df_filtro = df_filtro.loc[(df_filtro["iter"] != 1)].reset_index(drop = True)
+        #print(df_filtro)
+        #exit(1)
+        coefs = df_filtro["Coef"].tolist()
+        fig2.add_trace(go.Box(x=[caso]*len(coefs), 
+        y=coefs, 
+        marker_color=cores[caso],  # or any valid color name or hex code like '#1f77b4'
+        boxpoints=False,
+        showlegend=True))
+
+        fig.add_trace(go.Box(x=[caso]*len(coefs), 
+        y=coefs, 
+        marker_color=cores[caso],  # or any valid color name or hex code like '#1f77b4'
+        boxpoints=False,
+        showlegend=True), row=linha, col=coluna)
+
+titulo =  "Usina " + str(usina)
+titulo =  "Usina " + mapaNome[usina]
+fig.layout.annotations[contador_titulo].update(text=titulo, font=dict(size=20)) 
+contador_titulo += 1
+print("linha: ", linha, " coluna: ", coluna, " anotation: ", contador_titulo)
+coluna = coluna + 1
+if(coluna == 4):
+        coluna = 1
+        linha = linha + 1
+
+titulo = f"cortes_usina_{usina}_no_{no_usado}"
+fig2.update_layout(
+        title=titulo,
+        xaxis_title="Caso",
+        yaxis_title="$/hm3",
+        showlegend=False,
+        font=dict(size=15),  # General font (e.g., legend)
+)
+#fig2.write_html(f"htmls\\{titulo}.html", auto_open=True)  # Opens in browser
 
 
 titulo = f"PIVs Usinas"
@@ -225,9 +182,9 @@ fig.update_layout(
         xaxis_title="Caso",
         yaxis_title="$/hm3",
         showlegend=False,
-        font=dict(size=30),  # General font (e.g., legend)
+        font=dict(size=25),  # General font (e.g., legend)
 )
-fig.write_html(f"{caminho_saida}\\{titulo}.html", auto_open=True)  # Opens in browser
+fig.write_html(f"htmls\\{titulo}.html", auto_open=True)  # Opens in browser
 
 
         #df_filtro = df_cortes.loc[(df_cortes["usina"] == usina)  & (df_cortes["est"] == periodo)  & (df_cortes["noUso"] == no_usado) & (df_cortes["Indep"] != 0) ]

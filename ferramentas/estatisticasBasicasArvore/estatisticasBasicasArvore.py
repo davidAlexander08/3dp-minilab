@@ -40,14 +40,14 @@ caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_1D\semFCF\A_4x4x2\BKAssimetrico"
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Academico_Dissertacao\exercicio_1D\semFCF\Pente_GVZP"
 caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Pente"
-
+caminho_arvore = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\caso_mini_500Cen_cluster_semanais\Dissertacao\Final\A_25x1x1\KMeansAssimetricoProbPente"
 arvore = pd.read_csv(caminho_arvore+"\\arvore.csv")
 cenarios = pd.read_csv(caminho_arvore+"\\cenarios.csv")
 estagios = arvore["PER"].unique()
 maior_estagio = arvore["PER"].max()
 total_nodes = arvore["NO"].unique()
 #print(cenarios)
-usina =169
+usina =47
 
 lista_df  = []
 for est in estagios:

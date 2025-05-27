@@ -5,19 +5,19 @@ from plotly.subplots import make_subplots
 import math
 
 caminhoSF = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Caso_SF_Final\\"
-pasta_saida = "ResultadosDeterm_BK\\"
+pasta_saida = "resultadoFim\\"
 mapaNomeCaso = {
     "Pente":"Pente",
     "Vassoura":"Vassoura",
     #"A_300x1x1_Kmeans":"A_300x1x1_Kmeans", 
     #"A_200x1x1_Kmeans":"A_200x1x1_Kmeans", 
-    "A_100x1x1_Kmeans":"A_100x1x1_Kmeans", 
-    "A_100x1x1_BK":"A_100x1x1_BK", 
+    "A_100x1x1_Kmeans":"P-100x1x1", 
+    #"A_100x1x1_BK":"A_100x1x1_BK", 
     #"A_50x1x1_Kmeans":"A_50x1x1_Kmeans", 
     #"A_5x1x1_Kmeans":"A_5x1x1_Kmeans", 
     #"Determ":"Determ", 
-    "A_25x3x2": "A_25x3x2 K-Means", 
-    "A_25x3x2Simetrico":"A_25x3x2 K-Means S", 
+    "A_25x3x2": "A-25x3x2", 
+    "A_25x3x2Simetrico":"A-25x3x2-S", 
     #"A_25x2x2": "A_25x2x2 K-Means", 
     #"A_25x2x2Simetrico":"A_25x2x2 K-Means S", 
     
@@ -29,10 +29,11 @@ mapaGrandezas = {
     "GH_mean"               :["Geração Hidrelétrica Média",  "MW"  ], 
     "VolArm_mean"          :["Vol. Armazenado Médio",  "hm3"  ], 
     "Vert_mean"             :["Vertimento Médio"     ,  "m3/s"  ], 
-    "CustoPresente_mean"   :["Custo Presente Médio" ,  "R$"   ],
+    "CustoPresente_mean"   :["Custo Operacional Médio" ,  "R$"   ],
     "CustoTotal_mean":["Custo Total Médio","R$"],
     "CustoFuturo_mean"   :["Custo Futuro Médio" ,  "R$"   ],
     "Earm_mean"   :["Energ. Armaz. Média" ,  "MW"   ],
+    "Earm_perc"   :["Energ. Armaz. Perc." ,  "%"   ],
     "CMO_mean"   :["Custo Marginal" ,  "R$/MWh"   ],
 }
 #mapaGrandezas = {
@@ -82,10 +83,10 @@ for grandeza in mapaGrandezas:
                 print( df_media_SIN)
                 #exit(1)
                 eixoy.append(df_media_SIN[grandeza].iloc[0])
-            elif(grandeza == "EarmP"):
+            elif(grandeza == "Earm_perc"):
                 df_media_SIN = pd.read_csv(caminhoSF+caso+"\\"+avaliacao+"\\saidas\\PDD\\oper\\media_SIN.csv")
-                df_media_SIN["EarmP"] = 100*(df_media_SIN["Earm"]/931025)
-                eixoy.append(df_media_SIN[grandeza].iloc[0])
+                df_media_SIN["EarmP"] = 100*(df_media_SIN["Earm_mean"]/931025)
+                eixoy.append(df_media_SIN["EarmP"].iloc[0])
             elif(grandeza == "CMO_mean"):
                 df_media_SBM = pd.read_csv(caminhoSF+caso+"\\"+avaliacao+"\\saidas\\PDD\\oper\\media_SBM.csv")
                 #print(df_media_SBM)
@@ -134,6 +135,7 @@ mapaGrandezas = {
     "CMO_1_mes"     :["Custo Marginal 1o Est"       ,  "R$/MWh" , "CMO" ],
     "CP_1_mes"      :["Custo Presente 1o Est"       ,  "R$" , "CustoPresente" ],
     "Earm_1_mes"      :["Energ. Armazenada 1o Est"       ,  "MW" , "Earm" ],
+    "Earm_1_mes_perc"      :["Energ. Armazenada Perc 1o Est"       ,  "%" , "Earm" ],
 }
 
 
@@ -145,8 +147,11 @@ for grandeza in mapaGrandezas:
         for avaliacao in mapaEixoX:
             if(grandeza == "CMO_1_mes"):
                 df_media_SBM = pd.read_csv(caminhoSF+caso+"\\"+avaliacao+"\\saidas\\PDD\\oper\\balanco_energetico_final_sbm.csv")
-                #print(df_media_SBM)
                 eixoy.append(df_media_SBM[mapaGrandezas[grandeza][2]].iloc[0])
+            elif(grandeza == "Earm_1_mes_perc"):
+                df_media_SIN = pd.read_csv(caminhoSF+caso+"\\"+avaliacao+"\\saidas\\PDD\\oper\\balanco_energetico_final.csv")
+                df_media_SIN["EarmP"] = 100*(df_media_SIN["Earm"]/931025)
+                eixoy.append(df_media_SIN["EarmP"].iloc[0])
             else:
                 df_media_SIN = pd.read_csv(caminhoSF+caso+"\\"+avaliacao+"\\saidas\\PDD\\oper\\balanco_energetico_final.csv")
                 #print(df_media_SIN)

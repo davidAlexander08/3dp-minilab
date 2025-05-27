@@ -62,21 +62,21 @@ casos = {}
 casos["Pente"] = caso1
 casos["Detrm"] = caso2
 casos["Vassoura"] = caso3
-casos["A_100x1x1"] = caso4
-casos["A_25x3x2"] = caso5
-casos["A_25x3x2Simetrico"] = caso6
+casos["P-100x1x1"] = caso4
+casos["A-25x3x2"] = caso5
+casos["A-25x3x2-S"] = caso6
 cores = {
         "Detrm":"green",
         "Vassoura":"purple",
         "Pente":"black",
-        "A_25x3x2":"red",
-        "A_25x3x2Simetrico":"pink",
-        "A_100x1x1":"blue"
+        "A-25x3x2":"red",
+        "A-25x3x2-S":"pink",
+        "P-100x1x1":"blue"
 }
 
 usina = 6
 periodo = 1
-no_usado = 1
+no_usado =1
 fig = make_subplots(rows=2, cols=2, subplot_titles=(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))
 linha = 1
 coluna = 1
@@ -101,7 +101,8 @@ for sbm in submercados:
         df_usinas_sbm = df_uhe.loc[(df_uhe["SUBMERCADO"] == sbm)].reset_index(drop = True)        
         for caso in casos:
                 soma_prodt_acum = 0
-                df_cortes = pd.read_csv(casos[caso]+"\df_cortes_equivalentes.csv")
+                #df_cortes = pd.read_csv(casos[caso]+"\df_cortes_equivalentes.csv")
+                df_cortes = pd.read_csv(casos[caso]+"\cortes_est.csv")
                 lista_df = []
                 for usi in df_usinas_sbm["CODIGO"].unique():
                         prodt_acum = calcula_prodt_acum(usi, df_uhe)

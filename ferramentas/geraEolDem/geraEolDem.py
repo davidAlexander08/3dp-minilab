@@ -1,11 +1,11 @@
 import pandas as pd
-path_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_4\Eol_cen\Pente"
-path_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_4\Eol_dem\Pente"
+path_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_5\Eol_gran\A_25x3x2\KMeansAssimetricoProbPente"
+path_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_5\Eol_dem\A_25x3x2\KMeansAssimetricoProbPente"
 df_pente = pd.read_csv(path_pente+"\\cenarios.csv")
 df_arvore = pd.read_csv(path_pente+"\\arvore.csv")
 print(df_pente)
 estagios = df_arvore["PER"].unique()
-df_usinas_eolicas = df_pente.loc[(df_pente["NOME_UHE"].isin([993,992]))]
+df_usinas_eolicas = df_pente.loc[(df_pente["NOME_UHE"].isin([1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009]))]
 print(df_usinas_eolicas)
 usinas_eolicas = df_usinas_eolicas["NOME_UHE"].unique()
 #print(usinas_eolicas)

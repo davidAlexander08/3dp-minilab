@@ -1,6 +1,6 @@
 import pandas as pd
 path_pente = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_4\Eol_cen\Pente"
-path_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_4\comEOL\Eol_granularizado\Pente"
+path_saida = r"C:\Users\testa\Documents\git\3dp-minilab\Capitulo_5\cenarios_500Cen_cluster_semanais_EOL\EOL_4\Eol_gran\Pente"
 df_pente = pd.read_csv(path_pente+"\\cenarios.csv")
 df_arvore = pd.read_csv(path_pente+"\\arvore.csv")
 print(df_pente)
@@ -29,7 +29,7 @@ for usi in novas_usinas:
         media = df_usi_est["VAZAO"].mean()
         desvio = df_usi_est["VAZAO"].std()
         print("USI: ", usi, " EST: ", est, " MEDIA: ", media, " DESVIO: ", desvio)
-exit(1)
+
 for usi in usinas_eolicas:
     df_usi = df_usinas_eolicas.loc[(df_usinas_eolicas["NOME_UHE"] == usi)].reset_index(drop = True)
     #print(df_usi)
@@ -60,5 +60,5 @@ for usi in novas_usinas:
             desvio = df_usi_est["VAZAO"].std()
             print("USI: ", usina, " EST: ", est, " MEDIA: ", media, " DESVIO: ", desvio)
     #print(df_usi)
-#df_result.to_csv(path_saida+"\\cenarios.csv", index = False)
-#df_arvore.to_csv(path_saida+"\\arvore.csv", index = False)
+df_result.to_csv(path_saida+"\\cenarios.csv", index = False)
+df_arvore.to_csv(path_saida+"\\arvore.csv", index = False)
