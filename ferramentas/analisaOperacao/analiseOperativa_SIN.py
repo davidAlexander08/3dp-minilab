@@ -46,29 +46,38 @@ caminho_deck = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\"
 caminho_arvores = ""
 caminho_resultados = "\\saidas\\PDD\\oper\\"
 caminho_subarvores = ""
-caminhosaida = "Caso_SF_Final\\ResultadosFinais"
+caminhosaida = "Caso_SF_Final_Allcut\\graficosSFEstocastica"
+
+
 casos = {
         #"Eol_dem\\SFINAL_25x3x2_KM_semEol\\Pente":"red",
         #"Eol_cen\\SFINAL_25x3x2_KM_Eol\\Pente":"gold",
         
-        "Caso_SF_Final\\Pente\\Pente":"black",
-        "Caso_SF_Final\\Vassoura\\Pente":"purple",
+        "Caso_SF_Final_Allcut\\Pente\\Pente":"black",
+        "Caso_SF_Final_Allcut\\Vassoura\\Pente":"purple",
         #"Caso_SF_Final\\A_300x1x1_Kmeans\\Pente":"gray",
         #"Caso_SF_Final\\A_200x1x1_Kmeans\\Pente":"darkblue",
-        "Caso_SF_Final\\A_100x1x1_Kmeans\\Pente":"blue",
+        "Caso_SF_Final_Allcut\\A_100x1x1_Kmeans\\Pente":"blue",
         #"Caso_SF_Final\\A_100x1x1_BK\\Pente":"lightblue",
         #"Caso_SF_Final\\A_50x1x1_Kmeans\\Pente":"lightblue",
         #"Caso_SF_Final\\A_25x1x1_Kmeans\\Pente":"cyan",
         #"Caso_SF_Final\\A_5x1x1_Kmeans\\Pente":"cyan",
         #"Caso_SF_Final\\Determ\\Pente":"green",
-        "Caso_SF_Final\\A_25x3x2\\Pente":"red",
+        "Caso_SF_Final_Allcut\\A_25x3x2\\Pente":"red",
         #"SF_FINAL\\A_25x3x2_KM_Gran\\Pente":"gold",
         #"Caso_SF_Final\\A_25x3x2\\Pente":"gold",
-        "Caso_SF_Final\\A_25x3x2Simetrico\\Pente":"pink",
+        "Caso_SF_Final_Allcut\\A_25x3x2Simetrico\\Pente":"pink",
         #"Caso_SF_Final\\A_25x2x2\\Pente":"gold",
         #"Caso_SF_Final\\A_25x2x2Simetrico\\Pente":"orange",
         }
 mapa_nome_caso = {
+        "Caso_SF_Final_Allcut\\Vassoura\\Pente":"Vassoura",
+        "Caso_SF_Final_Allcut\\Pente\\Pente":"Pente",
+        "Caso_SF_Final_Allcut\\A_25x3x2Simetrico\\Pente":"A-25x3x2-S",
+        "Caso_SF_Final_Allcut\\A_25x3x2\\Pente":"A_25x3x2",
+        "Caso_SF_Final_Allcut\\A_100x1x1_Kmeans\\Pente":"P-100x1x1",
+
+
         "Eol_cen\\SFINAL_25x3x2_KM_Eol\\Pente":"25x3x2_EOL",
         "Eol_dem\\SFINAL_25x3x2_KM_semEol\\Pente":"25x3x2",
         "Caso_SF_Final\\A_25x3x2\\Pente":"A_25x3x2",
@@ -85,19 +94,15 @@ mapa_nome_caso = {
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         caminho_subarvores+"\\A_25_125_250_Teste\\KMeansAssimetricoProbPenteFolha":"A_25_125_250_Teste_Pente",
         "Caso_SF_Final\\A_25x3x2\\Pente":"A-25x3x2",
-        "Caso_SF_Final\\A_25x3x2Simetrico\\Pente":"A-25x3x2-S",
-        "Caso_SF_Final\\A_25x2x2\\Pente":"A_25x2x2",
         "Caso_SF_Final\\A_25x2x2Simetrico\\Pente":"A_25x2x2Simetrico",
         "Caso_SF_Final\\A_5x1x1_Kmeans\\Pente":"A_5x1x1_Kmeans",
         "Caso_SF_Final\\A_25x1x1_Kmeans\\Pente":"A_25x1x1_Kmeans",
         "Caso_SF_Final\\A_50x1x1_Kmeans\\Pente":"A_50x1x1_Kmeans",
         "Caso_SF_Final\\A_300x1x1_Kmeans\\Pente":"A_300x1x1_Kmeans",
         "Caso_SF_Final\\A_200x1x1_Kmeans\\Pente":"A_200x1x1_Kmeans",
-        "Caso_SF_Final\\A_100x1x1_Kmeans\\Pente":"P-100x1x1",
         "Caso_SF_Final\\A_100x1x1_BK\\Pente":"A_100x1x1_BK",
         "Caso_SF_Final\\Determ":"Determ",
-        "Caso_SF_Final\\Vassoura\\Pente":"Vassoura",
-        "Caso_SF_Final\\Pente\\Pente":"Pente",
+
         caminho_subarvores+"\\Determ\\Pente":"Determ"
 }
 grandezas = ["GT", "CustoPresente","EarmP", "Deficit",  "GH",  "CustoFuturo", "VolArm","AFL","CMO","VERT", "Earm","CustoTotal", ]

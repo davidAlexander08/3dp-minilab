@@ -57,6 +57,10 @@ arquivo = "A_4x4x2\\estatisticasArvores"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001\\"
 arquivo = "A_25x3x2\\estatisticasArvores"
 caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final_TOL001\\"
+caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final\\"
+
+#caminho = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\Academico_Dissertacao\\exercicio_36D\\"
+
 arquivo = "A_25x3x2\\estatisticasArvores"
 #arquivo = "A_100x1x1\\estatisticasArvores"
 #arquivo = "\\A_4x4x2\\estatisticasArvores"

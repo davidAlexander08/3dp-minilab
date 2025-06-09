@@ -558,19 +558,24 @@ reducoes = [
 ]
 
 
-
-
 caso = "Pente"
 caminho_base = "..\\Capitulo_5\\caso_mini_500Cen_cluster_semanais\\Dissertacao\\Final\\"
 reducoes = [
     #({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
     #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
     #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
-    ({1:25, 2:1, 3:6}, 150, "A_25x1x6"),
+    ({1:50, 2:2, 3:2}, 200, "A_50x2x2"),
     #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
 ]
-
-
+caso = "Pente"
+caminho_base = "..\\Academico_Dissertacao\\exercicio_Exemplo\\"
+reducoes = [
+    #({1:2, 2:2, 3:8}, 32, "A_2x2x8"),
+    #({1:4, 2:4, 3:2}, 32, "A_4x4x2"),
+    #({1:8, 2:2, 3:2}, 32, "A_8x2x2"),
+    ({1:2}, 4, "Teste"),
+    #({1:4, 2:6, 3:3}, 72, "A_4x6x3"),
+]
 
 for red in reducoes:
     mapa_aberturas_estagio = red[0]
@@ -628,22 +633,22 @@ for red in reducoes:
 ##
 ##
     #
-    ########################################## COMPARACAO METODOS 
-    #print("###########################################################################")
-    #### METODO -  BACKWARD REDUCTION ASSIMETRICO
-    #Simetrica = False
-    #df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
-    #path_saida = "saidas\\BKAssimetrico"
-    #path_saida = caminho_saida+"\\BKAssimetrico"
-    #os.makedirs(path_saida, exist_ok=True)
-    #df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
-    #df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
+    ######################################### COMPARACAO METODOS 
+    print("###########################################################################")
+    ### METODO -  BACKWARD REDUCTION ASSIMETRICO
+    Simetrica = False
+    df_arvore, df_vazoes = backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio, df_vazoes_original.copy(), df_arvore_original.copy(), Simetrica, perservaFolhas, Plota)
+    path_saida = "saidas\\BKAssimetrico"
+    path_saida = caminho_saida+"\\BKAssimetrico"
+    os.makedirs(path_saida, exist_ok=True)
+    df_arvore.to_csv(path_saida+"\\arvore.csv", index=False)
+    df_vazoes.to_csv(path_saida+"\\cenarios.csv", index=False)
 ##
-    #texto = "Arvore Backward Reduction Assimetrico"
-    #realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
-    #testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
-    #printaArvore("BKAssimetrico", path_saida, df_arvore)
-    #exit(1)
+    texto = "Arvore Backward Reduction Assimetrico"
+    realizaTesteConsistenciaProbabilidadesFilhos(df_arvore, texto)
+    testeCorrespondenciaArvoreVazoes(df_arvore, df_vazoes, texto)
+    printaArvore("BKAssimetrico", path_saida, df_arvore)
+    exit(1)
 
 
     #print("###########################################################################")

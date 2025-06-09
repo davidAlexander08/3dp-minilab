@@ -448,10 +448,12 @@ function atualizaArvoreDistanciaAninhada(df_arvore_original, df_cenarios_origina
     end
     return (df_arvore_reduzida, df_cenarios_reduzida, distancia_aninhada, solucao_planoTransporteCondicional)
 end
+
 str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Carmen/exercicio_27cen_20D/27_Aberturas_Equiprovavel"
 #str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/avaliaArvoresRepresentativo/Rodada_Final"
+str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Capitulo_5/caso_mini_500Cen_cluster_semanais/Dissertacao/Final_TOL001"
 #str_caso = "C:/Users/testa/Documents/git/3dp-minilab/Dissertacao/teste_simples/caso_mini_60"
-Path_orig = str_caso*"/Pente_GVZP"
+Path_orig = str_caso*"/Pente"
 #Path_orig = str_caso*"/Pente"
 #Path_orig = str_caso*"/Arvore_GVZP"
 PATH_ARVORE_ORIGINAL = Path_orig*"/arvore.csv"
@@ -464,12 +466,15 @@ df_cenarios_original = CSV.read(PATH_CENARIOS_ORIGINAL, DataFrame)
 #lista_paths_red = ["Pente_8cen"]
 #lista_casos = ["BKAssimetrico", "KMeansPente"]
 lista_paths_red = ["Deterministico","Vassoura"]
-lista_paths_red = ["A_25_125_250"]
-lista_casos = ["KMeansAssimetricoProb"]
+lista_paths_red = ["A_25x3x2", "A_25x2x2", "Vassoura"]
+lista_casos = ["KMeansAssimetricoProbPente"]
+
+lista_paths_red = ["A_50x1x1","A_100x1x1", "A_200x1x1", "A_300x1x1"]
+lista_casos = ["KMeansPente"]
 #lista_paths_red = ["A_4x2x1","A_2x2x2" ]
 #lista_casos = ["BKAssimetrico", "KMeansAssimetricoProbPente"]
-lista_paths_red = ["A_8x1x1" ]
-lista_casos = ["BKAssimetrico", "KMeansPente"]
+#lista_paths_red = ["A_8x1x1" ]
+#lista_casos = ["BKAssimetrico", "KMeansPente"]
 #lista_casos = [""]
 for path_red in lista_paths_red
     for caso in lista_casos

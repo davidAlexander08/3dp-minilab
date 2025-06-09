@@ -70,23 +70,51 @@ caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
 caminho_caso_arvores = "Dissertacao\\"
 
 ##########################################
-caminho_arvores = [ "Eol_cen\\SFINAL_25x3x2_KM_Eol\\", "Eol_dem\\SFINAL_25x3x2_KM_semEol\\" ]# "SF_FINAL\\A_25x3x2_KM_Gran_Curtailment\\",  #"Caso_SF_Final_TOL001\\A_200x1x1_Kmeans\\",  "Caso_SF_Final_TOL001\\A_300x1x1_Kmeans\\",]
+caminho_arvores = [ "Eol_dem\\SFINAL_Pente_semEol\\"]#, "Eol_dem\\SFINAL_25x3x2_KM_semEol\\" ]# "SF_FINAL\\A_25x3x2_KM_Gran_Curtailment\\",  #"Caso_SF_Final_TOL001\\A_200x1x1_Kmeans\\",  "Caso_SF_Final_TOL001\\A_300x1x1_Kmeans\\",]
 #"Caso_SF_Final_TOL001\\Pente\\",  "Caso_SF_Final_TOL001\\A_25x3x2\\",  "Caso_SF_Final_TOL001\\A_100x1x1_Kmeans\\",
 #  "Caso_SF_Final_TOL001\\A_25x3x2Simetrico\\",  "Caso_SF_Final_TOL001\\A_50x1x1_Kmeans\\" ,"Caso_SF_Final_TOL001\\Vassoura\\", 
 #"Caso_SF_Final_TOL001\\A_25x2x2\\",  "Caso_SF_Final_TOL001\\Determ\\",   "Caso_SF_Final_TOL001\\A_25x2x2Simetrico\\" ] 
 mapa_caminho_cortes ={
+    "Eol_gran\\SFINAL_25x3x2_KM_granEOL\\":  "Eol_gran\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
     "Eol_cen\\SFINAL_25x3x2_KM_Eol\\":  "Eol_cen\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
     "Eol_dem\\SFINAL_25x3x2_KM_semEol\\": "Eol_dem\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
+    "Eol_dem\\SFINAL_Pente_semEol\\": "Eol_dem\\Pente\\saidas\\PDD\\oper\\",
 }
 mapa_caminho_avaliacao = {
+    "Eol_gran\\SFINAL_25x3x2_KM_granEOL\\":["Pente\\"],
     "Eol_cen\\SFINAL_25x3x2_KM_Eol\\":["Pente\\"],
     "Eol_dem\\SFINAL_25x3x2_KM_semEol\\":["Pente\\"],
+    "Eol_dem\\SFINAL_Pente_semEol\\":["Pente\\"],
     "SF_FINAL\\A_25x3x2_KMS_Dem\\":["Pente\\"],
     "SF_FINAL\\A_25x3x2_KMS_Gran\\":["Pente\\"],
     }
 caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
 caminho_caso = "Capitulo_5\\cenarios_500Cen_cluster_semanais_EOL\\EOL_4\\"
 caminho_caso_arvores = ""
+##########################################################################
+##########################################
+caminho_arvores = [ "Caso_SF_Final_Allcut\\Pente\\" ]
+# "Caso_SF_Final_Allcut\\A_25x3x2\\" , "Caso_SF_Final_Allcut\\A_25x3x2Simetrico\\" , "Caso_SF_Final_Allcut\\A_100x1x1_Kmeans\\" ,
+#"Caso_SF_Final_Allcut\\Vassoura\\" , "Caso_SF_Final_Allcut\\Determ\\" ,]
+mapa_caminho_cortes ={
+    "Caso_SF_Final_Allcut\\A_25x3x2\\":          "Final\\A_25x3x2\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
+    "Caso_SF_Final_Allcut\\A_25x3x2Simetrico\\": "Final\\A_25x3x2\\KMeansSimetricoProbQuadPente\\saidas\\PDD\\oper\\",
+    "Caso_SF_Final_Allcut\\A_100x1x1_Kmeans\\":  "Final\\A_100x1x1\\KMeansPente\\saidas\\PDD\\oper\\",
+    "Caso_SF_Final_Allcut\\Determ\\":            "Final\\Detrm\\saidas\\PDD\\oper\\",
+    "Caso_SF_Final_Allcut\\Vassoura\\":          "Final\\Vassoura\\KMeansAssimetricoProbPente\\saidas\\PDD\\oper\\",
+    "Caso_SF_Final_Allcut\\Pente\\":             "Final\\Pente\\saidas\\PDD\\oper\\",
+}
+mapa_caminho_avaliacao = {
+    "Caso_SF_Final_Allcut\\A_25x3x2\\":          ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\","Pente\\"],
+    "Caso_SF_Final_Allcut\\A_25x3x2Simetrico\\": ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\","Pente\\"],
+    "Caso_SF_Final_Allcut\\A_100x1x1_Kmeans\\":  ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\","Pente\\"],
+    "Caso_SF_Final_Allcut\\Determ\\":            ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\","Pente\\"],
+    "Caso_SF_Final_Allcut\\Vassoura\\":          ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\","Pente\\"],
+    "Caso_SF_Final_Allcut\\Pente\\":             ["Determ\\","Determ_06\\","Determ_08\\","Determ_12\\","Determ_14\\","Pente\\"],
+    }
+caminho_base = "C:\\Users\\testa\\Documents\\git\\3dp-minilab\\"
+caminho_caso = "Capitulo_5\\caso_mini_500Cen_cluster_semanais\\"
+caminho_caso_arvores = "Dissertacao\\"
 
 
 
@@ -98,7 +126,7 @@ julia_script = "PDD\\src\\PDD.jl"
 sysimage_path = "PDDApp.dll"  # Update this with your actual sysimage path
 
 for caminho_arvore in caminho_arvores:
-    cortes_externos_path = caminho_base+caminho_caso+caminho_caso_arvores+mapa_caminho_cortes[caminho_arvore]+"cortes_est.csv"
+    cortes_externos_path = caminho_base+caminho_caso+caminho_caso_arvores+mapa_caminho_cortes[caminho_arvore]+"all_cut.csv"
     cortes_externos_path = cortes_externos_path.replace("\\", "/")
     for avaliacao in mapa_caminho_avaliacao[caminho_arvore]:
         new_arvore_path = caminho_base+caminho_caso+caminho_caso_arvores+caminho_arvore+avaliacao+"arvore.csv"

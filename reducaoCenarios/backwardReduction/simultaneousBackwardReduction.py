@@ -103,7 +103,7 @@ def calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDe
         #    del dicionarioLinhaMatrizCrescente[no_excluido][idx]
 
         
-        #print("no_excluido: ", no_excluido, " lowest_valid_node: ", lowest_valid_node, " lowest_valid_distance: ", lowest_valid_distance)
+        print("no_excluido: ", no_excluido, " lowest_valid_node: ", lowest_valid_node, " lowest_valid_distance: ", lowest_valid_distance)
         
         #menorValor = min(dicionario_distancias[(no_excluido, no_analisado)] for no_analisado in Q if no_analisado != no_foco)
         #print("no_excluido: ", no_excluido, " menorValor: ", menorValor)
@@ -242,7 +242,7 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
         start_time = time.time()
         
         #print(dicionarioDeProbabilidades)
-        #print(matrizDistancias)
+        print(matrizDistancias)
         #exit(1)
         #np.savetxt("matrizDistancias.csv", matrizDistancias, delimiter=",", fmt="%.6f")  # "%.6f" ensures 6 decimal places
 
@@ -315,13 +315,13 @@ def backwardReduction(mapa_reducao_estagio, mapa_aberturas_estagio,  df_vazoes, 
                 for i, no_foco in enumerate(Q):
                     dist_kantorovich = calcular_dist_kantorovich(no_foco, J, Q, dicionario_distancias, dicionarioDeProbabilidades, dicionarioLinhaMatrizCrescente, dicionarioLinhaMatrizCrescenteNo)
                     mapa_distancias[no_foco] = dist_kantorovich
-                    #print("no: ", no_foco, " dist_K: ", dist_kantorovich)
-                #print("Tamanho J: ", len(J), " EST: ", est , " FIM ITER: ", iter)
+                    print("no: ", no_foco, " dist_K: ", dist_kantorovich)
+                print("Tamanho J: ", len(J), " EST: ", est , " FIM ITER: ", iter)
                 key_min_value = min(mapa_distancias, key=mapa_distancias.get)
                 min_value = mapa_distancias[key_min_value]
                 J.append(key_min_value)
                 Q.remove(key_min_value)
-                #print("FIM ITER: ", iter, " J: ", J, " Q: ", Q)
+                print("FIM ITER: ", iter, " J: ", J, " Q: ", Q)
 
         # PASSO I+1, REDISTRIBUIR AS PROBABILIDADES
         #Cria listas de nos proximos para aglutinacao
