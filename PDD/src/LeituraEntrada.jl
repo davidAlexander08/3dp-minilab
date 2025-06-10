@@ -31,7 +31,7 @@ println("str_caso: ", str_caso, " tolerancia: ", tolerancia)
 
 
 CONFIG_PATH = str_caso*"/dadosEntrada.json"
-PATH_HORAS = str_caso*"/horas.csv"
+PATH_HORAS = str_caso*"/OPERACAO/OPER_DURACAO.csv"
 
 
 #@info "Lendo arquivo de configuração $(CONFIG_PATH)"
@@ -83,21 +83,21 @@ caso.estrutura_arvore = dict["ARVORE"]
 
 
 if(limites_intercambio == 1)
-    PATH_RESTR_INTERCAMBIOS = str_caso*"/restr_limite_Intercambio.csv"
+    PATH_RESTR_INTERCAMBIOS = str_caso*"/OPERACAO/restr_limite_Intercambio.csv"
     #@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
     dat_interc = CSV.read(PATH_RESTR_INTERCAMBIOS, DataFrame)
     #print(dat_interc)
 end
 
 if(volume_minimo == 1)
-    PATH_RESTR_VOLUME_MINIMO = str_caso*"/restr_vol_min.csv"
+    PATH_RESTR_VOLUME_MINIMO = str_caso*"/OPERACAO/restr_vol_min.csv"
     #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
     dat_volmin = CSV.read(PATH_RESTR_VOLUME_MINIMO, DataFrame)
     #print(dat_volmin)
 end
 
 if(volume_espera == 1)
-    PATH_RESTR_VOLUME_ESPERA = str_caso*"/restr_vol_max.csv"
+    PATH_RESTR_VOLUME_ESPERA = str_caso*"/OPERACAO/restr_vol_max.csv"
     #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_ESPERA)"
     dat_volmax = CSV.read(PATH_RESTR_VOLUME_ESPERA, DataFrame)
     #print(dat_volmax)
@@ -105,27 +105,17 @@ end
 
 
 if(vazao_minima == 1)
-    PATH_RESTR_VAZAO_MINIMA = str_caso*"/restr_vazao_minima.csv"
+    PATH_RESTR_VAZAO_MINIMA = str_caso*"/OPERACAO/restr_vazao_minima.csv"
     #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VAZAO_MINIMA)"
     dat_vazmin = CSV.read(PATH_RESTR_VAZAO_MINIMA, DataFrame)
     #print(dat_vazmin)
 end
 
 
-#caminho_vazao_externa = dict["CAMINHO_VAZAO_EXTERNA"]
-#caminho_probabilidade_externa = dict["CAMINHO_PROBABILIDADE_EXTERNA"]
-#if arvore_externa == 1
-#    PATH_VAZOES = caminho_vazao_externa
-#    PATH_PROBABILIDADES = caminho_probabilidade_externa
-#else
-#    PATH_VAZOES = str_caso*"/vazao.csv"
-#    PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
-#end
-PATH_VAZOES = str_caso*"/cenarios.csv"
-PATH_PROBABILIDADES = str_caso*"/probabilidades.csv"
-dados_saida = str_caso
+#PATH_VAZOES = str_caso*"/OPERACAO/cenarios.csv"
+#dados_saida = str_caso
 #@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
-dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
+#dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
 
 if vazao_externa == 1
     @info "Lendo arquivo de vazoes externas $(caminho_vazao_externa)"
@@ -137,21 +127,46 @@ end
 dat_horas = CSV.read(PATH_HORAS, DataFrame)
 
 #caso_teste_submercados
-submercados = dict["SUBMERCADOs"]
+
+
+PATH_CADASTRO_SBMs = str_caso*"/CADASTRO/CADASTRO_SBM.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_cadastro_sbms = CSV.read(PATH_CADASTRO_SBMs, DataFrame)
+
+PATH_OPER_DEMANDA_SBM = str_caso*"/OPERACAO/OPER_DEMANDA_SBM.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_oper_demanda_sbm = CSV.read(PATH_OPER_DEMANDA_SBM, DataFrame)
+
+PATH_OPER_DEFICIT_SBM = str_caso*"/OPERACAO/OPER_DEFICIT_SBM.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_oper_deficit_sbm = CSV.read(PATH_OPER_DEFICIT_SBM, DataFrame)
+
 lista_submercados = []
 mapa_nome_SBM = OrderedDict()
 mapa_codigo_SBM = OrderedDict()
 cadastroUsinasHidreletricasSubmercado = OrderedDict()
 cadastroUsinasTermicasSubmercado = OrderedDict()
 cadastroUsinasEolicasSubmercado = OrderedDict()
-for sbm in submercados
-    submercado = SubmercadoConfigData(sbm["NOME"],sbm["CODIGO"], sbm["CUSTO_DEFICIT"], sbm["DEMANDA"])
+
+for row in eachrow(dat_cadastro_sbms)
+    df_demanda_sbm = dat_oper_demanda_sbm[dat_oper_demanda_sbm.codigo_submercado .== row.codigo, :]
+    vetor_demanda = df_demanda_sbm.valor
+    df_deficit_sbm = dat_oper_deficit_sbm[dat_oper_deficit_sbm.codigo_submercado .== row.codigo, :]
+    vetor_deficit = df_deficit_sbm.valor
+        
+    println(vetor_demanda)
+    println(vetor_deficit)
+    submercado = SubmercadoConfigData()
+    submercado.nome = row.nome
+    submercado.codigo = row.codigo
+    submercado.deficit_cost = vetor_deficit[1]
+    submercado.demanda = vetor_demanda
     push!(lista_submercados,submercado)
-    mapa_nome_SBM[sbm["NOME"]] = submercado
-    mapa_codigo_SBM[sbm["CODIGO"]] = submercado
-    cadastroUsinasHidreletricasSubmercado[sbm["CODIGO"]] = []
-    cadastroUsinasTermicasSubmercado[sbm["CODIGO"]] = []
-    cadastroUsinasEolicasSubmercado[sbm["CODIGO"]] = []
+    mapa_nome_SBM[row.nome] = submercado
+    mapa_codigo_SBM[row.codigo] = submercado
+    cadastroUsinasHidreletricasSubmercado[row.codigo] = []
+    cadastroUsinasTermicasSubmercado[row.codigo] = []
+    cadastroUsinasEolicasSubmercado[row.codigo] = []
 end
 
 
@@ -175,110 +190,155 @@ end
 #println(sistema)
 
 #@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
-dat_prob = CSV.read(PATH_PROBABILIDADES, DataFrame)
 include("arvore.jl")
 
 
 
 #@info "Lendo arquivo de rede elétrica"
-
-dicionario_codigo_barra = OrderedDict()
-# BARRAS
-barras = dict["BARRAS"]
-lista_barras = []
-lista_barras_sem_slack = []
-lista_barras_slack = []
-mapaCodigoBarra = OrderedDict()
-for barra in barras
-    objeto = BarraConfig()
-    objeto.codigo = barra["CODIGO"]
-    for it in range(1, caso.n_iter)
-        for no in lista_total_de_nos
-            objeto.potenciaGerada[it, no.codigo] = barra["GERACAO"][1]
-            objeto.potenciaLiquida[it, no.codigo] = barra["GERACAO"][1]
-        end
-    end
-    objeto.carga = barra["CARGA"]
-    objeto.area = barra["AREA"]
-    lista_estado_operacao = barra["ESTADODEOPERACAO"]
-    for (est,elemento) in enumerate(lista_estado_operacao)
-        objeto.estadoDeOperacao[est] = elemento 
-    end
-    objeto.tipo = barra["TIPO"]
-    push!(lista_barras,objeto)
-    dicionario_codigo_barra[objeto.codigo] = objeto
-    if objeto.tipo == 2
-        push!(lista_barras_slack, objeto)
-    else
-        push!(lista_barras_sem_slack, objeto)
-    end
-    mapaCodigoBarra[objeto.codigo] = objeto
-end
-
-# BARRAS
-linhas = dict["LINHAS"]
-lista_linhas = []
-for (contador,linha) in enumerate(linhas)
-    objeto = LinhaConfig()
-    objeto.de = dicionario_codigo_barra[linha["DE"]] 
-    objeto.para = dicionario_codigo_barra[linha["PARA"]] 
-    objeto.indice = linha["N_CIRCUITOS"]
-    objeto.X = linha["REATANCIA"]
-    objeto.Capacidade = linha["CAPACIDADE"]
-    lista_estado_operacao = linha["ESTADODEOPERACAO"]
-    for (est,elemento) in enumerate(lista_estado_operacao)
-        objeto.estadoDeOperacao[est] = elemento 
-    end
-    objeto.codigo = contador
-    objeto.defasador = linha["DEFASADOR"]
-    push!(lista_linhas,objeto)
-    contador = contador + 1
-end
+#
+#dicionario_codigo_barra = OrderedDict()
+## BARRAS
+#barras = dict["BARRAS"]
+#lista_barras = []
+#lista_barras_sem_slack = []
+#lista_barras_slack = []
+#mapaCodigoBarra = OrderedDict()
+#for barra in barras
+#    objeto = BarraConfig()
+#    objeto.codigo = barra["CODIGO"]
+#    for it in range(1, caso.n_iter)
+#        for no in lista_total_de_nos
+#            objeto.potenciaGerada[it, no.codigo] = barra["GERACAO"][1]
+#            objeto.potenciaLiquida[it, no.codigo] = barra["GERACAO"][1]
+#        end
+#    end
+#    objeto.carga = barra["CARGA"]
+#    objeto.area = barra["AREA"]
+#    lista_estado_operacao = barra["ESTADODEOPERACAO"]
+#    for (est,elemento) in enumerate(lista_estado_operacao)
+#        objeto.estadoDeOperacao[est] = elemento 
+#    end
+#    objeto.tipo = barra["TIPO"]
+#    push!(lista_barras,objeto)
+#    dicionario_codigo_barra[objeto.codigo] = objeto
+#    if objeto.tipo == 2
+#        push!(lista_barras_slack, objeto)
+#    else
+#        push!(lista_barras_sem_slack, objeto)
+#    end
+#    mapaCodigoBarra[objeto.codigo] = objeto
+#end
+#
+## BARRAS
+#linhas = dict["LINHAS"]
+#lista_linhas = []
+#for (contador,linha) in enumerate(linhas)
+#    objeto = LinhaConfig()
+#    objeto.de = dicionario_codigo_barra[linha["DE"]] 
+#    objeto.para = dicionario_codigo_barra[linha["PARA"]] 
+#    objeto.indice = linha["N_CIRCUITOS"]
+#    objeto.X = linha["REATANCIA"]
+#    objeto.Capacidade = linha["CAPACIDADE"]
+#    lista_estado_operacao = linha["ESTADODEOPERACAO"]
+#    for (est,elemento) in enumerate(lista_estado_operacao)
+#        objeto.estadoDeOperacao[est] = elemento 
+#    end
+#    objeto.codigo = contador
+#    objeto.defasador = linha["DEFASADOR"]
+#    push!(lista_linhas,objeto)
+#    contador = contador + 1
+#end
 #println(lista_linhas)
 
-mapa_nomeUSINA_codigoBARRA = OrderedDict()
-mapa_codigoBARRA_nomeUSINA = OrderedDict()
+#mapa_nomeUSINA_codigoBARRA = OrderedDict()
+#mapa_codigoBARRA_nomeUSINA = OrderedDict()
+#
 
-usinas_eol = dict["EOLs"]
+PATH_CADASTRO_UEOLs = str_caso*"/CADASTRO/CADASTRO_UEOL.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_cadastro_ueols = CSV.read(PATH_CADASTRO_UEOLs, DataFrame)
 lista_eols = []
 mapa_nome_EOL = OrderedDict()
-for usi in usinas_eol
-    usina = EOLConfigData(usi["NOME"], usi["POSTO"], usi["GMIN"], usi["GMAX"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"] )
+for row in eachrow(dat_cadastro_ueols)
+    usina = EOLConfigData()
+    usina.nome = row.nome
+    usina.codigo = row.codigo
+    usina.gmin = row.pmin
+    usina.gmax = row.pmax
+    usina.posto = row.posto
     push!(lista_eols,usina)
-    mapa_nome_EOL[usi["NOME"]] = usina
-    mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
-    mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
-    push!(cadastroUsinasEolicasSubmercado[usi["SUBMERCADO"]],usina)
+    mapa_nome_EOL[usina.nome] = usina
+    push!(cadastroUsinasEolicasSubmercado[row.codigo_submercado],usina)
 end
+#
+#
 
 
-# UTEs
-usinas = dict["UTEs"]
+
+PATH_CADASTRO_UTEs = str_caso*"/CADASTRO/CADASTRO_UTE.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_cadastro_utes = CSV.read(PATH_CADASTRO_UTEs, DataFrame)
+
+## UTEs
 lista_utes = []
 mapa_nome_UTE = OrderedDict()
-for usi in usinas
-    usina = UTEConfigData(usi["NOME"],usi["GTMIN"], usi["GTMAX"], usi["CUSTO_GERACAO"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"] )
+for row in eachrow(dat_cadastro_utes)
+    usina = UTEConfigData()
+    usina.nome = row.nome
+    usina.gmin = row.pmin
+    usina.gmax = row.pmax
+    usina.custo_geracao = row.custo
+    usina.codigo = row.codigo
     push!(lista_utes,usina)
-    mapa_nome_UTE[usi["NOME"]] = usina
-    mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
-    mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
-    push!(cadastroUsinasTermicasSubmercado[usi["SUBMERCADO"]],usina)
+    mapa_nome_UTE[usina.nome] = usina
+    push!(cadastroUsinasTermicasSubmercado[row.codigo_submercado],usina)
 end
-#println(lista_utes)
+##println(lista_utes)
+
+
+
+
+PATH_CADASTRO_UHEs = str_caso*"/CADASTRO/CADASTRO_UHE.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_cadastro_uhes = CSV.read(PATH_CADASTRO_UHEs, DataFrame)
+
+PATH_CADASTRO_CONJ_UHE = str_caso*"/CADASTRO/CADASTRO_CONJ_UHE.csv"
+#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+dat_cadastro_conj_uhes = CSV.read(PATH_CADASTRO_CONJ_UHE, DataFrame)
 
 
 # UHEs
-usinas = dict["UHEs"]
 lista_uhes = []
 mapa_nome_UHE = OrderedDict()
-
-for usi in usinas
-    usina = UHEConfigData(usi["NOME"],usi["JUSANTE"],usi["GHMIN"], usi["GHMAX"], usi["TURBMAX"], usi["VOLUME_MINIMO"], usi["VOLUME_MAXIMO"], usi["VOLUME_INICIAL"], dicionario_codigo_barra[usi["BARRA"]], usi["CODIGO"], usi["PRODT"], usi["POSTO"])
-    push!(lista_uhes,usina)
-    mapa_nome_UHE[usi["NOME"]] = usina
-    mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
-    mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
-    push!(cadastroUsinasHidreletricasSubmercado[usi["SUBMERCADO"]], usina)
+for row in eachrow(dat_cadastro_uhes)
+    df_unidades = dat_cadastro_conj_uhes[dat_cadastro_conj_uhes.nome .== row.nome, :]
+    for unidade in eachrow(df_unidades )
+        usina = UHEConfigData()
+        #println("nome: ", row.nome)
+        usina.nome = string(row.nome)
+        #println("jusante: ", row.jusante)
+        if row.jusante === missing
+            usina.jusante = ""
+        else
+            usina.jusante = string(row.jusante)
+        end
+        
+        usina.vmin = row.vmin
+        usina.vmax = row.vmax
+        #println("volume_inicial: ", row.volume_inicial)
+        usina.v0 = row.volume_inicial
+        usina.codigo = row.codigo
+        usina.gmin = unidade.pmin
+        usina.gmax = unidade.pmax
+        usina.turbmax = unidade.turbinamento_maximo
+        usina.prodt = unidade.produtibilidade
+        usina.posto = row.posto
+        push!(lista_uhes,usina)
+        mapa_nome_UHE[usina.nome] = usina
+        #mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
+        #mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
+        push!(cadastroUsinasHidreletricasSubmercado[unidade.codigo_submercado], usina)
+    end
 end
 #println(lista_uhes)
 

@@ -17,45 +17,41 @@ function percorre_abertura(no_pai, lista_Arvore, periodo, lista_total_de_nos)
     end
 end
 
-lista_total_de_nos = []
-no1 = no(1, 1, 1, 0, [])
-global codigos = [no1.codigo]
-push!(lista_total_de_nos, no1)
-percorre_abertura(no1, caso.estrutura_arvore, 0, lista_total_de_nos)
-mapa_periodos = OrderedDict()
-for i in 1:length(caso.estrutura_arvore)+1
-    periodo = tipo_periodo(i,[])
-    mapa_periodos[i] = periodo
-end
-
-for no in lista_total_de_nos
-    push!(mapa_periodos[no.periodo].nos, no)
-end
-
-df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], Abertura = [] , PER = Int[], PROB = Float64[])
-
-function printa_nos(no)
-    for elemento in no.filhos
-        #println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
-        #println(dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"])
-        probabilidade = dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"][1]
-        push!(df_arvore, (NO_PAI = elemento.pai.codigo, NO = elemento.codigo, Abertura = elemento.index, PER = elemento.periodo,  PROB = probabilidade))
-        printa_nos(elemento)
-    end
-end
+#lista_total_de_nos = []
+#no1 = no(1, 1, 1, 0, [])
+#global codigos = [no1.codigo]
+#push!(lista_total_de_nos, no1)
+#percorre_abertura(no1, caso.estrutura_arvore, 0, lista_total_de_nos)
+#mapa_periodos = OrderedDict()
+#for i in 1:length(caso.estrutura_arvore)+1
+#    periodo = tipo_periodo(i,[])
+#    mapa_periodos[i] = periodo
+#end
+#
+#for no in lista_total_de_nos
+#    push!(mapa_periodos[no.periodo].nos, no)
+#end
+#
+#df_arvore = DataFrame(NO_PAI = Int[], NO = Int[], Abertura = [] , PER = Int[], PROB = Float64[])
+#
+#function printa_nos(no)
+#    for elemento in no.filhos
+#        #println("codigo: ", elemento.codigo, " periodo: ", elemento.periodo, " codigo_intero: ", elemento.index, " pai: ", elemento.pai.codigo)
+#        #println(dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"])
+#        probabilidade = dat_prob[(dat_prob.NO .== elemento.codigo), "PROBABILIDADE"][1]
+#        push!(df_arvore, (NO_PAI = elemento.pai.codigo, NO = elemento.codigo, Abertura = elemento.index, PER = elemento.periodo,  PROB = probabilidade))
+#        printa_nos(elemento)
+#    end
+#end
 
 
 #println("codigo: ", no1.codigo, " periodo: ", no1.periodo, " codigo_intero: ", no1.index, " pai: ", no1.pai)
-probabilidade = dat_prob[(dat_prob.NO .== no1.codigo), "PROBABILIDADE"][1]
-push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, Abertura = no1.index, NO_PAI = no1.pai, PROB = probabilidade))
-printa_nos(no1)
+#probabilidade = dat_prob[(dat_prob.NO .== no1.codigo), "PROBABILIDADE"][1]
+#push!(df_arvore, (NO = no1.codigo, PER = no1.periodo, Abertura = no1.index, NO_PAI = no1.pai, PROB = probabilidade))
+#printa_nos(no1)
 #println(df_arvore)
-CSV.write("cenarios/CenariosSemanais/arvore_julia.csv", df_arvore)
-CSV.write(str_caso*"/arvore_julia.csv", df_arvore)
-
-
-
-
+#CSV.write("cenarios/CenariosSemanais/arvore_julia.csv", df_arvore)
+#CSV.write(str_caso*"/arvore_julia.csv", df_arvore)
 
 function getFilhos(no)
     filhos = df_arvore[df_arvore.NO_PAI .== no, :NO]

@@ -123,6 +123,14 @@ mutable struct SubmercadoConfigData
     codigo::Int32
     deficit_cost::Float64
     demanda::Vector{Float64}
+    function SubmercadoConfigData()
+        new(
+            "",
+            0,
+            0,
+            [0]
+        )  
+    end
 end
 
 
@@ -164,16 +172,24 @@ mutable struct CaseData
 end
 
 
-struct UTEConfigData
+mutable struct UTEConfigData
     nome::String
     gmin::Float64
     gmax::Float64
     custo_geracao::Float64
-    barra::BarraConfig
     codigo::Int32
+    function UTEConfigData()
+        new(
+        "",
+        0,
+        0,
+        0,
+        0
+        ) 
+    end
 end
 
-struct UHEConfigData
+mutable struct UHEConfigData
     nome::String
     jusante::String #Jusante
     gmin::Float64
@@ -182,19 +198,41 @@ struct UHEConfigData
     vmin::Float64
     vmax::Float64
     v0::Float64
-    barra::BarraConfig
     codigo::Int32
     prodt::Float64
     posto::Int32
+    function UHEConfigData()
+        new(
+        "",
+        "",
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+        ) 
+    end
 end
 
-struct EOLConfigData
+mutable struct EOLConfigData
     nome::String
     posto::Int32
     gmin::Float64
     gmax::Float64
-    barra::BarraConfig
     codigo::Int32
+    function EOLConfigData()
+        new(
+        "",
+        0,
+        0,
+        0,
+        0,
+        ) 
+    end
 end
 
 struct Forward

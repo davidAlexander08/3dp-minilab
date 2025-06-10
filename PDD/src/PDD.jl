@@ -230,6 +230,7 @@ module PDD
             #print("est: ", est, " no: ", no.codigo, " etapa: ", etapa)
             vazao_afluente = 0
             if(uhe.posto != 999)
+                #println("nome: ", uhe.nome, " node: ", no.codigo, " posto: ", uhe.posto)
                 vazao_afluente = (dat_vaz[(dat_vaz.NOME_UHE .== uhe.posto) .& (dat_vaz.NO .== no.codigo), "VAZAO"][1])
             else
                 vazao_afluente = 0
@@ -558,13 +559,16 @@ module PDD
     global tempo_acumulado = 0
     @time begin
         for it in 1:caso.n_iter
+            #println("it: ", it)
             global maxIteration = it
             start_time_iter = time()
             empty!(df_cortes_equivalentes)
             for est in 1:caso.n_est
+                #println("est: ", est)
                 #println("Relizando FW - Iter ", it, " Est ", est)
                 start_time = time()
                 for i_no in mapa_periodos[est].nos  
+                    #println("i_no: ", i_no.codigo)
                     #println("no ", i_no.codigo)  
                     etapa = "FW"     
                     m = retornaModelo(est,i_no, etapa)
