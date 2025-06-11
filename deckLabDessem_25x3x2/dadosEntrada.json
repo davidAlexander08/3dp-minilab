@@ -1,6 +1,6 @@
 {
     "MAX_ITERACOES": 100,
-    "MIN_ITERACOES": 10,
+    "MIN_ITERACOES": 1,
     "ESTAGIOS": 4,
     "ARVORE": [
         500,
@@ -12,8 +12,8 @@
     "Rest_Bal_Hid":0,
     "Rest_Hid":0,
     "Rest_Limites_Fluxo":0,
-    "Rest_Ton/Toff_Term":0,
-    "Rest_Ton/Toff_Hid":0,
+    "Rest_Ton_Toff_Term":0,
+    "Rest_Ton_Toff_Hid":0,
     "RT":0,
     "Graficos":0,
     "REDE": 0,

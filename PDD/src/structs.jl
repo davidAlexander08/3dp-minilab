@@ -1,6 +1,6 @@
 
 #using SparseArrays
-using DataStructures 
+using DataStructures, DataFrames
 mutable struct BarraConfig
     codigo::Int32
     potenciaGerada::Dict{Tuple{Int, Int}, Float64} #varia por nó
@@ -23,6 +23,71 @@ mutable struct BarraConfig
         0, 
         Dict{Tuple{Int, Int, Int}, Float64}()
         )  # Default values for fields
+    end
+end
+
+mutable struct ResultadosOtimizacao
+    df_intercambio::DataFrame
+    df_balanco_energetico_SIN::DataFrame
+    df_balanco_energetico_SBM::DataFrame
+    df_eolicas::DataFrame
+    df_termicas::DataFrame
+    df_hidreletricas::DataFrame
+    df_convergencia::DataFrame
+    df_cortes::DataFrame
+    df_cortes_equivalentes::DataFrame
+    df_parcelasCustoPresente::DataFrame
+    df_folga_vazmin::DataFrame
+    df_folga_MetaVol::DataFrame
+
+    function ResultadosOtimizacao()
+        new(
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], SubmercadoDE = Int[], SubmercadoPARA = Int[], Valor = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], Demanda = Float64[], GT = Float64[], GH = Float64[], EOL = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CustoFuturo = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], Submercado = Int[], Demanda = Float64[], GT = Float64[], GH = Float64[], EOL = Float64[], Deficit = Float64[], Excesso = Float64[], AFL = Float64[], Vini = Float64[], VolArm = Float64[], Earm = Float64[], Turb = Float64[], Vert = Float64[], CustoPresente = Float64[], CMO = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], Submercado = Int[], nome = String[], usina = Int[], generation = Float64[], folgaPositiva = Float64[], folgaNegativa = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], Submercado = Int[], nome = String[], usina = Int[], generation = Float64[], custo = Float64[], custoTotal = Float64[], GerMin = Float64[], GerMax = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], Submercado = Int[], nome = String[], usina = Int[], generation = Float64[], VI = Float64[], AFL = Float64[], TURB = Float64[], VERT = Float64[], VF = Float64[]),
+            DataFrame(iter = Int[], ZINF = Float64[], ZSUP = Float64[], GAP = Float64[], MIN = Float64[], SEC = Float64[], MIN_TOT = Float64[], SEC_TOT = Float64[]),
+            DataFrame(iter = Int[], est = Int[], no = Int[], usina = Int[], Indep = Float64[], Coef = Float64[]),
+            DataFrame(iter = Int[], est = Int[], noUso = Int[], usina = String[], Indep = Float64[], Coef = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], Submercado = Int[], usina = String[], codigo = Int[], geracao = Float64[], Custo = Float64[], CustoPresente = Float64[], CustoPresenteAcum = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], nome = String[], usina = Int[], Vazmin = Float64[], Qdef = Float64[], FolgaPosit = Float64[], FolgaNeg = Float64[]),
+            DataFrame(etapa = String[], iter = Int[], est = Int[], node = Int[], prob = Float64[], nome = String[], usina = Int[], Meta = Float64[], VolF = Float64[], FolgaPosit = Float64[], FolgaNeg = Float64[])
+        )
+    end
+end
+
+mutable struct OtimizacaoConfig
+    model::Model
+    gt_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    gh_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    ge_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    turb_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    vert_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    vf_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    alpha_vars::Dict{Tuple{Int, String}, VariableRef}
+    deficit_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    excesso_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    intercambio_vars::Dict{Tuple{Int, String, String, String}, VariableRef}
+    constraint_dict::Dict{Tuple{Int, String, String}, ConstraintRef}
+    constraint_balancDem_dict::Dict{Tuple{Int, String, String}, ConstraintRef}
+    folga_positiva_vazmin_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    folga_negativa_vazmin_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    folga_positiva_volFimMundo_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    folga_negativa_volFimMundo_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    folga_positiva_eolica_vars::Dict{Tuple{Int, String, String}, VariableRef}
+    folga_negativa_eolica_vars::Dict{Tuple{Int, String, String}, VariableRef}
+
+    function OtimizacaoConfig()
+        new(
+            Model(),  # or pass an optimizer if you like: Model(GLPK.Optimizer)
+            Dict(), Dict(), Dict(), Dict(), Dict(), Dict(),
+            Dict(), Dict(), Dict(), Dict(),
+            Dict(), Dict(),
+            Dict(), Dict(), Dict(), Dict(),
+            Dict(), Dict()
+        )
     end
 end
 
@@ -133,14 +198,6 @@ mutable struct SubmercadoConfigData
     end
 end
 
-
-
-struct contexto
-    estagio::Int32
-    codigo_no::Int32
-    iteracao::Int32
-end
-
 mutable struct no
     codigo::Int32
     periodo::Int32
@@ -154,22 +211,26 @@ mutable struct tipo_periodo
     nos::Vector
 end
 
-struct SystemConfigData
-    deficit_cost::Float64
-    demanda::Vector{Float64}
-end
-
 mutable struct CaseData
     n_iter::Int32
     n_iter_min::Int32
     n_est::Int32
     n_term::Int32
     n_uhes::Int32
-    estrutura_arvore::Vector
+    Rest_Canal_Term::Int32
+    Rest_Canal_Hid::Int32
+    Rest_Bal_Hid::Int32
+    Rest_Hid::Int32
+    Rest_Limites_Fluxo::Int32
+    Rest_Ton_Toff_Term::Int32
+    Rest_Ton_Toff_Hid::Int32
+    RT::Int32
+    Graficos::Int32
     function CaseData()
-        new(0,0,0, 0,0,[]) 
+        new(0,0,0,0,0,0,0,0,0,0,0,0,0,0) 
     end
 end
+
 
 
 mutable struct UTEConfigData
@@ -234,19 +295,3 @@ mutable struct EOLConfigData
         ) 
     end
 end
-
-struct Forward
-    ger_hidr_fw::Vector
-    vf_hidr_fw::Vector
-    vi_hidr_fw::Vector
-    turb_hidr_fw::Vector
-    vert_hidr_fw::Vector
-    ger_term_fw::Vector
-    ger_def_fw::Vector
-end
-
-struct Backward
-
-end
-
-

@@ -1,4 +1,4 @@
-include("DefStructs.jl")
+include("structs.jl")
 using JSON
 using CSV
 using DataFrames

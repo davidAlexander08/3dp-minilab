@@ -1,44 +1,17 @@
 
-include("DefStructs.jl")
+include("structs.jl")
 
-using JSON
-using CSV
-using DataFrames
-#using Graphs
-#using LightGraphs
-#using SparseArrays
-using DataStructures
-
-
-str_caso = "Dissertacao/apresentacaoCarmen_Gevazp/caso_mini"
-str_caso = "Capitulo_5/caso_mini_500Cen_cluster_semanais"
-str_caso = "Academico/exercicio_1D"
-str_caso = "Academico_Dissertacao/exercicio_1D"
-str_caso = "Academico_Dissertacao/exercicio_36D"
-str_caso = "Academico/exercicio_1D_DeboraNEWAVE"
-#str_caso = "Academico/exercicio_1D_Debora"
-#str_caso = "Academico/exercicio_1D_PenteArvore"
-#str_caso = "Carmen/exercicio_27cen_36D"
-#str_caso = "Carmen/exercicio_27cen_3D"
-##str_caso = "Dissertacao/teste_simples_3est_2A/caso_dissertacao"
-#str_caso = "Dissertacao/exercicioDebora/caso_mini"
-#str_caso = "Carmen/exercicio_27cen_1D"
-
+using JSON, CSV, DataFrames, DataStructures
+cd(joinpath(@__DIR__, "..",".."))
 dict_str_caso = JSON.parsefile("PDD/src/caminho.json"; use_mmap=false)
-str_caso = dict_str_caso["CAMINHO_CASO"]
+folder_path = dict_str_caso["CAMINHO_CASO"]
 tolerancia = dict_str_caso["TOLERANCIA"]
-println("str_caso: ", str_caso, " tolerancia: ", tolerancia)
+
+CONFIG_PATH = folder_path*"/dadosEntrada.json"
 
 
-CONFIG_PATH = str_caso*"/dadosEntrada.json"
-PATH_HORAS = str_caso*"/OPERACAO/OPER_DURACAO.csv"
-
-
-#@info "Lendo arquivo de configuração $(CONFIG_PATH)"
+@info "Lendo arquivo de configuração $(CONFIG_PATH)"
 dict = JSON.parsefile(CONFIG_PATH; use_mmap=false)
-
-
-
 caso = CaseData()
 caso.n_iter = dict["MAX_ITERACOES"]
 caso.n_iter_min = dict["MIN_ITERACOES"]
@@ -50,72 +23,16 @@ penalidVazMin = dict["PENALIDADE_VAZAO_MINIMA"]
 volume_minimo = dict["VOLUME_MINIMO"]
 volume_espera = dict["VOLUME_ESPERA"]
 simfinal = dict["SIMFINAL"]
-if(simfinal == 1)
-    CAMINHO_CORTES = dict["CAMINHO_CORTES"]
-    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
-    dat_cortes_ext = CSV.read(CAMINHO_CORTES, DataFrame)
-    cortes_filtrados = filter(row -> row.est == 2, dat_cortes_ext)
-    mex_iter_est = maximum(cortes_filtrados.iter)
-    caso.n_iter = 1
-    #println(dat_cortes_ext)
-    println("mex_iter_est: ", mex_iter_est)
-    println("EXECUTANDO SIMULACAO FINAL")
-end
-
-
-############ CORTES DA FCF EXTERNA PARA FIM DE MUNDO DO PRIMEIRO ESTÀGIO DOS CORTES
+CAMINHO_CORTES = dict["CAMINHO_CORTES"]
 cortes_externos_fim_de_mundo = dict["CORTES_EXTERNOS"]
 caminho_cortes_externos_fim_de_mundo = dict["CAMINHO_CORTES_EXTERNOS"]
-if(cortes_externos_fim_de_mundo == 1)
-    PATH_CORTES_EXTERNOS_FIM_MUNDO = caminho_cortes_externos_fim_de_mundo
-    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
-    dat_cortes_externos_fim_mundo = CSV.read(PATH_CORTES_EXTERNOS_FIM_MUNDO, DataFrame)
-    cortes_filtrados = filter(row -> row.est == 1, dat_cortes_externos_fim_mundo)
-    mex_iter_est_cortes_externos = maximum(cortes_filtrados.iter)
-    println("ENTORU AQUI, MAXITER: ", mex_iter_est_cortes_externos)
-end
-
 arvore_externa = dict["ARVORE_EXTERNA"]
 caminho_arvore_externa = dict["CAMINHO_ARVORE_EXTERNA"]
 vazao_externa = dict["VAZAO_EXTERNA"]
 caminho_vazao_externa = dict["CAMINHO_VAZAO_EXTERNA"]
-caso.estrutura_arvore = dict["ARVORE"]
+periodos_fim_de_mundo = dict["PERIODOS_FIM_DE_MUNDO"]
+restricaoVolumeFimMundo = dict["FIM_DE_MUNDO_VOLUMES"]
 
-
-if(limites_intercambio == 1)
-    PATH_RESTR_INTERCAMBIOS = str_caso*"/OPERACAO/restr_limite_Intercambio.csv"
-    #@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
-    dat_interc = CSV.read(PATH_RESTR_INTERCAMBIOS, DataFrame)
-    #print(dat_interc)
-end
-
-if(volume_minimo == 1)
-    PATH_RESTR_VOLUME_MINIMO = str_caso*"/OPERACAO/restr_vol_min.csv"
-    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
-    dat_volmin = CSV.read(PATH_RESTR_VOLUME_MINIMO, DataFrame)
-    #print(dat_volmin)
-end
-
-if(volume_espera == 1)
-    PATH_RESTR_VOLUME_ESPERA = str_caso*"/OPERACAO/restr_vol_max.csv"
-    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_ESPERA)"
-    dat_volmax = CSV.read(PATH_RESTR_VOLUME_ESPERA, DataFrame)
-    #print(dat_volmax)
-end
-
-
-if(vazao_minima == 1)
-    PATH_RESTR_VAZAO_MINIMA = str_caso*"/OPERACAO/restr_vazao_minima.csv"
-    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VAZAO_MINIMA)"
-    dat_vazmin = CSV.read(PATH_RESTR_VAZAO_MINIMA, DataFrame)
-    #print(dat_vazmin)
-end
-
-
-#PATH_VAZOES = str_caso*"/OPERACAO/cenarios.csv"
-#dados_saida = str_caso
-#@info "Lendo arquivo de vazoes $(PATH_VAZOES)"
-#dat_vaz = CSV.read(PATH_VAZOES, DataFrame)
 
 if vazao_externa == 1
     @info "Lendo arquivo de vazoes externas $(caminho_vazao_externa)"
@@ -123,22 +40,71 @@ if vazao_externa == 1
     dados_saida = splitdir(caminho_vazao_externa)[1]
 end
 
-#@info "Lendo arquivo de horas $(PATH_HORAS)"
+include("arvore.jl")
+
+
+
+
+
+if(simfinal == 1)
+    dat_cortes_ext = CSV.read(CAMINHO_CORTES, DataFrame)
+    cortes_filtrados = filter(row -> row.est == 2, dat_cortes_ext)
+    mex_iter_est = maximum(cortes_filtrados.iter)
+    caso.n_iter = 1
+    @info "EXECUTANDO SIMULACAO FINAL"
+end
+
+
+############ CORTES DA FCF EXTERNA PARA FIM DE MUNDO DO PRIMEIRO ESTÀGIO DOS CORTES
+if(cortes_externos_fim_de_mundo == 1)
+    PATH_CORTES_EXTERNOS_FIM_MUNDO = caminho_cortes_externos_fim_de_mundo
+    dat_cortes_externos_fim_mundo = CSV.read(PATH_CORTES_EXTERNOS_FIM_MUNDO, DataFrame)
+    cortes_filtrados = filter(row -> row.est == 1, dat_cortes_externos_fim_mundo)
+    mex_iter_est_cortes_externos = maximum(cortes_filtrados.iter)
+    @info "Executando com Cortes Externos Fim de Mundo"
+end
+
+
+
+if(limites_intercambio == 1)
+    PATH_RESTR_INTERCAMBIOS = folder_path*"/OPERACAO/restr_limite_Intercambio.csv"
+    @info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+    dat_interc = CSV.read(PATH_RESTR_INTERCAMBIOS, DataFrame)
+end
+
+if(volume_minimo == 1)
+    PATH_RESTR_VOLUME_MINIMO = folder_path*"/OPERACAO/restr_vol_min.csv"
+    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    dat_volmin = CSV.read(PATH_RESTR_VOLUME_MINIMO, DataFrame)
+end
+
+if(volume_espera == 1)
+    PATH_RESTR_VOLUME_ESPERA = folder_path*"/OPERACAO/restr_vol_max.csv"
+    @info "Lendo arquivo de volume maximo $(PATH_RESTR_VOLUME_ESPERA)"
+    dat_volmax = CSV.read(PATH_RESTR_VOLUME_ESPERA, DataFrame)
+end
+
+
+if(vazao_minima == 1)
+    PATH_RESTR_VAZAO_MINIMA = folder_path*"/OPERACAO/restr_vazao_minima.csv"
+    @info "Lendo arquivo de vazao minima $(PATH_RESTR_VAZAO_MINIMA)"
+    dat_vazmin = CSV.read(PATH_RESTR_VAZAO_MINIMA, DataFrame)
+end
+
+
+
+PATH_HORAS = folder_path*"/OPERACAO/OPER_DURACAO.csv"
+@info "Lendo arquivo de horas $(PATH_HORAS)"
 dat_horas = CSV.read(PATH_HORAS, DataFrame)
 
-#caso_teste_submercados
-
-
-PATH_CADASTRO_SBMs = str_caso*"/CADASTRO/CADASTRO_SBM.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_CADASTRO_SBMs = folder_path*"/CADASTRO/CADASTRO_SBM.csv"
+@info "Lendo arquivo de cadastro dos submercados"
 dat_cadastro_sbms = CSV.read(PATH_CADASTRO_SBMs, DataFrame)
 
-PATH_OPER_DEMANDA_SBM = str_caso*"/OPERACAO/OPER_DEMANDA_SBM.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_OPER_DEMANDA_SBM = folder_path*"/OPERACAO/OPER_DEMANDA_SBM.csv"
 dat_oper_demanda_sbm = CSV.read(PATH_OPER_DEMANDA_SBM, DataFrame)
 
-PATH_OPER_DEFICIT_SBM = str_caso*"/OPERACAO/OPER_DEFICIT_SBM.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_OPER_DEFICIT_SBM = folder_path*"/OPERACAO/OPER_DEFICIT_SBM.csv"
 dat_oper_deficit_sbm = CSV.read(PATH_OPER_DEFICIT_SBM, DataFrame)
 
 lista_submercados = []
@@ -171,26 +137,13 @@ end
 
 
 ############# META DE ARMAZENAMENTO DO FIM DE MUNDO
-periodos_fim_de_mundo = dict["PERIODOS_FIM_DE_MUNDO"]
-restricaoVolumeFimMundo = dict["FIM_DE_MUNDO_VOLUMES"]
+
 if(restricaoVolumeFimMundo == 1)
-    PATH_RESTR_META_VOLUME = str_caso*"/restr_meta_armazenamento.csv"
-    #@info "Lendo arquivo de vazao minima $(PATH_RESTR_VOLUME_MINIMO)"
+    PATH_RESTR_META_VOLUME = folder_path*"/restr_meta_armazenamento.csv"
+    @info "Executando caso com meta de armazenamento no fim de mundo"
     dat_meta_armazenamento = CSV.read(PATH_RESTR_META_VOLUME, DataFrame)
-    #print(dat_volmin)
 end
 
-
-
-
-
-#SISTEMA
-#sist = dict["SISTEMA"]
-#sistema = SystemConfigData(sist["CUSTO_DEFICIT"], sist["DEMANDA"])
-#println(sistema)
-
-#@info "Lendo arquivo de probabilidades $(PATH_PROBABILIDADES)"
-include("arvore.jl")
 
 
 
@@ -254,8 +207,8 @@ include("arvore.jl")
 #mapa_codigoBARRA_nomeUSINA = OrderedDict()
 #
 
-PATH_CADASTRO_UEOLs = str_caso*"/CADASTRO/CADASTRO_UEOL.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_CADASTRO_UEOLs = folder_path*"/CADASTRO/CADASTRO_UEOL.csv"
+@info "Lendo arquivo de cadastro das Eólicas"
 dat_cadastro_ueols = CSV.read(PATH_CADASTRO_UEOLs, DataFrame)
 lista_eols = []
 mapa_nome_EOL = OrderedDict()
@@ -275,11 +228,10 @@ end
 
 
 
-PATH_CADASTRO_UTEs = str_caso*"/CADASTRO/CADASTRO_UTE.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_CADASTRO_UTEs = folder_path*"/CADASTRO/CADASTRO_UTE.csv"
+@info "Lendo arquivo de cadastro das térmicas"
 dat_cadastro_utes = CSV.read(PATH_CADASTRO_UTEs, DataFrame)
 
-## UTEs
 lista_utes = []
 mapa_nome_UTE = OrderedDict()
 for row in eachrow(dat_cadastro_utes)
@@ -293,17 +245,12 @@ for row in eachrow(dat_cadastro_utes)
     mapa_nome_UTE[usina.nome] = usina
     push!(cadastroUsinasTermicasSubmercado[row.codigo_submercado],usina)
 end
-##println(lista_utes)
 
-
-
-
-PATH_CADASTRO_UHEs = str_caso*"/CADASTRO/CADASTRO_UHE.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_CADASTRO_UHEs = folder_path*"/CADASTRO/CADASTRO_UHE.csv"
+@info "Lendo arquivo de cadastro das hidrelétricas"
 dat_cadastro_uhes = CSV.read(PATH_CADASTRO_UHEs, DataFrame)
 
-PATH_CADASTRO_CONJ_UHE = str_caso*"/CADASTRO/CADASTRO_CONJ_UHE.csv"
-#@info "Lendo arquivo de intercambios $(PATH_RESTR_INTERCAMBIOS)"
+PATH_CADASTRO_CONJ_UHE = folder_path*"/CADASTRO/CADASTRO_CONJ_UHE.csv"
 dat_cadastro_conj_uhes = CSV.read(PATH_CADASTRO_CONJ_UHE, DataFrame)
 
 
@@ -314,9 +261,7 @@ for row in eachrow(dat_cadastro_uhes)
     df_unidades = dat_cadastro_conj_uhes[dat_cadastro_conj_uhes.nome .== row.nome, :]
     for unidade in eachrow(df_unidades )
         usina = UHEConfigData()
-        #println("nome: ", row.nome)
         usina.nome = string(row.nome)
-        #println("jusante: ", row.jusante)
         if row.jusante === missing
             usina.jusante = ""
         else
@@ -325,7 +270,6 @@ for row in eachrow(dat_cadastro_uhes)
         
         usina.vmin = row.vmin
         usina.vmax = row.vmax
-        #println("volume_inicial: ", row.volume_inicial)
         usina.v0 = row.volume_inicial
         usina.codigo = row.codigo
         usina.gmin = unidade.pmin
@@ -335,12 +279,9 @@ for row in eachrow(dat_cadastro_uhes)
         usina.posto = row.posto
         push!(lista_uhes,usina)
         mapa_nome_UHE[usina.nome] = usina
-        #mapa_nomeUSINA_codigoBARRA[usi["NOME"]] = usi["BARRA"]
-        #mapa_codigoBARRA_nomeUSINA[usi["BARRA"]] = usi["NOME"]
         push!(cadastroUsinasHidreletricasSubmercado[unidade.codigo_submercado], usina)
     end
 end
-#println(lista_uhes)
 
 caso.n_term =size(lista_utes)[1]
 caso.n_uhes =size(lista_uhes)[1]
@@ -356,24 +297,19 @@ for uhe in lista_uhes
         end
     end
 end
-#println(mapa_montantesUsina)
-#mapa_nome_UHE
+
+
 mapaUsinaProdtAcum = Dict{String, Float64}()
 for uhe in lista_uhes
     if !haskey(mapa_montantesUsina, uhe.nome)
         mapa_montantesUsina[uhe.nome] = String[]  # Initialize an empty array if it doesn't exist
     end
-    #println("UHE: ", uhe.nome)
-
     lista_cascata = String[]
-
     jusante = uhe.jusante
     usina = uhe
-
     while jusante != ""
         for usi_jus in lista_uhes
             if usi_jus.codigo == parse(Int, usina.jusante)
-                #println("UHE JUS: ", usi_jus.nome)
                 push!(lista_cascata, usi_jus.nome)
                 usina = usi_jus
                 jusante = usina.jusante
@@ -383,13 +319,10 @@ for uhe in lista_uhes
     end
     prodt_acum = uhe.prodt
     for usi_cascata in lista_cascata
-        #println("UHE: ", usi_cascata, " PRODT: ", mapa_nome_UHE[usi_cascata].prodt)
         prodt_acum += mapa_nome_UHE[usi_cascata].prodt
     end
     mapaUsinaProdtAcum[uhe.nome] = prodt_acum
-    #println("UHE: ", uhe.nome, " PRODACUM: ", prodt_acum)
 end
-#exit(1)
 
 
 
@@ -397,6 +330,7 @@ end
 
 
 
+##########    ECO
 
 df_eco_hidro  = DataFrame(codigo = Int[], nome = String[], posto = Int[], Jusante = String[], Submercado = Int[], PotInst = Int[], 
 EngolMax = Int[], VolMin = Int[], VolMax = Int[], Prodt = Float64[], VolIni = Int[])
@@ -466,14 +400,6 @@ for sbm in lista_submercados
         push!(df_eco_termo, (codigo = ute.codigo, nome = ute.nome, Submercado = sbm.codigo, Gmin = ute.gmin, Gmax = ute.gmax))
     end
 end
-
-#println(df_arvore)
-#println(dat_vaz)
-
-#for sbm in lista_submercados
-#    println(sbm.demanda)
-#end
-#println("caso.n_est: ", caso.n_est)
 
 output_dir_eco = dados_saida*"/saidas/PDD/eco"
 println(output_dir_eco)

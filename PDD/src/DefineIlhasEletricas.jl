@@ -1,4 +1,4 @@
-include("LeituraEntrada.jl")
+include("dados_entrada.jl")
 using JSON
 using CSV
 using DataFrames
